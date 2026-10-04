@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Saúde na Palma da Mão",
+    "slug": "saude-na-palma-da-mao",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "br.senac.saudenapalma"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png",
+      "name": "Saúde na Palma da Mão",
+      "shortName": "Saúde na Palma",
+      "lang": "pt-BR"
+    },
+    "plugins": ["expo-router", "expo-status-bar"],
+    "scheme": "saudepalma",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
