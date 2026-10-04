@@ -43,6 +43,15 @@ jobs:
       - name: Checagem de tipos
         run: npm run tipos
 
+      # tokens.ts é gerado do design system e nunca editado à mão.
+      - name: Tema sincronizado com o design system
+        run: |
+          npm run tema
+          git diff --exit-code apps/mobile/src/theme/tokens.ts || {
+            echo "::error file=apps/mobile/src/theme/tokens.ts::tokens.ts difere do design system. Rode npm run tema e commite."
+            exit 1
+          }
+
       - name: Regras do Firestore continuam fechadas
         run: |
           grep -q "allow read, write: if false;" infra/firestore.rules
