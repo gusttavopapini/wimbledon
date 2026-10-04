@@ -1,0 +1,31 @@
+<!-- @dsCard group="Navegação" height=484 width=880 subtitle="Gradiente de topo com a folha branca de 32px por cima" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Topo</title>
+<style>
+  .demo { display: flex; gap: 32px; padding: 24px; align-items: flex-start; }
+  .tela { width: 390px; border-radius: 32px; overflow: hidden; box-shadow: 0 0 0 2px var(--teal50); background: var(--superficie); }
+  .linha { display: flex; justify-content: space-between; align-items: center; }
+  .sec { margin: 0; font-size: var(--sp-fs-tituloSecao); line-height: var(--sp-lh-tituloSecao); font-weight: 700; color: var(--primariaEscura); }
+  p.corpo { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h('div', { className: 'tela' },
+        h(S.Topo, { titulo: 'Olá!', subtitulo: 'Que bom ter você aqui.' }),
+        h(S.Folha, null, h('h2', { className: 'sec' }, 'Entrar'), h('p', { className: 'corpo' }, 'Use o e-mail e a senha do seu cadastro.'))),
+      h('div', { className: 'tela' },
+        h(S.Topo, { antes: h(S.Avatar, { nome: 'Ana Souza', tamanho: 56 }), titulo: 'Bom dia, Ana!', subtitulo: 'Como está sua saúde hoje?' },
+          h(S.Botao, { variante: 'secundario', larguraTotal: true, icone: 'message-circle' }, 'Contar meus sintomas')),
+        h(S.Folha, null, h('h2', { className: 'sec' }, 'Acesso rápido'))))
+  );
+</script>
+</body>
+</html>

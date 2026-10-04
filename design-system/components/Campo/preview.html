@@ -1,0 +1,42 @@
+<!-- @dsCard group="Formulários" height=920 width=880 subtitle="Rótulo sempre visível · texto, senha, data, CPF, busca · 5 estados" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Campo</title>
+<style>
+  .demo { padding: 24px; display: flex; gap: 48px; align-items: flex-start; }
+  .coluna { width: 342px; display: flex; flex-direction: column; gap: 24px; }
+  .titulo { margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: var(--textoSecundario); border-bottom: 2px solid var(--teal50); padding-bottom: 8px; }
+  .estado { margin: 0 0 -16px; font-size: 16px; line-height: 24px; color: var(--textoSecundario); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  function E(t) { return h('p', { className: 'estado' }, t); }
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h('div', { className: 'coluna' },
+        h('p', { className: 'titulo' }, 'Estados (variante texto)'),
+        E('Vazio'),
+        h(S.Campo, { rotulo: 'Nome completo', autoComplete: 'name' }),
+        E('Preenchido'),
+        h(S.Campo, { rotulo: 'Nome completo', valorInicial: 'Ana Maria de Souza' }),
+        E('Foco'),
+        h(S.Campo, { rotulo: 'E-mail', tipoHtml: 'email', valorInicial: 'ana.souza@email.com', demonstrarEstado: 'foco' }),
+        E('Erro'),
+        h(S.Campo, { rotulo: 'E-mail', tipoHtml: 'email', valorInicial: 'ana.souza@email', erro: 'Falta o final do e-mail. Exemplo: ana@gmail.com' }),
+        E('Desabilitado'),
+        h(S.Campo, { rotulo: 'CPF', tipo: 'cpf', valorInicial: '52998224725', desabilitado: true, ajuda: 'O CPF não pode ser alterado. Para corrigir, fale com a recepção.' })),
+      h('div', { className: 'coluna' },
+        h('p', { className: 'titulo' }, 'Variantes'),
+        h(S.Campo, { rotulo: 'Senha', tipo: 'senha', valorInicial: 'palmeira48', autoComplete: 'current-password' }),
+        h(S.Campo, { rotulo: 'Data de nascimento', tipo: 'data', ajuda: 'Dia, mês e ano. Exemplo: 12/03/1948', valorInicial: '12031948' }),
+        h(S.Campo, { rotulo: 'CPF', tipo: 'cpf', ajuda: 'Só os 11 números. Os pontos aparecem sozinhos.', valorInicial: '5299822472', erro: 'Falta 1 número. Confira no seu documento e digite os 11 números.' }),
+        h(S.Campo, { rotulo: 'Buscar especialidade', tipo: 'busca', valorInicial: 'cardio' })))
+  );
+</script>
+</body>
+</html>

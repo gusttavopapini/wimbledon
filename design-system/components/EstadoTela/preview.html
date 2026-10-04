@@ -1,0 +1,24 @@
+<!-- @dsCard group="Avisos" height=500 width=1080 subtitle="Carregando, vazio e erro — sempre com texto em linguagem simples" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Estados de tela</title>
+<style>
+  .demo { display: flex; gap: 24px; padding: 24px; align-items: stretch; }
+  .tela { width: 330px; box-sizing: border-box; border-radius: 32px; background: var(--superficie); box-shadow: 0 0 0 2px var(--teal50); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h('div', { className: 'tela' }, h(S.EstadoTela, { tipo: 'carregando' })),
+      h('div', { className: 'tela' }, h(S.EstadoTela, { tipo: 'vazio' })),
+      h('div', { className: 'tela' }, h(S.EstadoTela, { tipo: 'erro' })))
+  );
+</script>
+</body>
+</html>

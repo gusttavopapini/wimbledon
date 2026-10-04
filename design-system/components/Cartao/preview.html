@@ -1,0 +1,41 @@
+<!-- @dsCard group="Conteúdo" height=392 width=880 subtitle="Conteúdo (32px), interno (16px) e alternativo" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Cartão</title>
+<style>
+  .demo { display: flex; gap: 32px; padding: 24px; align-items: flex-start; flex-wrap: wrap; }
+  .fundo { width: 390px; box-sizing: border-box; padding: 32px 24px; border-radius: 32px; background: linear-gradient(180deg, var(--primaria), var(--primariaEscura)); }
+  [data-theme="altocontraste"] .fundo { background: var(--superficie); box-shadow: inset 0 0 0 2px var(--texto); }
+  .col { width: 390px; display: flex; flex-direction: column; gap: 16px; }
+  .linha { display: flex; gap: 8px; align-items: center; font-size: var(--sp-fs-corpo); line-height: var(--sp-lh-corpo); }
+  .forte { font-weight: 700; }
+  .apoio { color: var(--textoSecundario); font-size: var(--sp-fs-apoio); line-height: var(--sp-lh-apoio); }
+  p { margin: 0; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  var quando = new Date(2026, 9, 13, 9, 30);
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h('div', { className: 'fundo' },
+        h(S.Cartao, { titulo: 'Próxima consulta', idTitulo: 'c1' },
+          h('p', { className: 'linha forte' }, S.formatarDataPorExtenso(quando, { hora: true, maiuscula: true })),
+          h('p', { className: 'linha' }, 'Cardiologia com Dr. Carlos Ribeiro'),
+          h('p', { className: 'apoio', style: { marginBottom: 16 } }, 'Unidade Ilha do Leite · 2º andar'),
+          h(S.Botao, { principal: true, icone: 'calendar-check' }, 'Confirmar presença'))),
+      h('div', { className: 'col' },
+        h(S.Cartao, { variante: 'interno' },
+          h('p', { className: 'linha forte' }, 'Leve no dia da consulta'),
+          h('p', { className: 'linha' }, 'Documento com foto, carteirinha do plano ou cartão do SUS e a lista dos remédios que você toma.')),
+        h(S.Cartao, { variante: 'alternativo' },
+          h('p', { className: 'linha forte' }, 'Você chegou cedo'),
+          h('p', { className: 'linha' }, 'A recepção abre às 7h. Aguarde na sala de espera.'))))
+  );
+</script>
+</body>
+</html>

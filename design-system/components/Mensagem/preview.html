@@ -1,0 +1,25 @@
+<!-- @dsCard group="Avisos" height=420 width=880 subtitle="Retorno em texto depois de uma ação: o que aconteceu e o que fazer" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Mensagem</title>
+<style>
+  .demo { display: grid; grid-template-columns: 342px 342px; gap: 16px 32px; padding: 24px; align-items: start; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  var quando = new Date(2026, 9, 13, 9, 30);
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h(S.Mensagem, { tipo: 'sucesso', titulo: 'Consulta marcada' }, 'Cardiologia, ' + S.formatarDataPorExtenso(quando, { hora: true }) + '. Vamos lembrar você um dia antes.'),
+      h(S.Mensagem, { tipo: 'erro', titulo: 'Não foi possível marcar', acao: h(S.Botao, { variante: 'secundario' }, 'Ver outros horários') }, 'Esse horário acabou de ser ocupado. Escolha outro horário.'),
+      h(S.Mensagem, { tipo: 'atencao', titulo: 'Chegue 15 minutos antes' }, 'Você precisa passar na recepção antes de entrar na fila.'),
+      h(S.Mensagem, { tipo: 'informacao', titulo: 'Sua chegada foi registrada' }, 'Agora é só aguardar. Seu nome vai aparecer no painel da recepção.'))
+  );
+</script>
+</body>
+</html>

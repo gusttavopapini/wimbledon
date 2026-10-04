@@ -1,0 +1,20 @@
+<!-- @dsCard group="Status" height=170 width=880 subtitle="9 estados do atendimento: cor + ícone + texto" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Selo de status</title>
+<style>
+  .demo { padding: 24px; display: flex; flex-wrap: wrap; gap: 16px 12px; max-width: 830px; align-items: center; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' }, Object.keys(S.STATUS).map(function (k) { return h(S.SeloStatus, { key: k, status: k }); }))
+  );
+</script>
+</body>
+</html>

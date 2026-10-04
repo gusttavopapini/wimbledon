@@ -1,0 +1,56 @@
+<!-- @dsCard height=320 -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Saúde na Palma da Mão</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--superficie); color: var(--primariaEscura); font-family: var(--font-heebo); overflow: hidden; }
+  .cover { position: relative; width: 960px; height: 320px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 0; width: 960px; height: 120px; }
+  .art svg { display: block; width: 960px; height: 120px; }
+  .escura { fill: var(--primariaEscura); }
+  .marca { fill: var(--primaria); }
+  .clara { fill: var(--primariaClara); }
+  .tinta { fill: var(--teal50); }
+  .pilula { fill: var(--superficie); }
+  .destaque { fill: var(--painelDestaque); }
+  .disco { fill: var(--primariaClara); }
+  [data-theme="altocontraste"] .clara { fill: var(--atencao); }
+  [data-theme="altocontraste"] .tinta { fill: var(--texto); }
+  [data-theme="altocontraste"] .disco { fill: var(--atencao); }
+  .words { position: absolute; left: 24px; right: 24px; bottom: 24px; }
+  .name { margin: 0; font-size: 64px; line-height: 0.95; font-weight: 700; letter-spacing: -0.01em; color: var(--primariaEscura); white-space: nowrap; }
+  .tag { margin: 8px 0 0 2px; max-width: 440px; font-size: 16px; line-height: 24px; color: var(--textoSecundario); }
+</style>
+</head>
+<body>
+<div class="cover">
+<div class="art" aria-hidden="true">
+<svg viewBox="0 0 960 120" width="960" height="120">
+<!--
+  blocks      primariaEscura 312×152 · primaria 360×152 (the brand, widest) · primariaClara 168×120 (shorter: only a large surface) and an 88px disc · painelDestaque as one pill (the TV / alto contraste accent) · teal50 only as a pill — ≈ 33% of 960×320; alto contraste rebinds clara to atencao and tinta to texto so nothing vanishes on black
+  arrangement top-band skeleton (name too wide for 440px): a strip of unequal bands bled off the top, corners raioCartao, gutters espacamento16
+  pattern     pills, from "controles em pílula" and raioChip: espacamento24-tall pills at an espacamento8 gap read as the chips and buttons cut into the primaria band; one primariaClara disc of circuloEspecialidade (88px) closes the strip
+  scales      gutters espacamento16; pill height espacamento24, rx 12 (half); gaps espacamento8; block corners raioCartao 32; disc r = 44 (half of circuloEspecialidade)
+-->
+<rect class="escura" x="-32" y="-32" width="312" height="152" rx="32"/>
+<rect class="marca" x="296" y="-32" width="360" height="152" rx="32"/>
+<rect class="clara" x="672" y="-32" width="168" height="120" rx="32"/>
+<rect class="destaque" x="24" y="72" width="104" height="24" rx="12"/>
+<rect class="pilula" x="320" y="72" width="120" height="24" rx="12"/>
+<rect class="pilula" x="448" y="72" width="72" height="24" rx="12"/>
+<rect class="pilula" x="528" y="72" width="104" height="24" rx="12"/>
+<rect class="pilula" x="320" y="40" width="72" height="24" rx="12"/>
+<rect class="tinta" x="696" y="40" width="96" height="24" rx="12"/>
+<circle class="disco" cx="900" cy="64" r="44"/>
+</svg>
+</div>
+<div class="words">
+<h1 class="name">Saúde na Palma da Mão</h1>
+<p class="tag">Pré-triagem, consulta e fila feitas para quem enxerga pouco e tem pressa.</p>
+</div>
+</div>
+</body>
+</html>

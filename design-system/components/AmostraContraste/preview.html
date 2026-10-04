@@ -1,0 +1,104 @@
+<!-- @dsCard group="Fundamentos" height=2100 width=960 page subtitle="Razão de contraste de cada par, calculada ao vivo no tema escolhido" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Amostra de contraste</title>
+<style>
+  .pagina { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .cab { margin: 0; font-size: 24px; line-height: 32px; font-weight: 700; color: var(--primariaEscura); }
+  .intro { margin: 0; max-width: 760px; font-size: 16px; line-height: 24px; color: var(--texto); }
+  table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: 16px; line-height: 24px; }
+  th { text-align: left; font-weight: 700; color: var(--textoSecundario); padding: 0 12px; }
+  td { padding: 8px 12px; vertical-align: middle; color: var(--texto); border-top: 2px solid var(--teal50); }
+  .amostra { width: 190px; }
+  .caixa { display: flex; align-items: center; justify-content: center; height: 56px; border-radius: 16px; font-size: 18px; font-weight: 700; box-shadow: inset 0 0 0 2px var(--teal50); }
+  .caixa.grande { font-size: 24px; }
+  .anel { width: 120px; height: 36px; border-radius: 18px; background: transparent; }
+  .par code { font-family: inherit; font-weight: 700; color: var(--texto); }
+  .uso { color: var(--textoSecundario); }
+  .razao { font-size: 20px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .veredito { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; white-space: nowrap; }
+  .v-aaa { color: var(--sucesso); } .v-aa { color: var(--primaria); } .v-grande { color: var(--atencao); } .v-falha { color: var(--erro); } .v-na { color: var(--textoSecundario); }
+  #sondas { position: absolute; left: -9999px; }
+</style>
+</head>
+<body>
+<div id="sondas"></div>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  var PARES = [
+    ['texto', 'superficie', 'texto', 'Texto principal'],
+    ['texto', 'teal50', 'texto', 'Texto sobre o fundo alternativo'],
+    ['primaria', 'superficie', 'texto', 'Links, destaque, botão secundário, chip'],
+    ['primaria', 'teal50', 'texto', 'Ícone no círculo de especialidade e nos estados de tela'],
+    ['primariaEscura', 'superficie', 'texto', 'Títulos e rótulos de campo'],
+    ['primariaEscura', 'teal50', 'texto', 'Item ativo da navegação, aviso da IA'],
+    ['textoSecundario', 'superficie', 'texto', 'Dica de campo, rótulo inativo da navegação'],
+    ['textoSecundario', 'teal50', 'texto', 'Texto do estado desabilitado'],
+    ['textoSobrePrimaria', 'primaria', 'texto', 'Rótulo do botão primário'],
+    ['textoSobrePrimaria', 'primariaEscura', 'texto', 'Botão primário pressionado, selo Em atendimento'],
+    ['textoSobrePrimaria', 'primariaClara', 'grande', 'Só texto de 24px ou mais sobre o canto claro do topo', ['claro', 'letragrande']],
+    ['textoSobreStatus', 'erro', 'texto', 'Banner de emergência, botão destrutivo'],
+    ['textoSobreStatus', 'atencao', 'texto', 'Selo Prioritário'],
+    ['textoSobreStatus', 'sucesso', 'texto', 'Reservado: preenchimento de sucesso'],
+    ['sucesso', 'superficie', 'texto', 'Mensagem e selo Concluído'],
+    ['erro', 'superficie', 'texto', 'Mensagem de erro, botão Ligar para o 192'],
+    ['atencao', 'superficie', 'texto', 'Selos de espera'],
+    ['contorno', 'superficie', 'ui', 'Borda de botão secundário, chip e cartão'],
+    ['anelFoco', 'superficie', 'ui', 'Anel de foco por teclado'],
+    ['bordaCampo', 'superficie', 'ui', 'Borda do campo em repouso'],
+    ['painelTexto', 'painelFundo', 'texto', 'Painel de TV: todo o texto'],
+    ['painelDestaque', 'painelFundo', 'texto', 'Painel de TV: chamada e consultório']
+  ];
+  function cor(token) {
+    var el = document.createElement('span');
+    el.style.color = 'var(--' + token + ')';
+    document.getElementById('sondas').appendChild(el);
+    var c = getComputedStyle(el).color;
+    el.remove();
+    return c;
+  }
+  function veredito(r, tipo) {
+    if (tipo === 'ui') return r >= 3 ? ['v-aaa', 'circle-check', 'Passa (mín. 3:1)'] : ['v-falha', 'circle-x', 'Não passa (mín. 3:1)'];
+    if (tipo === 'grande') return r >= 4.5 ? ['v-aaa', 'circle-check', 'AAA p/ texto grande'] : r >= 3 ? ['v-aa', 'circle-check', 'AA p/ texto grande'] : ['v-falha', 'circle-x', 'Não passa'];
+    if (r >= 7) return ['v-aaa', 'circle-check', 'AAA · meta de 7:1'];
+    if (r >= 4.5) return ['v-aa', 'circle-check', 'AA (abaixo da meta)'];
+    if (r >= 3) return ['v-grande', 'triangle-alert', 'Só texto de 24px+'];
+    return ['v-falha', 'circle-x', 'Não passa'];
+  }
+  function fmt(r) { return r.toFixed(2).replace('.', ',') + ':1'; }
+  function Pagina() {
+    var tema = React.useState(document.documentElement.getAttribute('data-theme') || 'claro');
+    React.useEffect(function () {
+      var mo = new MutationObserver(function () { tema[1](document.documentElement.getAttribute('data-theme') || 'claro'); });
+      mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      return function () { mo.disconnect(); };
+    }, []);
+    var linhas = PARES.map(function (p, i) {
+      var fg = cor(p[0]), bg = cor(p[1]);
+      var aplica = !p[4] || p[4].indexOf(tema[0]) >= 0;
+      var r = S.razaoContraste(fg, bg);
+      var v = aplica ? veredito(r, p[2]) : ['v-na', 'info', 'Não usado neste tema'];
+      var amostra = p[2] === 'ui'
+        ? h('div', { className: 'caixa', style: { background: bg } }, h('div', { className: 'anel', style: { boxShadow: 'inset 0 0 0 ' + (p[0] === 'anelFoco' ? '3px ' : '2px ') + fg } }))
+        : h('div', { className: 'caixa' + (p[2] === 'grande' ? ' grande' : ''), style: { background: bg, color: fg } }, p[2] === 'grande' ? 'Aa 24px' : 'Aa Consulta');
+      return h('tr', { key: i },
+        h('td', { className: 'amostra' }, amostra),
+        h('td', { className: 'par' }, h('code', null, p[0]), ' sobre ', h('code', null, p[1]), h('br'), h('span', { className: 'uso' }, p[3])),
+        h('td', { className: 'razao' }, aplica ? fmt(r) : '—'),
+        h('td', null, h('span', { className: 'veredito ' + v[0] }, h(S.Icone, { nome: v[1] }), v[2])));
+    });
+    var nomes = { claro: 'Claro', altocontraste: 'Alto contraste', letragrande: 'Letra grande (cores do claro)' };
+    return h('div', { className: 'pagina' },
+      h('h2', { className: 'cab' }, 'Contraste por par de cor — tema ' + (nomes[tema[0]] || tema[0])),
+      h('p', { className: 'intro' }, 'Cada linha mede a cor da frente sobre o fundo em que ela é usada, com a fórmula do WCAG 2. A meta do produto é 7:1; o mínimo AA é 4,5:1 para texto, 3:1 para texto de 24px ou mais e 3:1 para bordas e anéis de foco. Cores com transparência são compostas sobre o fundo antes da conta. Troque o tema no seletor da página para conferir o alto contraste.'),
+      h('table', null,
+        h('thead', null, h('tr', null, h('th', null, 'Amostra'), h('th', null, 'Par e uso'), h('th', null, 'Razão'), h('th', null, 'Resultado'))),
+        h('tbody', null, linhas)));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Pagina));
+</script>
+</body>
+</html>

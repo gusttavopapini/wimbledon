@@ -1,0 +1,31 @@
+<!-- @dsCard group="Fundamentos" height=432 width=960 subtitle="13 ícones vetoriais de especialidade, em 88px e em 24px" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ícones de especialidade</title>
+<style>
+  .demo { padding: 24px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 24px 8px; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--primaria); text-align: center; }
+  .circulo { width: 88px; height: 88px; border-radius: 50%; background: var(--teal50); display: flex; align-items: center; justify-content: center; }
+  .pequeno { display: flex; gap: 6px; align-items: center; color: var(--primariaEscura); font-size: 16px; line-height: 20px; font-weight: 700; }
+  .fonte { font-size: 16px; line-height: 20px; color: var(--textoSecundario); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  var proprios = ['gastroenterologia', 'ginecologia', 'dermatologia', 'obstetricia', 'pneumologia'];
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' }, S.ESPECIALIDADES.map(function (e) {
+      return h('div', { key: e.id, className: 'item' },
+        h('span', { className: 'circulo' }, h(S.IconeEspecialidade, { especialidade: e.id, tamanho: 48 })),
+        h('span', { className: 'pequeno' }, h(S.IconeEspecialidade, { especialidade: e.id, tamanho: 24 })),
+        h('span', { className: 'pequeno' }, e.nome),
+        h('span', { className: 'fonte' }, proprios.indexOf(e.id) >= 0 ? 'desenho próprio' : 'Lucide'));
+    }))
+  );
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!-- @dsCard group="Fundamentos" height=492 width=960 subtitle="Ícones de interface (Lucide, traço 2) — sempre ao lado de um texto" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ícones de interface</title>
+<style>
+  .demo { padding: 24px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 16px 8px; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--primaria); }
+  .nome { font-size: 16px; line-height: 20px; color: var(--textoSecundario); text-align: center; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' }, S.NOMES_ICONES.map(function (n) {
+      return h('div', { key: n, className: 'item' }, h(S.Icone, { nome: n, tamanho: 32 }), h('span', { className: 'nome' }, n));
+    }))
+  );
+</script>
+</body>
+</html>

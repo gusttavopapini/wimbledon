@@ -1,0 +1,37 @@
+<!-- @dsCard group="Avisos" height=556 width=880 subtitle="Para ações que não têm volta: pergunta clara, consequência e dois botões escritos" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Diálogo de confirmação</title>
+<style>
+  .demo { display: flex; gap: 32px; padding: 24px; align-items: flex-start; }
+  .tela { width: 390px; height: 500px; border-radius: 32px; overflow: hidden; box-shadow: 0 0 0 2px var(--teal50); }
+  .nota { margin: 0; max-width: 380px; font-size: 16px; line-height: 24px; color: var(--texto); }
+  .nota li { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  var quando = new Date(2026, 9, 13, 9, 30);
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h('div', { className: 'tela' },
+        h(S.DialogoConfirmacao, {
+          aberto: true, emLinha: true,
+          titulo: 'Cancelar a consulta?',
+          mensagem: h('p', null, 'Cardiologia, ' + S.formatarDataPorExtenso(quando, { hora: true }) + '. Depois de cancelar, o horário fica livre para outra pessoa.'),
+          rotuloVoltar: 'Não, manter a consulta',
+          rotuloConfirmar: 'Sim, cancelar a consulta'
+        })),
+      h('ul', { className: 'nota' },
+        h('li', null, 'O título é a pergunta; o texto diz o que vai acontecer.'),
+        h('li', null, 'Os botões dizem a ação inteira — nunca “OK” e “Cancelar”.'),
+        h('li', null, 'A ação confirmada fica embaixo, no lugar do botão principal de toda tela.'),
+        h('li', null, 'O foco começa em “Não, manter”. Esc ou Voltar do Android fecham sem fazer nada.')))
+  );
+</script>
+</body>
+</html>

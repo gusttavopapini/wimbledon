@@ -1,0 +1,29 @@
+<!-- @dsCard group="Avisos" height=616 width=880 subtitle="O componente mais crítico: vermelho, no topo da tela, sem botão de fechar" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Banner de emergência</title>
+<style>
+  .demo { display: flex; gap: 32px; padding: 24px; align-items: flex-start; }
+  .tela { width: 390px; box-sizing: border-box; padding: 16px; border-radius: 32px; background: var(--superficie); box-shadow: 0 0 0 2px var(--teal50); display: flex; flex-direction: column; gap: 16px; }
+  .nota { margin: 0; max-width: 380px; font-size: 16px; line-height: 24px; color: var(--texto); }
+  .nota li { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h('div', { className: 'tela' }, h(S.BannerEmergencia, null)),
+      h('ul', { className: 'nota' },
+        h('li', null, 'Aparece no lugar de todo o resto: a tela de pré-triagem para, e o banner fica no topo.'),
+        h('li', null, 'Não tem botão de fechar, não some com o tempo, não pisca.'),
+        h('li', null, 'O botão liga direto para o 192 e tem 64px de altura.'),
+        h('li', null, 'É anunciado na hora pelo leitor de tela (role alert).')))
+  );
+</script>
+</body>
+</html>

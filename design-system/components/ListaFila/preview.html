@@ -1,0 +1,31 @@
+<!-- @dsCard group="Status" height=730 width=880 subtitle="Posição em número grande; a sua linha tem borda, fundo, negrito e a palavra Você" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Lista de fila</title>
+<style>
+  .demo { padding: 24px; }
+  .tela { width: 390px; box-sizing: border-box; padding: 24px; border-radius: 32px; background: var(--superficie); box-shadow: 0 0 0 2px var(--teal50); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' }, h('div', { className: 'tela' },
+      h(S.ListaFila, {
+        titulo: 'Fila da Cardiologia',
+        previsao: 'Previsão: cerca de 20 minutos.',
+        itens: [
+          { posicao: 1, nome: 'José C.', status: 'emAtendimento' },
+          { posicao: 2, nome: 'Maria G.', status: 'aguardandoMedico' },
+          { posicao: 3, nome: 'Ana S.', status: 'aguardandoMedico', voce: true },
+          { posicao: 4, nome: 'Severino L.', status: 'aguardandoRecepcao' }
+        ]
+      })))
+  );
+</script>
+</body>
+</html>

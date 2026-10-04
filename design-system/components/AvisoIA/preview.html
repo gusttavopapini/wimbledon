@@ -1,0 +1,24 @@
+<!-- @dsCard group="Avisos" height=320 width=880 subtitle="Persistente em toda tela com orientação da IA; não fecha" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Aviso da IA</title>
+<style>
+  .demo { display: flex; gap: 32px; padding: 24px; align-items: flex-start; }
+  .col { width: 342px; display: flex; flex-direction: column; gap: 12px; }
+  .titulo { margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: var(--textoSecundario); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h('div', { className: 'col' }, h('p', { className: 'titulo' }, 'Completo: início e fim da pré-triagem'), h(S.AvisoIA, null)),
+      h('div', { className: 'col' }, h('p', { className: 'titulo' }, 'Compacto: fixo acima da conversa'), h(S.AvisoIA, { variante: 'compacto' })))
+  );
+</script>
+</body>
+</html>

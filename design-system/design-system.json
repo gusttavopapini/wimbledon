@@ -1,0 +1,135 @@
+{
+  "v": 3,
+  "assetGroups": {
+    "Especialidades": {
+      "files": {
+        "cardiologia.svg": {
+          "blob": "421fdc5176b663ca1425a182d8faf57a",
+          "name": "cardiologia.svg",
+          "size": 511,
+          "type": "image/svg+xml"
+        },
+        "clinicoGeral.svg": {
+          "blob": "24cdead7a352cbf242dd1d1633ed4be1",
+          "name": "clinicoGeral.svg",
+          "size": 472,
+          "type": "image/svg+xml"
+        },
+        "dermatologia.svg": {
+          "blob": "537c6ddad3e18d6208b707bcf8d61b1d",
+          "name": "dermatologia.svg",
+          "size": 510,
+          "type": "image/svg+xml"
+        },
+        "gastroenterologia.svg": {
+          "blob": "73273261764a70c884dc7ca9da7c8532",
+          "name": "gastroenterologia.svg",
+          "size": 419,
+          "type": "image/svg+xml"
+        },
+        "ginecologia.svg": {
+          "blob": "1a076a760083326e5127994a81f76a1a",
+          "name": "ginecologia.svg",
+          "size": 598,
+          "type": "image/svg+xml"
+        },
+        "imunologia.svg": {
+          "blob": "ba98aae9df9b487ee894a4ff384c28a9",
+          "name": "imunologia.svg",
+          "size": 803,
+          "type": "image/svg+xml"
+        },
+        "neurologia.svg": {
+          "blob": "a96aaf1972e0cdef4ef8e67bb949d317",
+          "name": "neurologia.svg",
+          "size": 652,
+          "type": "image/svg+xml"
+        },
+        "obstetricia.svg": {
+          "blob": "2b8b998731ebad787030967691776841",
+          "name": "obstetricia.svg",
+          "size": 458,
+          "type": "image/svg+xml"
+        },
+        "oftalmologia.svg": {
+          "blob": "8a5444234ef353a79a8834531273c325",
+          "name": "oftalmologia.svg",
+          "size": 435,
+          "type": "image/svg+xml"
+        },
+        "ortopedia.svg": {
+          "blob": "028fac12a091d422f01c81e6bdbfb44b",
+          "name": "ortopedia.svg",
+          "size": 493,
+          "type": "image/svg+xml"
+        },
+        "otorrinolaringologia.svg": {
+          "blob": "fba89a87709662141b160e66b1b527b6",
+          "name": "otorrinolaringologia.svg",
+          "size": 420,
+          "type": "image/svg+xml"
+        },
+        "pediatria.svg": {
+          "blob": "2dfdc5788a93c2fa18ac9f2e85065c43",
+          "name": "pediatria.svg",
+          "size": 539,
+          "type": "image/svg+xml"
+        },
+        "pneumologia.svg": {
+          "blob": "0d249967848cb97481daa62e7305b7b6",
+          "name": "pneumologia.svg",
+          "size": 541,
+          "type": "image/svg+xml"
+        }
+      },
+      "name": "Especialidades",
+      "order": [
+        "cardiologia.svg",
+        "clinicoGeral.svg",
+        "gastroenterologia.svg",
+        "neurologia.svg",
+        "ortopedia.svg",
+        "ginecologia.svg",
+        "dermatologia.svg",
+        "imunologia.svg",
+        "obstetricia.svg",
+        "pediatria.svg",
+        "oftalmologia.svg",
+        "otorrinolaringologia.svg",
+        "pneumologia.svg"
+      ],
+      "tile": "s"
+    }
+  },
+  "blobs": {},
+  "createdOnFiles": {
+    "at": "2026-10-04T22:52:27Z",
+    "v": 1
+  },
+  "docs": {
+    "sections": []
+  },
+  "groups": [
+    "Especialidades"
+  ],
+  "lastChange": {
+    "at": "2026-10-04T22:52:27Z",
+    "by": "Gustavo Papini",
+    "note": "Primeira versão: tokens, 21 componentes, painel de TV, contraste e modos claro, alto contraste e letra grande.",
+    "via": "Claude (Cowork)"
+  },
+  "layout": "files",
+  "libraries": [
+    {
+      "name": "react",
+      "version": "18"
+    },
+    {
+      "name": "react-dom",
+      "version": "18"
+    }
+  ],
+  "namespace": "SaudeNaPalma",
+  "sections": {},
+  "title": "Saúde na Palma da Mão"
+}

@@ -1,0 +1,56 @@
+<!-- @dsCard group="Ações" height=850 width=1160 subtitle="4 variantes × 5 estados, e o botão principal de 64px" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Botão</title>
+<style>
+  .demo { padding: 24px; display: flex; flex-direction: column; gap: 32px; }
+  .matriz { display: grid; grid-template-columns: 150px repeat(4, max-content); gap: 16px 32px; align-items: center; }
+  .cab { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--primariaEscura); }
+  .estado { font-size: 16px; line-height: 24px; color: var(--textoSecundario); }
+  .celula { display: flex; padding: 6px; }
+  .tela { width: 390px; box-sizing: border-box; padding: 24px; border-radius: 32px; background: var(--superficie); box-shadow: 0 0 0 2px var(--teal50); display: flex; flex-direction: column; gap: 12px; }
+  .titulo { margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: var(--primariaEscura); }
+  .linha { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+  .nota { margin: 0; max-width: 520px; font-size: 16px; line-height: 24px; color: var(--texto); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  var variantes = [
+    { v: 'primario', nome: 'Primário', rotulo: 'Marcar consulta' },
+    { v: 'secundario', nome: 'Secundário', rotulo: 'Ver horários' },
+    { v: 'terciario', nome: 'Terciário', rotulo: 'Esqueci a senha' },
+    { v: 'destrutivo', nome: 'Destrutivo', rotulo: 'Cancelar consulta' }
+  ];
+  var estados = [
+    { id: 'padrao', nome: 'Padrão', p: {} },
+    { id: 'pressionado', nome: 'Pressionado', p: { demonstrarEstado: 'pressionado' } },
+    { id: 'desabilitado', nome: 'Desabilitado', p: { desabilitado: true } },
+    { id: 'carregando', nome: 'Carregando', p: { carregando: true, rotuloCarregando: 'Enviando…' } },
+    { id: 'foco', nome: 'Foco por teclado', p: { demonstrarEstado: 'foco' } }
+  ];
+  var celulas = [h('span', { key: 'c0' })].concat(variantes.map(function (x) { return h('span', { key: 'c' + x.v, className: 'cab' }, x.nome); }));
+  estados.forEach(function (e) {
+    celulas.push(h('span', { key: e.id, className: 'estado' }, e.nome));
+    variantes.forEach(function (x) {
+      celulas.push(h('div', { key: e.id + x.v, className: 'celula' }, h(S.Botao, Object.assign({ variante: x.v }, e.p), x.rotulo)));
+    });
+  });
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h('div', { className: 'matriz' }, celulas),
+      h('div', { className: 'linha' },
+        h('div', { className: 'tela' },
+          h('p', { className: 'titulo' }, 'Principal: 64px, largura total, sempre no mesmo lugar'),
+          h(S.Botao, { principal: true, icone: 'calendar-check' }, 'Confirmar chegada'),
+          h(S.Botao, { principal: true, carregando: true, rotuloCarregando: 'Confirmando chegada…' }, 'Confirmar chegada'),
+          h(S.Botao, { variante: 'secundario', larguraTotal: true }, 'Voltar para o início')),
+        h('p', { className: 'nota' }, 'Uma ação principal por tela. O rótulo é um verbo que diz o que acontece: “Marcar consulta”, “Confirmar chegada”. No carregamento o texto muda para o gerúndio e o botão não aceita um segundo toque. Desabilitado tem borda tracejada e texto legível (5,4:1): prefira deixar o botão ativo e explicar o que falta numa mensagem de erro.')))
+  );
+</script>
+</body>
+</html>

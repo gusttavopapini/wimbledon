@@ -1,0 +1,71 @@
+<!-- @dsCard group="Fundamentos" height=1240 width=1320 page subtitle="Entrar, Início e resultado da pré-triagem montados só com o sistema" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Telas de amostra</title>
+<style>
+  .pagina { display: flex; gap: 40px; padding: 32px; align-items: flex-start; background: var(--teal50); min-height: 100%; box-sizing: border-box; }
+  .tela { width: 390px; min-height: 844px; border-radius: 40px; overflow: hidden; background: var(--superficie); box-shadow: 0 0 0 2px var(--contorno); display: flex; flex-direction: column; }
+  .tela .sp-folha { flex: 1; }
+  .sec { margin: 0; font-size: var(--sp-fs-tituloSecao); line-height: var(--sp-lh-tituloSecao); font-weight: 700; color: var(--primariaEscura); }
+  .pilha { display: flex; flex-direction: column; gap: 16px; }
+  .p { margin: 0; font-size: var(--sp-fs-corpo); line-height: var(--sp-lh-corpo); }
+  .forte { font-weight: 700; }
+  .apoio { margin: 0; font-size: var(--sp-fs-apoio); line-height: var(--sp-lh-apoio); color: var(--textoSecundario); }
+  .linha { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .rodape { margin-top: auto; padding: 0 8px 16px; }
+  .centro { align-self: center; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  var quando = new Date(2026, 9, 13, 9, 30);
+  function Entrar() {
+    return h('div', { className: 'tela' },
+      h(S.Topo, { titulo: 'Olá!', subtitulo: 'Que bom ter você aqui.' }),
+      h(S.Folha, null,
+        h('h2', { className: 'sec' }, 'Entrar na sua conta'),
+        h(S.Campo, { rotulo: 'E-mail', tipoHtml: 'email', autoComplete: 'email', valorInicial: 'ana.souza@email.com' }),
+        h(S.Campo, { rotulo: 'Senha', tipo: 'senha', autoComplete: 'current-password', valorInicial: 'palmeira48' }),
+        h(S.Botao, { variante: 'terciario', className: 'centro' }, 'Esqueci minha senha'),
+        h(S.Botao, { principal: true, icone: 'log-in' }, 'Entrar'),
+        h(S.Botao, { variante: 'secundario', larguraTotal: true }, 'Criar minha conta')));
+  }
+  function Inicio() {
+    return h('div', { className: 'tela' },
+      h(S.Topo, { antes: h(S.Avatar, { nome: 'Ana Souza', tamanho: 56 }), titulo: 'Bom dia, Ana!', subtitulo: 'Como está sua saúde hoje?' },
+        h(S.Botao, { variante: 'secundario', larguraTotal: true, icone: 'message-circle' }, 'Contar meus sintomas')),
+      h(S.Folha, null,
+        h(S.Cartao, { variante: 'interno' },
+          h('div', { className: 'pilha' },
+            h('div', { className: 'linha' }, h('h2', { className: 'sec' }, 'Próxima consulta'), h(S.SeloStatus, { status: 'agendado' })),
+            h('p', { className: 'p forte' }, S.formatarDataPorExtenso(quando, { hora: true, maiuscula: true })),
+            h('p', { className: 'apoio' }, 'Cardiologia · Unidade Ilha do Leite'))),
+        h('h2', { className: 'sec' }, 'Especialidades'),
+        h(S.GradeEspecialidades, null, ['cardiologia', 'clinicoGeral', 'ortopedia', 'neurologia'].map(function (id) { return h(S.CartaoEspecialidade, { key: id, especialidade: id }); })),
+        h(S.Botao, { variante: 'terciario', className: 'centro', iconeFim: 'chevron-right' }, 'Ver todas as especialidades')),
+      h('div', { className: 'rodape' }, h(S.NavegacaoInferior, { ativo: 'inicio' })));
+  }
+  function Resultado() {
+    return h('div', { className: 'tela' },
+      h(S.Folha, { className: 'sem-topo' },
+        h(S.CabecalhoTela, { titulo: 'Sua orientação', aoVoltar: function () {} }),
+        h(S.AvisoIA, { variante: 'compacto' }),
+        h('div', { className: 'linha' }, h('p', { className: 'p forte' }, 'Nível de urgência'), h(S.SeloUrgencia, { nivel: 'prioritario' })),
+        h('p', { className: 'p' }, 'Pelo que você contou, o melhor é ser atendida por um cardiologista nos próximos dias.'),
+        h(S.Cartao, { variante: 'alternativo' },
+          h('p', { className: 'p forte' }, 'Horário mais próximo'),
+          h('p', { className: 'p' }, S.formatarDataPorExtenso(quando, { hora: true, maiuscula: true })),
+          h('p', { className: 'apoio' }, 'Dr. Carlos Ribeiro · Unidade Ilha do Leite')),
+        h(S.Mensagem, { tipo: 'atencao', titulo: 'Se piorar, não espere' }, 'Dor forte no peito ou falta de ar: ligue 192.'),
+        h('div', { style: { marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 12 } },
+          h(S.Botao, { principal: true, icone: 'calendar-check' }, 'Marcar esta consulta'),
+          h(S.Botao, { variante: 'secundario', larguraTotal: true }, 'Ver outros horários'))));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', { className: 'pagina' }, h(Entrar), h(Inicio), h(Resultado)));
+</script>
+</body>
+</html>

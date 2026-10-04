@@ -1,0 +1,20 @@
+<!-- @dsCard group="Status" height=96 subtitle="3 níveis de urgência da pré-triagem" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Selo de urgência</title>
+<style>
+  .demo { padding: 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' }, ['rotina', 'prioritario', 'emergencia'].map(function (k) { return h(S.SeloUrgencia, { key: k, nivel: k }); }))
+  );
+</script>
+</body>
+</html>

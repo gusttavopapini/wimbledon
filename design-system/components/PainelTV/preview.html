@@ -1,0 +1,37 @@
+<!-- @dsCard group="Painel de TV" height=545 subtitle="1920×1080, lido a 5 m: chamada atual, três anteriores, relógio e unidade" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Painel de TV</title>
+<style>
+  html, body { margin: 0; background: var(--painelFundo); }
+  .moldura { position: relative; overflow: hidden; }
+  .escala { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+</style>
+</head>
+<body>
+<div class="moldura" id="moldura"><div class="escala" id="escala"><div id="root"></div></div></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  function ajustar() {
+    var k = document.documentElement.clientWidth / 1920;
+    document.getElementById('escala').style.transform = 'scale(' + k + ')';
+    document.getElementById('moldura').style.height = Math.round(1080 * k) + 'px';
+  }
+  window.addEventListener('resize', ajustar); ajustar();
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h(S.PainelTV, {
+      unidade: 'Unidade Ilha do Leite',
+      horario: new Date(2026, 9, 13, 9, 42),
+      agora: { nome: 'Maria das Graças S.', consultorio: '07', especialidade: 'Cardiologia', senha: 'C-042', andar: '2º andar' },
+      anteriores: [
+        { nome: 'José Carlos M.', consultorio: '03', horario: new Date(2026, 9, 13, 9, 38) },
+        { nome: 'Severino L.', consultorio: '12', horario: new Date(2026, 9, 13, 9, 35) },
+        { nome: 'Antônia F.', consultorio: '07', horario: new Date(2026, 9, 13, 9, 31) }
+      ]
+    })
+  );
+</script>
+</body>
+</html>

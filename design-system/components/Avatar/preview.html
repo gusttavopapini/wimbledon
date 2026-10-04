@@ -1,0 +1,24 @@
+<!-- @dsCard group="Conteúdo" height=150 subtitle="Foto ou iniciais, sempre redondo" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Avatar</title>
+<style>
+  .demo { padding: 24px; display: flex; gap: 32px; align-items: flex-end; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 16px; line-height: 24px; color: var(--textoSecundario); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+  var S = window.SaudeNaPalma, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    h('div', { className: 'demo' },
+      h('div', { className: 'item' }, h(S.Avatar, { nome: 'Ana Maria Souza', tamanho: 48 }), '48px'),
+      h('div', { className: 'item' }, h(S.Avatar, { nome: 'Dr. Carlos Ribeiro', tamanho: 64 }), '64px'),
+      h('div', { className: 'item' }, h(S.Avatar, { nome: 'Dra. Juliana Goes', tamanho: 96 }), '96px'))
+  );
+</script>
+</body>
+</html>
