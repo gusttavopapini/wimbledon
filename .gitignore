@@ -1,0 +1,47 @@
+# --- Credenciais: NUNCA versionar -------------------------------------------
+.env
+.env.*
+!.env.example
+*firebase-adminsdk*.json
+service-account*.json
+serviceAccount*.json
+*-service-account*.json
+*credenciais*.json
+*credentials*.json
+*.pem
+*.p12
+*.key
+
+# --- Dependências e builds ---------------------------------------------------
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# --- Expo / React Native -----------------------------------------------------
+.expo/
+.expo-shared/
+web-build/
+apps/mobile/dist/
+apps/mobile/android/
+apps/mobile/ios/
+*.jks
+*.keystore
+*.mobileprovision
+
+# --- Firebase ----------------------------------------------------------------
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+database-debug.log
+pubsub-debug.log
+emulator-data/
+
+# --- Sistema e editores ------------------------------------------------------
+.DS_Store
+*.log
+npm-debug.log*
+.idea/
+.vscode/*
+!.vscode/extensions.json
