@@ -1,0 +1,37 @@
+{
+  "name": "saude-na-palma-da-mao",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Pré-triagem com IA, agendamento e fila presencial para o polo médico do Recife — Projeto Integrador Senac PE (Client-Server).",
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:corrigir": "eslint . --fix",
+    "formatar": "prettier --write .",
+    "formatar:checar": "prettier --check .",
+    "tipos": "npm run tipos --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:emulador": "firebase emulators:exec --project demo-saude-palma --only auth,firestore \"npm test\"",
+    "emuladores": "firebase emulators:start --project demo-saude-palma --only auth,firestore",
+    "dev:api": "npm run dev -w @saude/api",
+    "dev:mobile": "npm run start -w @saude/mobile",
+    "test:ci": "firebase emulators:exec --project demo-saude-palma --only auth,firestore \"npm run test:cobertura --workspaces --if-present\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "firebase-tools": "^15.32.1",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.9",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.0"
+  }
+}

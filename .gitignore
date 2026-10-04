@@ -45,3 +45,8 @@ npm-debug.log*
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# --- Gerados pelo Expo -------------------------------------------------------
+apps/mobile/expo-env.d.ts
+.metro-health-check*
+.kotlin/
