@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  qualidade:
+    name: Lint, tipos e testes
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # O Firebase Emulator Suite (Firestore) roda na JVM.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Formatação (Prettier)
+        run: npm run formatar:checar
+
+      - name: Lint (ESLint)
+        run: npm run lint
+
+      - name: Checagem de tipos
+        run: npm run tipos
+
+      - name: Regras do Firestore continuam fechadas
+        run: |
+          grep -q "allow read, write: if false;" infra/firestore.rules
+          if grep -nE "allow [a-z, ]+: if (true|request\.auth)" infra/firestore.rules; then
+            echo "::error file=infra/firestore.rules::As regras devem negar todo acesso de cliente."
+            exit 1
+          fi
+
+      # Unidade + integração (Supertest sobre o Firebase Emulator), com o
+      # mínimo de 60% de cobertura nos services.
+      - name: Testes e cobertura
+        run: npm run test:ci
+
+      - name: Build da API
+        run: npm run build -w @saude/api
+
+      - name: Build do PWA
+        run: npm run exportar:web -w @saude/mobile
