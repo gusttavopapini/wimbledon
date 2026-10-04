@@ -1,0 +1,87 @@
+openapi: 3.1.0
+info:
+  title: Saúde na Palma da Mão — API
+  version: 0.1.0
+  summary: Pré-triagem, agendamento e fila presencial do polo médico do Recife.
+  description: |
+    Único ponto de acesso aos dados. Nenhum cliente (app, PWA, painel de TV,
+    automações N8N) acessa o Firestore diretamente.
+
+    - Base: `/api/v1`. Recursos no plural, em português, camelCase.
+    - Datas em ISO 8601 com offset `-03:00` (America/Recife); gravadas em UTC.
+    - Autenticação: `Authorization: Bearer <ID token do Firebase Auth>`.
+    - Todo erro segue o esquema `Erro`.
+servers:
+  - url: http://localhost:3333
+    description: Desenvolvimento local
+tags:
+  - name: Saúde
+    description: Monitoramento da API
+paths:
+  /health:
+    get:
+      tags: [Saúde]
+      summary: Verifica se a API está no ar
+      operationId: verificarSaude
+      security: []
+      responses:
+        '200':
+          description: API no ar
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Saude'
+              example:
+                status: ok
+                versao: 0.1.0
+                em: '2026-10-04T23:40:00.000Z'
+components:
+  securitySchemes:
+    tokenFirebase:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: ID token emitido pelo Firebase Auth após o login no app.
+  schemas:
+    Saude:
+      type: object
+      required: [status, versao, em]
+      properties:
+        status:
+          type: string
+          const: ok
+        versao:
+          type: string
+          description: Versão da API (package.json)
+        em:
+          type: string
+          format: date-time
+          description: Momento da resposta, em UTC
+    Erro:
+      type: object
+      required: [erro]
+      properties:
+        erro:
+          type: object
+          required: [codigo, mensagem, requestId]
+          properties:
+            codigo:
+              type: string
+              enum:
+                - DADOS_INVALIDOS
+                - NAO_AUTENTICADO
+                - ACESSO_NEGADO
+                - FORA_DA_UNIDADE
+                - NAO_ENCONTRADO
+                - CPF_JA_CADASTRADO
+                - LIMITE_EXCEDIDO
+                - ERRO_INTERNO
+            mensagem:
+              type: string
+              description: Texto para a pessoa, dizendo o que fazer.
+            detalhes:
+              description: Campos com problema, quando houver.
+            requestId:
+              type: string
+security:
+  - tokenFirebase: []
