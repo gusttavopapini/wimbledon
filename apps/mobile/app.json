@@ -27,7 +27,12 @@
       "shortName": "Saúde na Palma",
       "lang": "pt-BR"
     },
-    "plugins": ["expo-router", "expo-status-bar"],
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-font",
+      "expo-splash-screen"
+    ],
     "scheme": "saudepalma",
     "experiments": {
       "typedRoutes": true
