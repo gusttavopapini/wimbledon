@@ -85,6 +85,16 @@ Para desenvolver só com os emuladores, descomente `FIRESTORE_EMULATOR_HOST` e
 **Credenciais:** o JSON da conta de serviço nunca entra no repositório
 (o `.gitignore` bloqueia). Copie só `client_email` e `private_key` para o `.env`.
 
+## O que ainda não está no app (e por quê)
+
+| Item                                     | Quando entra                                   | Por quê                                                                                            |
+| ---------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Botão "Contar meus sintomas" na Home     | Sprint 5 (pré-triagem com IA, segunda entrega) | Botão sem função é pior que botão ausente.                                                         |
+| Cartão "Próxima consulta" na Home        | Junto com o agendamento                        | Depende dos `chamados`, que ainda não existem.                                                     |
+| Escolha de horário ao tocar num médico   | RF12 (agenda)                                  | Hoje o toque mostra "A escolha de horário entra na próxima entrega." É a única ponta solta aceita. |
+| Fila, plantão e painel de TV             | Segunda entrega                                | Fora do escopo da E1.                                                                              |
+| Avaliação por estrelas e seção de exames | Não entram                                     | Fora do escopo do produto (design system).                                                         |
+
 ## Limitações conhecidas
 
 ### Cadastro: janela entre o Firestore e o Firebase Auth (risco aceito)
