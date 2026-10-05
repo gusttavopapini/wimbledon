@@ -63,3 +63,17 @@ export async function buscarMe(): Promise<{ usuario: Usuario; perfil: Perfil }> 
   const { data } = await api.get<{ usuario: Usuario; perfil: Perfil }>('/auth/me');
   return data;
 }
+
+/** PUT /usuarios/me substitui o conjunto editável: mande tudo o que deve continuar. */
+export interface DadosAtualizarMe {
+  nome: string;
+  telefone?: string;
+  dataNascimento?: string;
+  sexo?: string;
+  preferencias: Preferencias;
+}
+
+export async function atualizarMe(dados: DadosAtualizarMe): Promise<Usuario> {
+  const { data } = await api.put<Usuario>('/usuarios/me', dados);
+  return data;
+}

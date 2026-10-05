@@ -32,7 +32,7 @@ export interface ValorSessao {
 
 export const ContextoSessao = createContext<ValorSessao | null>(null);
 
-const CHAVE_ME = ['auth', 'me'] as const;
+export const CHAVE_ME = ['auth', 'me'] as const;
 
 /**
  * Sessão do app. O Firebase Auth diz SE há alguém logado; o perfil e os dados
