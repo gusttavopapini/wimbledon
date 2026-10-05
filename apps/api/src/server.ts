@@ -12,7 +12,7 @@ try {
 }
 
 const logger = criarLogger(ambiente.LOG_LEVEL);
-const app = criarApp(ambiente, logger);
+const app = criarApp(ambiente, { logger });
 
 app.listen(ambiente.PORT, () => {
   logger.info({ porta: ambiente.PORT, ambiente: ambiente.NODE_ENV }, 'API no ar');

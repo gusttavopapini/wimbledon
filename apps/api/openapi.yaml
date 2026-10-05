@@ -17,6 +17,10 @@ servers:
 tags:
   - name: Saúde
     description: Monitoramento da API
+  - name: Acesso
+    description: Cadastro de pacientes e sessão
+  - name: Usuários
+    description: Dados e preferências da própria conta
 paths:
   /health:
     get:
@@ -34,7 +38,177 @@ paths:
               example:
                 status: ok
                 versao: 0.1.0
-                em: '2026-10-04T23:40:00.000Z'
+                em: '2026-10-04T20:40:00.000-03:00'
+  /api/v1/auth/cadastro:
+    post:
+      tags: [Acesso]
+      summary: Cria a conta de um paciente (público)
+      description: |
+        Valida os dados, garante CPF e e-mail únicos (transação com documentos-trava,
+        segura contra cadastros simultâneos), cria a conta no Firebase Auth, grava
+        `usuarios/{uid}` e define a claim `perfil: "paciente"`. Perfil e status não
+        podem ser enviados pelo cliente. Limite: 10 cadastros por IP a cada 15 minutos.
+      operationId: cadastrarPaciente
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cadastro'
+            example:
+              nome: Maria Teste da Silva
+              cpf: 529.982.247-25
+              dataNascimento: '1948-03-12'
+              telefone: (81) 99999-1234
+              email: maria@exemplo.test
+              senha: minha-senha-123
+              sexo: feminino
+              consentimento:
+                versaoTermo: '2026-10-01'
+                aceito: true
+                canal: app
+                exibicaoPainel: false
+      responses:
+        '201':
+          description: Conta criada
+          headers:
+            Location:
+              description: URI do usuário criado
+              schema:
+                type: string
+                example: /api/v1/usuarios/Xk3c9aQ2LmT0pR8sV1wZ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContaCriada'
+              example:
+                id: Xk3c9aQ2LmT0pR8sV1wZ
+                nome: Maria Teste da Silva
+                perfil: paciente
+                status: ativo
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '409':
+          description: CPF ou e-mail já cadastrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Erro'
+              examples:
+                cpf:
+                  value:
+                    erro:
+                      codigo: CPF_JA_CADASTRADO
+                      mensagem: Já existe uma conta com esse CPF. Toque em Entrar ou, se não lembrar a senha, em Esqueci minha senha.
+                      detalhes: null
+                      requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+                email:
+                  value:
+                    erro:
+                      codigo: EMAIL_JA_CADASTRADO
+                      mensagem: Já existe uma conta com esse e-mail. Toque em Entrar ou, se não lembrar a senha, em Esqueci minha senha.
+                      detalhes: null
+                      requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+  /api/v1/auth/me:
+    get:
+      tags: [Acesso]
+      summary: Devolve o usuário logado e o perfil
+      operationId: buscarMe
+      responses:
+        '200':
+          description: Usuário logado
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [usuario, perfil]
+                properties:
+                  usuario:
+                    $ref: '#/components/schemas/Usuario'
+                  perfil:
+                    $ref: '#/components/schemas/Perfil'
+              example:
+                perfil: paciente
+                usuario:
+                  id: Xk3c9aQ2LmT0pR8sV1wZ
+                  nome: Maria Teste da Silva
+                  email: maria@exemplo.test
+                  cpf: '52998224725'
+                  telefone: '5581999991234'
+                  dataNascimento: '1948-03-12'
+                  sexo: feminino
+                  perfil: paciente
+                  unidadeId: null
+                  unidadeIds: []
+                  preferencias:
+                    letraGrande: false
+                    altoContraste: false
+                    lembreteWhatsapp: false
+                  consentimento:
+                    versaoTermo: '2026-10-01'
+                    aceitoEm: '2026-10-04T20:40:00.000-03:00'
+                    canal: app
+                    exibicaoPainel: false
+                  status: ativo
+                  criadoEm: '2026-10-04T20:40:00.000-03:00'
+                  atualizadoEm: '2026-10-04T20:40:00.000-03:00'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+  /api/v1/usuarios/me:
+    put:
+      tags: [Usuários]
+      summary: Substitui os dados editáveis e as preferências de acessibilidade
+      description: |
+        Envia o conjunto editável completo. Campo opcional ausente (`sexo`) é
+        removido. `consentimento.exibicaoPainel`, se enviado, troca o aceite de
+        exibir o nome completo no painel de TV; se ausente, mantém o atual.
+        CPF, e-mail, perfil e status não são aceitos (400).
+      operationId: atualizarMe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AtualizarMe'
+            example:
+              nome: Maria Teste da Silva
+              telefone: (81) 99999-1234
+              dataNascimento: '1948-03-12'
+              sexo: feminino
+              preferencias:
+                letraGrande: true
+                altoContraste: false
+                lembreteWhatsapp: true
+              consentimento:
+                exibicaoPainel: true
+      responses:
+        '200':
+          description: Usuário atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
 components:
   securitySchemes:
     tokenFirebase:
@@ -42,7 +216,231 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: ID token emitido pelo Firebase Auth após o login no app.
+  responses:
+    DadosInvalidos:
+      description: Dados inválidos. `detalhes` traz um item por campo, com a mensagem para a pessoa.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            erro:
+              codigo: DADOS_INVALIDOS
+              mensagem: Alguns dados precisam de ajuste. Confira os campos indicados e tente de novo.
+              detalhes:
+                - campo: cpf
+                  mensagem: Falta 1 número. Confira no seu documento e digite os 11 números.
+                - campo: email
+                  mensagem: 'Falta o final do e-mail. Exemplo: ana@gmail.com'
+              requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+    NaoAutenticado:
+      description: Sem token, token inválido, expirado, revogado ou de conta desativada.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            erro:
+              codigo: NAO_AUTENTICADO
+              mensagem: Entre na sua conta para continuar.
+              detalhes: null
+              requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+    NaoEncontrado:
+      description: Recurso não encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            erro:
+              codigo: NAO_ENCONTRADO
+              mensagem: Não encontramos os dados da sua conta. Saia e entre de novo; se continuar, fale com a recepção.
+              detalhes: null
+              requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+    LimiteExcedido:
+      description: Muitas requisições do mesmo IP. Veja os cabeçalhos RateLimit.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            erro:
+              codigo: LIMITE_EXCEDIDO
+              mensagem: Foram muitas tentativas seguidas. Espere alguns minutos e tente de novo.
+              detalhes: null
+              requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+    ErroInterno:
+      description: Erro inesperado. A causa fica só no log, com o mesmo requestId.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            erro:
+              codigo: ERRO_INTERNO
+              mensagem: Algo não funcionou do nosso lado. Tente de novo em alguns minutos.
+              detalhes: null
+              requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
   schemas:
+    Perfil:
+      type: string
+      enum: [paciente, recepcionista, medico, manutencao, administrativo]
+    Preferencias:
+      type: object
+      additionalProperties: false
+      required: [letraGrande, altoContraste, lembreteWhatsapp]
+      properties:
+        letraGrande:
+          type: boolean
+        altoContraste:
+          type: boolean
+        lembreteWhatsapp:
+          type: boolean
+    Cadastro:
+      type: object
+      additionalProperties: false
+      required: [nome, cpf, dataNascimento, telefone, email, senha, consentimento]
+      properties:
+        nome:
+          type: string
+          maxLength: 120
+          description: Nome e sobrenome, como no documento.
+        cpf:
+          type: string
+          description: Com ou sem máscara; gravado só com os 11 dígitos.
+        dataNascimento:
+          type: string
+          format: date
+          description: AAAA-MM-DD
+        telefone:
+          type: string
+          description: Com DDD, com ou sem máscara; gravado em E.164 sem o "+".
+        email:
+          type: string
+          format: email
+        senha:
+          type: string
+          minLength: 8
+          maxLength: 128
+          writeOnly: true
+        sexo:
+          $ref: '#/components/schemas/Sexo'
+        consentimento:
+          type: object
+          additionalProperties: false
+          required: [versaoTermo, aceito, exibicaoPainel]
+          properties:
+            versaoTermo:
+              type: string
+              description: Precisa ser a versão vigente do termo.
+            aceito:
+              type: boolean
+              const: true
+            canal:
+              type: string
+              enum: [app, pwa]
+              default: app
+            exibicaoPainel:
+              type: boolean
+              description: Aceite específico para exibir e anunciar o nome completo no painel de TV da recepção.
+    Sexo:
+      type: string
+      enum: [feminino, masculino, outro, prefiro_nao_informar]
+    ContaCriada:
+      type: object
+      required: [id, nome, perfil, status]
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        perfil:
+          $ref: '#/components/schemas/Perfil'
+        status:
+          type: string
+          enum: [ativo, pre_cadastro, inativo]
+    AtualizarMe:
+      type: object
+      additionalProperties: false
+      required: [nome, telefone, dataNascimento, preferencias]
+      properties:
+        nome:
+          type: string
+        telefone:
+          type: string
+        dataNascimento:
+          type: string
+          format: date
+        sexo:
+          $ref: '#/components/schemas/Sexo'
+        preferencias:
+          $ref: '#/components/schemas/Preferencias'
+        consentimento:
+          type: object
+          additionalProperties: false
+          required: [exibicaoPainel]
+          properties:
+            exibicaoPainel:
+              type: boolean
+    Usuario:
+      type: object
+      required:
+        [id, nome, email, cpf, perfil, preferencias, consentimento, status, criadoEm, atualizadoEm]
+      properties:
+        id:
+          type: string
+        nome:
+          type: string
+        email:
+          type: string
+          format: email
+        cpf:
+          type: string
+          pattern: '^\d{11}$'
+        telefone:
+          type: [string, 'null']
+          description: E.164 sem o "+"
+        dataNascimento:
+          type: [string, 'null']
+          format: date
+        sexo:
+          oneOf:
+            - $ref: '#/components/schemas/Sexo'
+            - type: 'null'
+        perfil:
+          $ref: '#/components/schemas/Perfil'
+        unidadeId:
+          type: [string, 'null']
+        unidadeIds:
+          type: array
+          items:
+            type: string
+        preferencias:
+          $ref: '#/components/schemas/Preferencias'
+        consentimento:
+          type: object
+          required: [versaoTermo, aceitoEm, canal, exibicaoPainel]
+          properties:
+            versaoTermo:
+              type: string
+            aceitoEm:
+              type: string
+              format: date-time
+            canal:
+              type: string
+              enum: [app, pwa, recepcao, seed]
+            exibicaoPainel:
+              type: boolean
+        status:
+          type: string
+          enum: [ativo, pre_cadastro, inativo]
+        criadoEm:
+          type: string
+          format: date-time
+          description: ISO 8601 com offset -03:00
+        atualizadoEm:
+          type: string
+          format: date-time
     Saude:
       type: object
       required: [status, versao, em]
@@ -74,13 +472,25 @@ components:
                 - FORA_DA_UNIDADE
                 - NAO_ENCONTRADO
                 - CPF_JA_CADASTRADO
+                - EMAIL_JA_CADASTRADO
                 - LIMITE_EXCEDIDO
                 - ERRO_INTERNO
             mensagem:
               type: string
               description: Texto para a pessoa, dizendo o que fazer.
             detalhes:
-              description: Campos com problema, quando houver.
+              description: Lista de {campo, mensagem} em erros de validação; null nos demais.
+              oneOf:
+                - type: 'null'
+                - type: array
+                  items:
+                    type: object
+                    required: [campo, mensagem]
+                    properties:
+                      campo:
+                        type: string
+                      mensagem:
+                        type: string
             requestId:
               type: string
 security:
