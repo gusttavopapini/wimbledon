@@ -97,6 +97,43 @@ describe('PUT /api/v1/usuarios/me', () => {
     );
   });
 
+  it('aceita salvar só as preferências, sem telefone e data (contas de equipe)', async () => {
+    const { id, token } = await pacienteLogado();
+
+    const resposta = await request(app)
+      .put('/api/v1/usuarios/me')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        nome: 'Maria Teste da Silva',
+        preferencias: { letraGrande: true, altoContraste: false, lembreteWhatsapp: false },
+      });
+
+    expect(resposta.status).toBe(200);
+    expect(resposta.body).toMatchObject({ telefone: null, dataNascimento: null });
+    const doc = (await firebase.db.doc(`usuarios/${id}`).get()).data()!;
+    expect(doc.preferencias.letraGrande).toBe(true);
+  });
+
+  it('lembrete no WhatsApp sem telefone responde 400 dizendo o que fazer', async () => {
+    const { token } = await pacienteLogado();
+
+    const resposta = await request(app)
+      .put('/api/v1/usuarios/me')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        nome: 'Maria Teste da Silva',
+        preferencias: { letraGrande: false, altoContraste: false, lembreteWhatsapp: true },
+      });
+
+    expect(resposta.status).toBe(400);
+    expect(resposta.body.erro.detalhes).toEqual([
+      {
+        campo: 'telefone',
+        mensagem: 'Para receber lembrete no WhatsApp, digite o telefone com DDD.',
+      },
+    ]);
+  });
+
   it('responde 401 sem token', async () => {
     const resposta = await request(app).put('/api/v1/usuarios/me').send(alteracao);
     expect(resposta.status).toBe(401);

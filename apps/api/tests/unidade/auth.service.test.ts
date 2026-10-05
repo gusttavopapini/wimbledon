@@ -18,6 +18,7 @@ function fakes() {
     removerCriacao: vi.fn<UsuariosRepository['removerCriacao']>(async () => undefined),
     buscarPorId: vi.fn<UsuariosRepository['buscarPorId']>(async () => null),
     atualizar: vi.fn<UsuariosRepository['atualizar']>(),
+    definirUnidades: vi.fn<UsuariosRepository['definirUnidades']>(),
   };
   const auth = {
     createUser: vi.fn(async () => ({})),

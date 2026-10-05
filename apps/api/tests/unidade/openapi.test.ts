@@ -18,6 +18,31 @@ const ROTAS: [metodo: string, caminho: string, codigos: string[]][] = [
   ['post', '/api/v1/auth/cadastro', ['201', '400', '409', '429', '500']],
   ['get', '/api/v1/auth/me', ['200', '401', '404', '429', '500']],
   ['put', '/api/v1/usuarios/me', ['200', '400', '401', '404', '429', '500']],
+  ['get', '/api/v1/especialidades', ['200', '429', '500']],
+  ['post', '/api/v1/especialidades', ['201', '400', '401', '403', '409', '429', '500']],
+  ['get', '/api/v1/especialidades/{id}', ['200', '400', '404', '429', '500']],
+  ['put', '/api/v1/especialidades/{id}', ['200', '400', '401', '403', '404', '429', '500']],
+  ['delete', '/api/v1/especialidades/{id}', ['204', '400', '401', '403', '404', '429', '500']],
+  ['get', '/api/v1/unidades', ['200', '400', '429', '500']],
+  ['post', '/api/v1/unidades', ['201', '400', '401', '403', '409', '422', '429', '500']],
+  ['get', '/api/v1/unidades/{id}', ['200', '400', '404', '429', '500']],
+  ['put', '/api/v1/unidades/{id}', ['200', '400', '401', '403', '404', '409', '422', '429', '500']],
+  ['delete', '/api/v1/unidades/{id}', ['204', '400', '401', '403', '404', '429', '500']],
+  ['get', '/api/v1/medicos', ['200', '400', '429', '500']],
+  ['post', '/api/v1/medicos', ['201', '400', '401', '403', '409', '422', '429', '500']],
+  ['get', '/api/v1/medicos/{id}', ['200', '400', '404', '429', '500']],
+  ['put', '/api/v1/medicos/{id}', ['200', '400', '401', '403', '404', '409', '422', '429', '500']],
+  ['delete', '/api/v1/medicos/{id}', ['204', '400', '401', '403', '404', '429', '500']],
+  [
+    'post',
+    '/api/v1/medicos/{id}/unidades',
+    ['200', '201', '400', '401', '403', '422', '429', '500'],
+  ],
+  [
+    'delete',
+    '/api/v1/medicos/{id}/unidades/{unidadeId}',
+    ['204', '400', '401', '403', '404', '429', '500'],
+  ],
 ];
 
 describe('openapi.yaml', () => {
@@ -27,7 +52,7 @@ describe('openapi.yaml', () => {
     expect(Object.keys(operacao!.responses).sort()).toEqual([...codigos].sort());
   });
 
-  it.each(ROTAS.filter(([metodo]) => metodo !== 'get'))(
+  it.each(ROTAS.filter(([metodo]) => metodo === 'post' || metodo === 'put'))(
     'traz exemplo de payload JSON em %s %s',
     (metodo, caminho) => {
       const operacao = especificacao.paths[caminho]![metodo]!;

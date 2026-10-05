@@ -35,4 +35,17 @@ describe('usuariosService.atualizarMe', () => {
       status: 404,
     });
   });
+
+  it('exige telefone para ligar o lembrete no WhatsApp', async () => {
+    const atualizar = vi.fn();
+    const service = criarUsuariosService({
+      usuarios: { atualizar } as unknown as UsuariosRepository,
+    });
+    const { telefone: _telefone, ...semTelefone } = dados;
+    await expect(service.atualizarMe('u1', semTelefone)).rejects.toMatchObject({
+      codigo: 'DADOS_INVALIDOS',
+      detalhes: [{ campo: 'telefone', mensagem: expect.stringContaining('WhatsApp') }],
+    });
+    expect(atualizar).not.toHaveBeenCalled();
+  });
 });
