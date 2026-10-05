@@ -1,39 +1,114 @@
-import { useState } from 'react';
+import { router } from 'expo-router';
+import { View } from 'react-native';
 
+import { Avatar } from '@/components/Avatar';
 import { Botao } from '@/components/Botao';
+import { CartaoEspecialidade, GradeEspecialidades } from '@/components/CartaoEspecialidade';
+import { EstadoTela } from '@/components/EstadoTela';
 import { Folha } from '@/components/Folha';
-import { Mensagem } from '@/components/Mensagem';
 import { Tela } from '@/components/Tela';
+import { Texto } from '@/components/Texto';
 import { Topo } from '@/components/Topo';
+import { useEspecialidades } from '@/hooks/useCadastros';
 import { useSessao } from '@/hooks/useSessao';
+import { useTema } from '@/hooks/useTema';
+import { saudacao } from '@/utils/saudacao';
 
-/** Início provisório: as funções (consultas, fila, pré-triagem) chegam nas próximas entregas. */
+const QUANTIDADE_NA_HOME = 6;
+
+/**
+ * Início do paciente. Ainda sem "Próxima consulta" (depende do agendamento) e
+ * sem "Contar meus sintomas" (pré-triagem, Sprint 5): melhor ausente que inerte.
+ */
 export default function Inicio() {
-  const { usuario, sair } = useSessao();
-  const [saindo, setSaindo] = useState(false);
-  const primeiroNome = usuario?.nome.split(' ')[0] ?? '';
+  const { usuario } = useSessao();
+  const { espacamento } = useTema();
+  const nome = usuario?.nome ?? '';
 
   return (
     <Tela>
-      <Topo titulo={`Olá, ${primeiroNome}!`} subtitulo="Que bom ter você aqui." />
+      <Topo
+        antes={<Avatar nome={nome} tamanho={64} sobreTopo />}
+        titulo={saudacao(nome)}
+        subtitulo="Como está sua saúde hoje?"
+      />
       <Folha>
-        <Mensagem tipo="informacao" titulo="Sua conta está pronta">
-          Em breve você vai poder marcar consultas e acompanhar a fila por aqui.
-        </Mensagem>
-        <Botao
-          variante="secundario"
-          larguraTotal
-          icone="log-out"
-          carregando={saindo}
-          rotuloCarregando="Saindo da conta…"
-          aoTocar={() => {
-            setSaindo(true);
-            void sair();
-          }}
-        >
-          Sair da conta
+        <Botao principal icone="calendar-plus" aoTocar={() => router.push('/especialidades')}>
+          Marcar consulta
         </Botao>
+
+        <View style={{ gap: espacamento.espacamento16 }}>
+          <Texto estilo="tituloSecao" cor="primariaEscura" accessibilityRole="header">
+            Especialidades
+          </Texto>
+          <EspecialidadesDaHome />
+        </View>
+
+        <View style={{ gap: espacamento.espacamento16 }}>
+          <Texto estilo="tituloSecao" cor="primariaEscura" accessibilityRole="header">
+            Acesso rápido
+          </Texto>
+          <Botao
+            variante="secundario"
+            larguraTotal
+            icone="calendar"
+            iconeFim="chevron-right"
+            aoTocar={() => router.push('/consultas')}
+          >
+            Minhas consultas
+          </Botao>
+        </View>
       </Folha>
     </Tela>
+  );
+}
+
+function EspecialidadesDaHome() {
+  const { data, isPending, isError, refetch } = useEspecialidades();
+
+  if (isPending) {
+    return <EstadoTela tipo="carregando" titulo="Carregando as especialidades" />;
+  }
+  if (isError) {
+    return (
+      <EstadoTela
+        tipo="erro"
+        titulo="Não conseguimos carregar as especialidades"
+        mensagem="Confira se o celular está conectado à internet e toque em Tentar de novo."
+        aoAgir={() => void refetch()}
+      />
+    );
+  }
+  if (data.length === 0) {
+    return (
+      <EstadoTela
+        tipo="vazio"
+        icone="calendar"
+        titulo="Ainda não há especialidades disponíveis"
+        mensagem="Quando as unidades cadastrarem as especialidades, elas aparecem aqui."
+      />
+    );
+  }
+
+  return (
+    <>
+      <GradeEspecialidades>
+        {data.slice(0, QUANTIDADE_NA_HOME).map((especialidade) => (
+          <CartaoEspecialidade
+            key={especialidade.id}
+            especialidade={especialidade.id}
+            nome={especialidade.nome}
+            aoTocar={() => router.push(`/especialidades/${especialidade.id}/unidades`)}
+          />
+        ))}
+      </GradeEspecialidades>
+      <Botao
+        variante="terciario"
+        iconeFim="chevron-right"
+        aoTocar={() => router.push('/especialidades')}
+      >
+        Ver todas as especialidades
+      </Botao>
+    </>
   );
 }

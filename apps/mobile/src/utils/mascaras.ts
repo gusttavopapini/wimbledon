@@ -95,3 +95,18 @@ export function dataPorExtenso(texto: string): string | null {
   const frase = `${DIAS[diaSemana]}, ${data.dia} de ${MESES[data.mes - 1]} de ${data.ano}`;
   return frase.charAt(0).toUpperCase() + frase.slice(1);
 }
+
+/** "1948-03-12" (formato da API) -> "12 de março de 1948". Datas sempre por extenso. */
+export function dataIsoPorExtenso(iso: string): string | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!m) return null;
+  const [ano, mes, dia] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const nomeMes = MESES[mes - 1];
+  return nomeMes ? `${dia} de ${nomeMes} de ${ano}` : null;
+}
+
+/** "5581999991234" (E.164 sem +) -> "(81) 99999-1234" */
+export function telefoneLegivel(e164: string): string {
+  const d = soDigitos(e164);
+  return mascararTelefone(d.startsWith('55') && d.length > 11 ? d.slice(2) : d);
+}
