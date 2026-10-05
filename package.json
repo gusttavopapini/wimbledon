@@ -24,7 +24,9 @@
     "tema": "node gerar-tema.mjs design-system/tokens.json apps/mobile/src/theme/tokens.ts",
     "seed:admin": "tsx --env-file-if-exists=.env infra/seed/criar-administrador.ts",
     "seed": "tsx --env-file-if-exists=.env infra/seed/index.ts",
-    "icones": "node apps/mobile/scripts/gerar-icones.mjs"
+    "icones": "node apps/mobile/scripts/gerar-icones.mjs",
+    "deploy:firestore": "firebase deploy --only firestore --project wimbledon-90871",
+    "deploy:pwa": "npm run exportar:web -w @saude/mobile && firebase deploy --only hosting --project wimbledon-90871"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

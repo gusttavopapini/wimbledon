@@ -1,0 +1,34 @@
+# Blueprint do Render para a API (Node 24 + Express 5).
+# O plano Spark do Firebase não tem Cloud Functions: a API roda aqui e acessa o
+# Firestore pelo Admin SDK. Nenhum segredo fica neste arquivo: as variáveis com
+# sync: false são preenchidas no painel do Render.
+services:
+  - type: web
+    name: saude-palma-api
+    runtime: node
+    # O Render não tem região no Brasil; Virgínia é a mais próxima de southamerica-east1.
+    region: virginia
+    plan: free
+    branch: main
+    autoDeploy: true
+    # Só o workspace da API: o app Expo não entra no servidor.
+    buildCommand: npm ci --workspace @saude/api && npm run build --workspace @saude/api
+    startCommand: npm run start --workspace @saude/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: '24'
+      - key: NODE_ENV
+        value: production
+      - key: FIREBASE_PROJECT_ID
+        value: wimbledon-90871
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://wimbledon-90871.web.app,https://wimbledon-90871.firebaseapp.com
+      - key: TZ_PADRAO
+        value: America/Recife
+      - key: LOG_LEVEL
+        value: info
