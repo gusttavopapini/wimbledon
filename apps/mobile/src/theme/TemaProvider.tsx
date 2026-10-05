@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { AccessibilityInfo, Platform } from 'react-native';
 
 import { montarTema, type PreferenciasVisuais, type Tema } from './tema';
@@ -35,12 +35,19 @@ export function TemaProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Estável e sem efeito quando nada muda: pode ir em dependências de useEffect.
+  const definirPreferencias = useCallback((mudanca: Partial<PreferenciasVisuais>) => {
+    setPreferencias((atual) => {
+      const nova = { ...atual, ...mudanca };
+      return nova.altoContraste === atual.altoContraste && nova.letraGrande === atual.letraGrande
+        ? atual
+        : nova;
+    });
+  }, []);
+
   const valor = useMemo<ValorTema>(
-    () => ({
-      ...montarTema(preferencias),
-      definirPreferencias: (mudanca) => setPreferencias((atual) => ({ ...atual, ...mudanca })),
-    }),
-    [preferencias],
+    () => ({ ...montarTema(preferencias), definirPreferencias }),
+    [preferencias, definirPreferencias],
   );
 
   return <ContextoTema.Provider value={valor}>{children}</ContextoTema.Provider>;
