@@ -50,3 +50,6 @@ npm-debug.log*
 apps/mobile/expo-env.d.ts
 .metro-health-check*
 .kotlin/
+
+# --- Claude Code: preferências pessoais de cada dev ---------------------------
+.claude/settings.local.json

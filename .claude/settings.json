@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "language": "português do Brasil",
+  "companyAnnouncements": [
+    "Saúde na Palma da Mão: as regras do projeto estão em AGENTS.md (raiz, apps/api e apps/mobile). Fluxo estrito Cliente → API → Banco; nenhum cliente acessa o Firestore.",
+    "E1 em 14/10/2026: priorize Agenda/Agendamento (35%) e Cadastros/Perfis (25%). Fila presencial, plantão e painel de TV ficam para a E2.",
+    "Antes de concluir: npm run tipos, npm run lint e npm test. Use só dados fictícios em seeds e testes."
+  ],
+  "attribution": {
+    "commit": "",
+    "pr": "",
+    "sessionUrl": false
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npm run tipos *)",
+      "Bash(npm run lint *)",
+      "Bash(npm run lint:corrigir *)",
+      "Bash(npm run formatar *)",
+      "Bash(npm run formatar:checar *)",
+      "Bash(npm test *)",
+      "Bash(npm run test *)",
+      "Bash(npm run test:emulador *)",
+      "Bash(npm run test:ci *)",
+      "Bash(npm run emuladores *)",
+      "Bash(npm run dev:api *)",
+      "Bash(npm run dev:mobile *)",
+      "Bash(npm run tema *)",
+      "Bash(npx vitest *)",
+      "Bash(npx tsc --noEmit *)",
+      "Bash(npx eslint *)",
+      "Bash(npx prettier --check *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(firebase deploy *)",
+      "Bash(npx firebase deploy *)",
+      "Bash(npm run seed:admin *)",
+      "Edit(**/infra/firestore.rules)",
+      "Edit(**/.github/workflows/**)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.development)",
+      "Read(**/.env.production)",
+      "Read(**/.env.test)",
+      "Read(**/*firebase-adminsdk*.json)",
+      "Read(**/service-account*.json)",
+      "Read(**/serviceAccount*.json)",
+      "Read(**/*-service-account*.json)",
+      "Read(**/*.pem)",
+      "Read(**/*.p12)",
+      "Read(**/*.key)",
+      "Edit(**/.env)",
+      "Edit(**/.env.local)",
+      "Edit(**/.env.development)",
+      "Edit(**/.env.production)",
+      "Edit(**/.env.test)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/bloquear-firestore-no-cliente.mjs\"",
+            "timeout": 10,
+            "statusMessage": "Verificando acesso ao Firestore no cliente..."
+          }
+        ]
+      }
+    ]
+  }
+}
