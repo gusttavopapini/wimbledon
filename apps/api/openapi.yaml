@@ -21,6 +21,8 @@ tags:
     description: Cadastro de pacientes e sessão
   - name: Usuários
     description: Dados e preferências da própria conta
+  - name: Cadastros
+    description: Especialidades, unidades e médicos. Leitura pública; escrita do administrativo.
 paths:
   /health:
     get:
@@ -170,8 +172,9 @@ paths:
       tags: [Usuários]
       summary: Substitui os dados editáveis e as preferências de acessibilidade
       description: |
-        Envia o conjunto editável completo. Campo opcional ausente (`sexo`) é
-        removido. `consentimento.exibicaoPainel`, se enviado, troca o aceite de
+        Envia o conjunto editável completo. Campo opcional ausente (`sexo`,
+        `telefone`, `dataNascimento`) é removido. Ligar `lembreteWhatsapp` exige
+        telefone (400). `consentimento.exibicaoPainel`, se enviado, troca o aceite de
         exibir o nome completo no painel de TV; se ausente, mantém o atual.
         CPF, e-mail, perfil e status não são aceitos (400).
       operationId: atualizarMe
@@ -209,6 +212,570 @@ paths:
           $ref: '#/components/responses/LimiteExcedido'
         '500':
           $ref: '#/components/responses/ErroInterno'
+  /api/v1/especialidades:
+    get:
+      tags: [Cadastros]
+      summary: Lista as especialidades ativas, por nome (público)
+      operationId: listarEspecialidades
+      security: []
+      responses:
+        '200':
+          description: Especialidades ativas
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [itens]
+                properties:
+                  itens:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Especialidade'
+              example:
+                itens:
+                  - id: cardiologia
+                    nome: Cardiologia
+                    descricao: Cuida do coração, da pressão e da circulação do sangue.
+                    palavrasChave: [coração, pressão alta, palpitação]
+                    ativa: true
+                    criadoEm: '2026-10-05T09:00:00.000-03:00'
+                    atualizadoEm: '2026-10-05T09:00:00.000-03:00'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+    post:
+      tags: [Cadastros]
+      summary: Cadastra uma especialidade (administrativo)
+      description: O id sai do nome ("Clínico geral" vira `clinicoGeral`) e casa com o ícone do app.
+      operationId: criarEspecialidade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CriarEspecialidade'
+            example:
+              nome: Cardiologia
+              descricao: Cuida do coração, da pressão e da circulação do sangue.
+              palavrasChave: [coração, pressão alta, palpitação]
+      responses:
+        '201':
+          description: Especialidade criada
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /api/v1/especialidades/cardiologia
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Especialidade'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+  /api/v1/especialidades/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Cadastros]
+      summary: Uma especialidade ativa (público)
+      operationId: buscarEspecialidade
+      security: []
+      responses:
+        '200':
+          description: Especialidade
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Especialidade'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+    put:
+      tags: [Cadastros]
+      summary: Substitui os dados de uma especialidade (administrativo); ativa true reativa
+      operationId: atualizarEspecialidade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AtualizarEspecialidade'
+            example:
+              nome: Cardiologia
+              descricao: Cuida do coração, da pressão e da circulação do sangue.
+              palavrasChave: [coração, pressão alta]
+              ativa: true
+      responses:
+        '200':
+          description: Especialidade atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Especialidade'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+    delete:
+      tags: [Cadastros]
+      summary: Desativa uma especialidade (administrativo). Nunca apaga.
+      operationId: desativarEspecialidade
+      responses:
+        '204':
+          description: Desativada
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+  /api/v1/unidades:
+    get:
+      tags: [Cadastros]
+      summary: Lista as unidades ativas, por nome (público)
+      description: |
+        `especialidadeId` e `bairro` filtram no banco (bairro sem diferenciar
+        maiúscula e acento). `busca` procura um trecho no nome, no bairro ou na rua.
+      operationId: listarUnidades
+      security: []
+      parameters:
+        - name: busca
+          in: query
+          schema: { type: string, maxLength: 60 }
+          example: boa vista
+        - name: bairro
+          in: query
+          schema: { type: string }
+          example: Ilha do Leite
+        - name: especialidadeId
+          in: query
+          schema: { type: string }
+          example: cardiologia
+      responses:
+        '200':
+          description: Unidades ativas
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [itens]
+                properties:
+                  itens:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Unidade'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+    post:
+      tags: [Cadastros]
+      summary: Cadastra uma unidade (administrativo)
+      operationId: criarUnidade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CriarUnidade'
+            example:
+              nome: Hospital Aurora das Marés
+              tipo: hospital
+              cnpj: 11.222.333/0001-81
+              endereco:
+                logradouro: Rua das Jangadas
+                numero: '120'
+                bairro: Ilha do Leite
+                cidade: Recife
+                uf: PE
+                cep: 50070-120
+              telefone: (81) 3200-1000
+              especialidadeIds: [cardiologia, clinicoGeral]
+      responses:
+        '201':
+          description: Unidade criada
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /api/v1/unidades/Xk3c9aQ2LmT0pR8sV1wZ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unidade'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+  /api/v1/unidades/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Cadastros]
+      summary: Uma unidade ativa (público)
+      operationId: buscarUnidade
+      security: []
+      responses:
+        '200':
+          description: Unidade
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unidade'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+    put:
+      tags: [Cadastros]
+      summary: Substitui os dados de uma unidade (administrativo); ativa true reativa
+      operationId: atualizarUnidade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AtualizarUnidade'
+            example:
+              nome: Hospital Aurora das Marés
+              tipo: hospital
+              cnpj: '11222333000181'
+              endereco:
+                logradouro: Rua das Jangadas
+                numero: '120'
+                bairro: Ilha do Leite
+                cidade: Recife
+                uf: PE
+                cep: '50070120'
+              telefone: '558132001000'
+              especialidadeIds: [cardiologia, clinicoGeral, pediatria]
+              ativa: true
+      responses:
+        '200':
+          description: Unidade atualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Unidade'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+    delete:
+      tags: [Cadastros]
+      summary: Desativa uma unidade (administrativo). Nunca apaga.
+      operationId: desativarUnidade
+      responses:
+        '204':
+          description: Desativada
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+  /api/v1/medicos:
+    get:
+      tags: [Cadastros]
+      summary: Lista os médicos ativos, por nome (público)
+      operationId: listarMedicos
+      security: []
+      parameters:
+        - name: unidadeId
+          in: query
+          schema: { type: string }
+        - name: especialidadeId
+          in: query
+          schema: { type: string }
+          example: cardiologia
+      responses:
+        '200':
+          description: Médicos ativos
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [itens]
+                properties:
+                  itens:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Medico'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+    post:
+      tags: [Cadastros]
+      summary: Cadastra um médico (somente administrativo; a manutenção não cadastra)
+      operationId: criarMedico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CriarMedico'
+            example:
+              nome: Dra. Helena Marinho Duarte
+              conselho: { tipo: CRM, numero: '214365', uf: PE }
+              especialidadeIds: [cardiologia]
+              unidadeIds: [Xk3c9aQ2LmT0pR8sV1wZ]
+              usuarioId: null
+      responses:
+        '201':
+          description: Médico cadastrado
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /api/v1/medicos/Qm7d2bR4NpU1sT9vW3xY
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicoCompleto'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+  /api/v1/medicos/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Cadastros]
+      summary: Um médico ativo (público)
+      operationId: buscarMedico
+      security: []
+      responses:
+        '200':
+          description: Médico
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medico'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+    put:
+      tags: [Cadastros]
+      summary: Substitui os dados de um médico (somente administrativo)
+      description: Ao tirar uma unidade ou desativar, a conta ligada perde o acesso na hora (tokens revogados).
+      operationId: atualizarMedico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AtualizarMedico'
+            example:
+              nome: Dra. Helena Marinho Duarte
+              conselho: { tipo: CRM, numero: '214365', uf: PE }
+              especialidadeIds: [cardiologia, clinicoGeral]
+              unidadeIds: [Xk3c9aQ2LmT0pR8sV1wZ]
+              usuarioId: null
+              ativo: true
+      responses:
+        '200':
+          description: Médico atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MedicoCompleto'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+    delete:
+      tags: [Cadastros]
+      summary: Desativa um médico (somente administrativo). Nunca apaga.
+      operationId: desativarMedico
+      responses:
+        '204':
+          description: Desativado
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+  /api/v1/medicos/{id}/unidades:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags: [Cadastros]
+      summary: Aloca o médico numa unidade (administrativo ou manutenção da própria unidade)
+      description: |
+        Idempotente: 201 com Location na primeira vez, 200 se o médico já estava
+        na unidade. Manutenção de outra unidade recebe 403 FORA_DA_UNIDADE.
+      operationId: alocarMedico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [unidadeId]
+              properties:
+                unidadeId:
+                  type: string
+            example:
+              unidadeId: Xk3c9aQ2LmT0pR8sV1wZ
+      responses:
+        '200':
+          description: O médico já estava nessa unidade
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medico'
+        '201':
+          description: Médico alocado
+          headers:
+            Location:
+              schema:
+                type: string
+                example: /api/v1/medicos/Qm7d2bR4NpU1sT9vW3xY/unidades/Xk3c9aQ2LmT0pR8sV1wZ
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medico'
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+  /api/v1/medicos/{id}/unidades/{unidadeId}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+      - name: unidadeId
+        in: path
+        required: true
+        schema: { type: string }
+    delete:
+      tags: [Cadastros]
+      summary: Desaloca o médico de uma unidade (administrativo ou manutenção da própria unidade)
+      description: Idempotente. A conta ligada perde o acesso à unidade na hora.
+      operationId: desalocarMedico
+      responses:
+        '204':
+          description: Desalocado (ou já não estava na unidade)
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
 components:
   securitySchemes:
     tokenFirebase:
@@ -216,7 +783,66 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: ID token emitido pelo Firebase Auth após o login no app.
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: Letras, números, "_" e "-". Outro formato responde 400.
+      schema:
+        type: string
+        pattern: '^[A-Za-z0-9_-]{1,128}$'
   responses:
+    AcessoNegado:
+      description: Perfil sem permissão (ACESSO_NEGADO) ou unidade de outra pessoa (FORA_DA_UNIDADE).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          examples:
+            perfil:
+              value:
+                erro:
+                  codigo: ACESSO_NEGADO
+                  mensagem: Sua conta não tem acesso a esta parte do app. Se precisar, fale com a administração da unidade.
+                  detalhes: null
+                  requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+            unidade:
+              value:
+                erro:
+                  codigo: FORA_DA_UNIDADE
+                  mensagem: Você só pode ver informações da unidade onde trabalha.
+                  detalhes: null
+                  requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+    Conflito:
+      description: Já existe (ESPECIALIDADE_JA_CADASTRADA, CNPJ_JA_CADASTRADO ou CONSELHO_JA_CADASTRADO).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            erro:
+              codigo: CNPJ_JA_CADASTRADO
+              mensagem: Já existe uma unidade com esse CNPJ. Confira os números ou edite a unidade que já existe.
+              detalhes: null
+              requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+    NaoProcessavel:
+      description: |
+        Formato certo, mas aponta para algo que não existe ou está desativado:
+        ESPECIALIDADE_NAO_CADASTRADA, UNIDADE_NAO_CADASTRADA, MEDICO_NAO_CADASTRADO,
+        MEDICO_INATIVO ou USUARIO_NAO_E_MEDICO.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
+          example:
+            erro:
+              codigo: MEDICO_NAO_CADASTRADO
+              mensagem: Esse médico não está cadastrado. Peça para a administração cadastrar o médico antes de alocar.
+              detalhes:
+                - campo: id
+                  mensagem: Não há médico cadastrado com o id Qm7d2bR4NpU1sT9vW3xY.
+              requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
     DadosInvalidos:
       description: Dados inválidos. `detalhes` traz um item por campo, com a mensagem para a pessoa.
       content:
@@ -362,7 +988,7 @@ components:
     AtualizarMe:
       type: object
       additionalProperties: false
-      required: [nome, telefone, dataNascimento, preferencias]
+      required: [nome, preferencias]
       properties:
         nome:
           type: string
@@ -441,6 +1067,163 @@ components:
         atualizadoEm:
           type: string
           format: date-time
+    Especialidade:
+      type: object
+      required: [id, nome, descricao, palavrasChave, ativa, criadoEm, atualizadoEm]
+      properties:
+        id:
+          type: string
+          description: Igual ao nome do ícone no app (cardiologia, clinicoGeral…).
+        nome: { type: string }
+        descricao: { type: string }
+        palavrasChave:
+          type: array
+          items: { type: string }
+        ativa: { type: boolean }
+        criadoEm: { type: string, format: date-time }
+        atualizadoEm: { type: string, format: date-time }
+    CriarEspecialidade:
+      unevaluatedProperties: false
+      allOf:
+        - $ref: '#/components/schemas/CamposEspecialidade'
+    CamposEspecialidade:
+      type: object
+      required: [nome, descricao]
+      properties:
+        nome: { type: string, minLength: 3, maxLength: 60 }
+        descricao: { type: string, minLength: 10, maxLength: 300 }
+        palavrasChave:
+          type: array
+          maxItems: 30
+          items: { type: string }
+    AtualizarEspecialidade:
+      unevaluatedProperties: false
+      allOf:
+        - $ref: '#/components/schemas/CamposEspecialidade'
+        - type: object
+          required: [palavrasChave, ativa]
+          properties:
+            ativa: { type: boolean }
+    Endereco:
+      type: object
+      additionalProperties: false
+      required: [logradouro, numero, bairro, cidade, uf, cep]
+      properties:
+        logradouro: { type: string }
+        numero: { type: string }
+        bairro: { type: string }
+        cidade: { type: string }
+        uf: { type: string, minLength: 2, maxLength: 2 }
+        cep: { type: string, description: 'Com ou sem máscara; gravado com 8 dígitos.' }
+    Unidade:
+      type: object
+      required: [id, nome, tipo, cnpj, endereco, bairroBusca, telefone, especialidadeIds, ativa]
+      properties:
+        id: { type: string }
+        nome: { type: string }
+        tipo: { type: string, enum: [hospital, clinica] }
+        cnpj: { type: string, pattern: '^\d{14}$' }
+        endereco:
+          $ref: '#/components/schemas/Endereco'
+        bairroBusca:
+          type: string
+          description: Bairro em minúsculo e sem acento, gerado pela API.
+        telefone: { type: string, description: E.164 sem o "+" }
+        especialidadeIds:
+          type: array
+          items: { type: string }
+        ativa: { type: boolean }
+        criadoEm: { type: string, format: date-time }
+        atualizadoEm: { type: string, format: date-time }
+    CriarUnidade:
+      unevaluatedProperties: false
+      allOf:
+        - $ref: '#/components/schemas/CamposUnidade'
+    CamposUnidade:
+      type: object
+      required: [nome, tipo, cnpj, endereco, telefone, especialidadeIds]
+      properties:
+        nome: { type: string }
+        tipo: { type: string, enum: [hospital, clinica] }
+        cnpj: { type: string, description: Com ou sem máscara. }
+        endereco:
+          $ref: '#/components/schemas/Endereco'
+        telefone: { type: string }
+        especialidadeIds:
+          type: array
+          minItems: 1
+          items: { type: string }
+    AtualizarUnidade:
+      unevaluatedProperties: false
+      allOf:
+        - $ref: '#/components/schemas/CamposUnidade'
+        - type: object
+          required: [ativa]
+          properties:
+            ativa: { type: boolean }
+    Conselho:
+      type: object
+      additionalProperties: false
+      required: [tipo, numero, uf]
+      properties:
+        tipo: { type: string, const: CRM }
+        numero: { type: string, description: Só dígitos; zeros à esquerda são removidos. }
+        uf: { type: string }
+    Medico:
+      type: object
+      required: [id, nome, conselho, especialidadeIds, unidadeIds, ativo]
+      properties:
+        id: { type: string }
+        nome: { type: string, description: Com "Dr." ou "Dra." }
+        conselho:
+          $ref: '#/components/schemas/Conselho'
+        especialidadeIds:
+          type: array
+          items: { type: string }
+        unidadeIds:
+          type: array
+          items: { type: string }
+        ativo: { type: boolean }
+        criadoEm: { type: string, format: date-time }
+        atualizadoEm: { type: string, format: date-time }
+    MedicoCompleto:
+      allOf:
+        - $ref: '#/components/schemas/Medico'
+        - type: object
+          required: [usuarioId, criadoPorAdministrativo]
+          properties:
+            usuarioId: { type: [string, 'null'] }
+            criadoPorAdministrativo: { type: string }
+    CriarMedico:
+      unevaluatedProperties: false
+      allOf:
+        - $ref: '#/components/schemas/CamposMedico'
+    CamposMedico:
+      type: object
+      required: [nome, conselho, especialidadeIds, unidadeIds]
+      properties:
+        nome: { type: string }
+        conselho:
+          $ref: '#/components/schemas/Conselho'
+        especialidadeIds:
+          type: array
+          minItems: 1
+          items: { type: string }
+        unidadeIds:
+          type: array
+          minItems: 1
+          items: { type: string }
+        usuarioId:
+          type: [string, 'null']
+          description: Conta do médico no app (perfil medico), se já existir.
+    AtualizarMedico:
+      unevaluatedProperties: false
+      allOf:
+        - $ref: '#/components/schemas/CamposMedico'
+        - type: object
+          required: [ativo]
+          properties:
+            ativo: { type: boolean }
     Saude:
       type: object
       required: [status, versao, em]
@@ -473,6 +1256,14 @@ components:
                 - NAO_ENCONTRADO
                 - CPF_JA_CADASTRADO
                 - EMAIL_JA_CADASTRADO
+                - ESPECIALIDADE_JA_CADASTRADA
+                - CNPJ_JA_CADASTRADO
+                - CONSELHO_JA_CADASTRADO
+                - ESPECIALIDADE_NAO_CADASTRADA
+                - UNIDADE_NAO_CADASTRADA
+                - MEDICO_NAO_CADASTRADO
+                - MEDICO_INATIVO
+                - USUARIO_NAO_E_MEDICO
                 - LIMITE_EXCEDIDO
                 - ERRO_INTERNO
             mensagem:

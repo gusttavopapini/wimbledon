@@ -6,6 +6,14 @@ export type CodigoErro =
   | 'NAO_ENCONTRADO'
   | 'CPF_JA_CADASTRADO'
   | 'EMAIL_JA_CADASTRADO'
+  | 'ESPECIALIDADE_JA_CADASTRADA'
+  | 'CNPJ_JA_CADASTRADO'
+  | 'CONSELHO_JA_CADASTRADO'
+  | 'ESPECIALIDADE_NAO_CADASTRADA'
+  | 'UNIDADE_NAO_CADASTRADA'
+  | 'MEDICO_NAO_CADASTRADO'
+  | 'MEDICO_INATIVO'
+  | 'USUARIO_NAO_E_MEDICO'
   | 'LIMITE_EXCEDIDO'
   | 'ERRO_INTERNO';
 
@@ -36,6 +44,22 @@ export const MENSAGENS = {
     'Já existe uma conta com esse CPF. Toque em Entrar ou, se não lembrar a senha, em Esqueci minha senha.',
   EMAIL_JA_CADASTRADO:
     'Já existe uma conta com esse e-mail. Toque em Entrar ou, se não lembrar a senha, em Esqueci minha senha.',
+  ESPECIALIDADE_JA_CADASTRADA:
+    'Já existe uma especialidade com esse nome. Se ela estiver desativada, edite e reative a que já existe.',
+  CNPJ_JA_CADASTRADO:
+    'Já existe uma unidade com esse CNPJ. Confira os números ou edite a unidade que já existe.',
+  CONSELHO_JA_CADASTRADO:
+    'Já existe um médico com esse registro no conselho. Confira o número e a UF ou edite o cadastro que já existe.',
+  ESPECIALIDADE_NAO_CADASTRADA:
+    'Alguma especialidade escolhida não existe ou está desativada. Confira a lista e escolha de novo.',
+  UNIDADE_NAO_CADASTRADA:
+    'Alguma unidade escolhida não existe ou está desativada. Confira a lista e escolha de novo.',
+  MEDICO_NAO_CADASTRADO:
+    'Esse médico não está cadastrado. Peça para a administração cadastrar o médico antes de alocar.',
+  MEDICO_INATIVO:
+    'O cadastro desse médico está desativado. Peça para a administração reativar antes de alocar.',
+  USUARIO_NAO_E_MEDICO:
+    'A conta escolhida não é de um médico. Confira a conta ou deixe o campo em branco.',
   LIMITE_EXCEDIDO: 'Foram muitas tentativas seguidas. Espere alguns minutos e tente de novo.',
   ERRO_INTERNO: 'Algo não funcionou do nosso lado. Tente de novo em alguns minutos.',
 } as const satisfies Record<CodigoErro, string>;
@@ -51,4 +75,9 @@ export const erros = {
   dadosInvalidos: (detalhes?: unknown, mensagem: string = MENSAGENS.DADOS_INVALIDOS) =>
     new AppError('DADOS_INVALIDOS', 400, mensagem, detalhes),
   limiteExcedido: () => new AppError('LIMITE_EXCEDIDO', 429, MENSAGENS.LIMITE_EXCEDIDO),
+  /** 409: o recurso já existe (trava de unicidade). */
+  conflito: (codigo: CodigoErro) => new AppError(codigo, 409, MENSAGENS[codigo]),
+  /** 422: os dados têm o formato certo, mas apontam para algo que não existe. */
+  naoProcessavel: (codigo: CodigoErro, detalhes?: unknown) =>
+    new AppError(codigo, 422, MENSAGENS[codigo], detalhes),
 };

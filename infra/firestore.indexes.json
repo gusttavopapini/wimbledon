@@ -1,4 +1,75 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "especialidades",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ativa", "order": "ASCENDING" },
+        { "fieldPath": "nome", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "unidades",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ativa", "order": "ASCENDING" },
+        { "fieldPath": "nome", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "unidades",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ativa", "order": "ASCENDING" },
+        { "fieldPath": "bairroBusca", "order": "ASCENDING" },
+        { "fieldPath": "nome", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "unidades",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "especialidadeIds", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "ativa", "order": "ASCENDING" },
+        { "fieldPath": "nome", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "unidades",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "especialidadeIds", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "ativa", "order": "ASCENDING" },
+        { "fieldPath": "bairroBusca", "order": "ASCENDING" },
+        { "fieldPath": "nome", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "medicos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "ativo", "order": "ASCENDING" },
+        { "fieldPath": "nome", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "medicos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "unidadeIds", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "ativo", "order": "ASCENDING" },
+        { "fieldPath": "nome", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "medicos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "especialidadeIds", "arrayConfig": "CONTAINS" },
+        { "fieldPath": "ativo", "order": "ASCENDING" },
+        { "fieldPath": "nome", "order": "ASCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }

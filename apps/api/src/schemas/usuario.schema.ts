@@ -10,8 +10,9 @@ import * as campo from './campos.js';
 export function criarSchemaAtualizarMe(fuso: string) {
   return z.strictObject({
     nome: campo.nome,
-    telefone: campo.telefone,
-    dataNascimento: campo.dataNascimento(() => hojeNoFuso(fuso)),
+    // Opcionais: contas de equipe podem não ter. Ausente = removido (PUT substitui).
+    telefone: campo.telefone.optional(),
+    dataNascimento: campo.dataNascimento(() => hojeNoFuso(fuso)).optional(),
     sexo: campo.sexo.optional(),
     preferencias: campo.preferencias,
     consentimento: z

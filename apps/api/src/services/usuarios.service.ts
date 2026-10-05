@@ -9,9 +9,17 @@ export function criarUsuariosService(deps: { usuarios: UsuariosRepository }) {
   return {
     /**
      * Substitui os dados editáveis do próprio usuário. Desligar o lembrete por
-     * WhatsApp é sempre possível; ligar exige telefone, que o schema já garante.
+     * WhatsApp é sempre possível; ligar exige telefone.
      */
     async atualizarMe(uid: string, dados: DadosAtualizarMe): Promise<Usuario> {
+      if (dados.preferencias.lembreteWhatsapp && !dados.telefone) {
+        throw erros.dadosInvalidos([
+          {
+            campo: 'telefone',
+            mensagem: 'Para receber lembrete no WhatsApp, digite o telefone com DDD.',
+          },
+        ]);
+      }
       const atualizado = await usuarios.atualizar(uid, {
         nome: dados.nome,
         telefone: dados.telefone,

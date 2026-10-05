@@ -98,6 +98,11 @@ export function criarUsuariosRepository(db: Firestore) {
       return doc.exists ? deDocumento(doc.id, doc.data()!) : null;
     },
 
+    /** Unidades do médico no documento do usuário (espelho das claims). */
+    async definirUnidades(id: string, unidadeIds: string[]): Promise<void> {
+      await usuarios.doc(id).update({ unidadeIds, atualizadoEm: FieldValue.serverTimestamp() });
+    },
+
     async atualizar(id: string, alteracao: AlteracaoUsuario): Promise<Usuario | null> {
       const referencia = usuarios.doc(id);
       const { exibicaoPainel, ...dados } = alteracao;

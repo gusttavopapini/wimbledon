@@ -161,3 +161,96 @@ export const PREFERENCIAS_PADRAO: Preferencias = {
   altoContraste: false,
   lembreteWhatsapp: false,
 };
+
+export const UFS = [
+  'AC',
+  'AL',
+  'AP',
+  'AM',
+  'BA',
+  'CE',
+  'DF',
+  'ES',
+  'GO',
+  'MA',
+  'MT',
+  'MS',
+  'MG',
+  'PA',
+  'PB',
+  'PR',
+  'PE',
+  'PI',
+  'RJ',
+  'RN',
+  'RS',
+  'RO',
+  'RR',
+  'SC',
+  'SP',
+  'SE',
+  'TO',
+] as const;
+
+export const uf = z
+  .string({ error: 'Escolha a UF com 2 letras. Exemplo: PE' })
+  .transform((valor) => valor.trim().toUpperCase())
+  .pipe(z.enum(UFS, { error: 'Escolha a UF com 2 letras. Exemplo: PE' }));
+
+export const cep = z
+  .string({ error: 'Digite os 8 números do CEP. Exemplo: 50070-000' })
+  .transform((valor) => valor.replace(/\D/g, ''))
+  .refine((digitos) => /^\d{8}$/.test(digitos), {
+    message: 'Digite os 8 números do CEP. Exemplo: 50070-000',
+  });
+
+/** Dígitos verificadores do CNPJ (módulo 11). */
+export function cnpjTemDigitosValidos(cnpj: string): boolean {
+  if (!/^\d{14}$/.test(cnpj) || /^(\d)\1{13}$/.test(cnpj)) return false;
+  const digito = (base: string) => {
+    const pesos =
+      base.length === 12
+        ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]
+        : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    const soma = [...base].reduce((total, d, i) => total + Number(d) * (pesos[i] ?? 0), 0);
+    const resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  };
+  const primeiro = digito(cnpj.slice(0, 12));
+  const segundo = digito(cnpj.slice(0, 12) + primeiro);
+  return cnpj.endsWith(`${primeiro}${segundo}`);
+}
+
+export const cnpj = z
+  .string({ error: 'Digite os 14 números do CNPJ.' })
+  .transform((valor) => valor.replace(/\D/g, ''))
+  .superRefine((digitos, ctx) => {
+    if (digitos.length !== 14) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `O CNPJ tem 14 números e você digitou ${digitos.length}. Confira no cartão do CNPJ.`,
+      });
+    } else if (!cnpjTemDigitosValidos(digitos)) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Esse CNPJ não confere. Confira os números no cartão do CNPJ.',
+      });
+    }
+  });
+
+/**
+ * Id de documento vindo da URL, da query ou do corpo. Sem "/" nem ".": um id
+ * como "a%2Fb" chegaria decodificado e apontaria para outra coleção.
+ */
+export const idDocumento = z
+  .string({ error: 'Informe o identificador.' })
+  .regex(/^[A-Za-z0-9_-]{1,128}$/, 'Identificador em formato inesperado. Confira e tente de novo.');
+
+/** Lista de ids sem repetição, com ao menos um item. */
+export function listaDeIds(mensagemVazia: string) {
+  return z
+    .array(idDocumento, { error: mensagemVazia })
+    .min(1, mensagemVazia)
+    .max(50, 'Escolha no máximo 50 itens.')
+    .transform((ids) => [...new Set(ids)]);
+}
