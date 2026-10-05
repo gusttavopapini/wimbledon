@@ -41,6 +41,28 @@ npm run dev:api      # API em http://localhost:3333 — /health e /api/docs
 npm run dev:mobile   # app Expo
 ```
 
+### Primeira conta administrativa
+
+Nenhuma tela cria contas de equipe: a primeira conta `administrativo` sai do seed.
+
+```bash
+npm run seed:admin -- --emulador   # no emulador, com dados fictícios
+npm run seed:admin                 # no projeto real: defina ADMIN_NOME, ADMIN_EMAIL, ADMIN_CPF (e opcionalmente ADMIN_SENHA) no .env
+```
+
+Sem `ADMIN_SENHA`, uma senha forte é gerada e mostrada uma única vez.
+
+### Rotas
+
+| Método | Rota                    | Acesso                            |
+| ------ | ----------------------- | --------------------------------- |
+| GET    | `/health`               | público                           |
+| POST   | `/api/v1/auth/cadastro` | público (10 por IP a cada 15 min) |
+| GET    | `/api/v1/auth/me`       | autenticado                       |
+| PUT    | `/api/v1/usuarios/me`   | autenticado                       |
+
+Contrato completo, com exemplos e códigos de resposta, em `/api/docs`.
+
 Para desenvolver só com os emuladores, descomente `FIRESTORE_EMULATOR_HOST` e
 `FIREBASE_AUTH_EMULATOR_HOST` no `.env` e use `FIREBASE_PROJECT_ID=demo-saude-palma`.
 
