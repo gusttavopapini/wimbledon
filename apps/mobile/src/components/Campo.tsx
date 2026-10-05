@@ -8,7 +8,7 @@ import { estiloFoco } from './foco';
 import { Icone } from './Icone';
 import { Texto } from './Texto';
 
-type TipoCampo = 'texto' | 'email' | 'senha' | 'data' | 'cpf' | 'telefone';
+type TipoCampo = 'texto' | 'email' | 'senha' | 'data' | 'cpf' | 'telefone' | 'busca';
 
 export interface CampoProps extends Pick<
   TextInputProps,
@@ -116,6 +116,7 @@ export const Campo = forwardRef<TextInput, CampoProps>(function Campo(
       ) : null}
 
       <View
+        accessibilityRole={tipo === 'busca' ? 'search' : undefined}
         style={[
           estilos.caixa,
           {
@@ -131,6 +132,11 @@ export const Campo = forwardRef<TextInput, CampoProps>(function Campo(
           focado && estiloFoco(cores, tamanho.espessuraFoco),
         ]}
       >
+        {tipo === 'busca' ? (
+          <View style={{ marginLeft: -espacamento.espacamento4 }}>
+            <Icone nome="search" />
+          </View>
+        ) : null}
         <TextInput
           ref={ref}
           value={valor}
@@ -150,12 +156,13 @@ export const Campo = forwardRef<TextInput, CampoProps>(function Campo(
           maxLength={TAMANHO_MAXIMO[tipo]}
           secureTextEntry={tipo === 'senha' && !revelar}
           autoCapitalize={
-            autoCapitalize ?? (tipo === 'email' || tipo === 'senha' ? 'none' : 'sentences')
+            autoCapitalize ??
+            (tipo === 'email' || tipo === 'senha' || tipo === 'busca' ? 'none' : 'sentences')
           }
           autoCorrect={tipo === 'texto'}
+          returnKeyType={returnKeyType ?? (tipo === 'busca' ? 'search' : undefined)}
           autoComplete={autoComplete}
           textContentType={textContentType}
-          returnKeyType={returnKeyType}
           onSubmitEditing={onSubmitEditing}
           cursorColor={cores.primaria}
           selectionColor={cores.primaria}
@@ -171,6 +178,30 @@ export const Campo = forwardRef<TextInput, CampoProps>(function Campo(
             estilos.semContornoWeb,
           ]}
         />
+        {tipo === 'busca' && valor ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Limpar busca"
+            onPress={() => aoMudar('')}
+            style={({ pressed }) => [
+              estilos.linha,
+              {
+                minHeight: tamanho.alvoToqueMinimo,
+                minWidth: tamanho.alvoToqueMinimo,
+                paddingHorizontal: espacamento.espacamento12,
+                gap: espacamento.espacamento4,
+                borderRadius: raio.raioChip,
+                justifyContent: 'center',
+              },
+              pressed && { backgroundColor: cores.teal50 },
+            ]}
+          >
+            <Icone nome="x" />
+            <Texto estilo="rotulo" cor="primaria" importantForAccessibility="no">
+              Limpar
+            </Texto>
+          </Pressable>
+        ) : null}
         {tipo === 'senha' ? (
           <Pressable
             accessibilityRole="button"

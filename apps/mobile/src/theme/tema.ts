@@ -14,7 +14,12 @@ import {
 export type NomeCor = keyof (typeof cores)['claro'];
 export type PaletaCores = Record<NomeCor, string>;
 export type NomeEstiloTexto = keyof typeof tipo;
-export type EstiloTexto = Pick<TextStyle, 'fontSize' | 'lineHeight' | 'fontFamily' | 'fontWeight'>;
+export interface EstiloTexto {
+  fontSize: number;
+  lineHeight: number;
+  fontFamily: string;
+  fontWeight: TextStyle['fontWeight'];
+}
 
 export interface PreferenciasVisuais {
   altoContraste: boolean;
