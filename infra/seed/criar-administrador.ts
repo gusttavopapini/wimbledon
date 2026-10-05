@@ -96,11 +96,12 @@ export async function criarAdministrador(
   }
 }
 
-async function principal(): Promise<void> {
-  const noEmulador = process.argv.includes('--emulador');
-  if (noEmulador) Object.assign(process.env, EMULADOR);
-
-  const ambiente = carregarAmbiente();
+/** Lê ADMIN_* do ambiente (ou usa dados fictícios no emulador) e cria a conta. */
+export async function executarSeedAdministrador(
+  firebase: ServicosFirebase,
+  projeto: string,
+  noEmulador: boolean,
+): Promise<void> {
   const exigir = (chave: string) => {
     const valor = process.env[chave];
     if (!valor) throw new Error(`Defina ${chave} no .env (ou rode com --emulador).`);
@@ -122,13 +123,13 @@ async function principal(): Promise<void> {
         senha: process.env.ADMIN_SENHA ?? gerarSenha(),
       };
 
-  const resultado = await criarAdministrador(inicializarFirebase(ambiente), dados);
+  const resultado = await criarAdministrador(firebase, dados);
   if (!resultado.criado) {
-    console.log(`Nada a fazer: ${resultado.motivo}. A conta administrativa já existe.`);
+    console.log(`Conta administrativa: nada a fazer (${resultado.motivo}). Ela já existe.`);
     return;
   }
 
-  console.log(`Conta administrativa criada em ${ambiente.FIREBASE_PROJECT_ID}.`);
+  console.log(`Conta administrativa criada em ${projeto}.`);
   console.log(`  uid:    ${resultado.conta.id}`);
   console.log(`  e-mail: ${dados.email}`);
   if (senhaGerada) {
@@ -137,6 +138,17 @@ async function principal(): Promise<void> {
       '  Guarde esta senha agora: ela não é mostrada de novo. Troque no primeiro acesso.',
     );
   }
+}
+
+async function principal(): Promise<void> {
+  const noEmulador = process.argv.includes('--emulador');
+  if (noEmulador) Object.assign(process.env, EMULADOR);
+  const ambiente = carregarAmbiente();
+  await executarSeedAdministrador(
+    inicializarFirebase(ambiente),
+    ambiente.FIREBASE_PROJECT_ID,
+    noEmulador,
+  );
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
