@@ -41,25 +41,41 @@ npm run dev:api      # API em http://localhost:3333 — /health e /api/docs
 npm run dev:mobile   # app Expo (w abre o PWA no navegador)
 ```
 
-### Primeira conta administrativa
+### Seed: primeira conta administrativa e cadastros base
 
 Nenhuma tela cria contas de equipe: a primeira conta `administrativo` sai do seed.
+O seed também cria os cadastros base **fictícios** do polo médico do Recife: as
+13 especialidades com ícone no design system, 4 unidades (Ilha do Leite, Derby,
+Boa Vista e Paissandu) e 8 médicos. Nomes de instituições e de profissionais são
+inventados.
 
 ```bash
-npm run seed:admin -- --emulador   # no emulador, com dados fictícios
-npm run seed:admin                 # no projeto real: defina ADMIN_NOME, ADMIN_EMAIL, ADMIN_CPF (e opcionalmente ADMIN_SENHA) no .env
+npm run seed -- --emulador   # no emulador, com dados fictícios
+npm run seed                 # no projeto real: defina ADMIN_NOME, ADMIN_EMAIL, ADMIN_CPF (e opcionalmente ADMIN_SENHA) no .env
+npm run seed:admin           # só a conta administrativa
 ```
 
-Sem `ADMIN_SENHA`, uma senha forte é gerada e mostrada uma única vez.
+Sem `ADMIN_SENHA`, uma senha forte é gerada e mostrada uma única vez. Rodar de
+novo não duplica nada.
 
 ### Rotas
 
-| Método | Rota                    | Acesso                            |
-| ------ | ----------------------- | --------------------------------- |
-| GET    | `/health`               | público                           |
-| POST   | `/api/v1/auth/cadastro` | público (10 por IP a cada 15 min) |
-| GET    | `/api/v1/auth/me`       | autenticado                       |
-| PUT    | `/api/v1/usuarios/me`   | autenticado                       |
+| Método            | Rota                                                        | Acesso                                                  |
+| ----------------- | ----------------------------------------------------------- | ------------------------------------------------------- |
+| GET               | `/health`                                                   | público                                                 |
+| POST              | `/api/v1/auth/cadastro`                                     | público (10 por IP a cada 15 min)                       |
+| GET               | `/api/v1/auth/me`                                           | autenticado                                             |
+| PUT               | `/api/v1/usuarios/me`                                       | autenticado                                             |
+| GET               | `/api/v1/especialidades`, `/{id}`                           | público                                                 |
+| POST, PUT, DELETE | `/api/v1/especialidades`, `/{id}`                           | administrativo                                          |
+| GET               | `/api/v1/unidades?busca=&bairro=&especialidadeId=`, `/{id}` | público                                                 |
+| POST, PUT, DELETE | `/api/v1/unidades`, `/{id}`                                 | administrativo                                          |
+| GET               | `/api/v1/medicos?unidadeId=&especialidadeId=`, `/{id}`      | público                                                 |
+| POST, PUT, DELETE | `/api/v1/medicos`, `/{id}`                                  | administrativo (a manutenção não cadastra médico, RN24) |
+| POST              | `/api/v1/medicos/{id}/unidades`                             | administrativo ou manutenção da própria unidade         |
+| DELETE            | `/api/v1/medicos/{id}/unidades/{unidadeId}`                 | administrativo ou manutenção da própria unidade         |
+
+DELETE nunca apaga: desativa (`ativa`/`ativo = false`).
 
 Contrato completo, com exemplos e códigos de resposta, em `/api/docs`.
 
