@@ -23,7 +23,8 @@
     "test:ci": "firebase emulators:exec --project demo-saude-palma --only auth,firestore \"npm run test:cobertura -w @saude/api && npm test -w @saude/mobile\"",
     "tema": "node gerar-tema.mjs design-system/tokens.json apps/mobile/src/theme/tokens.ts",
     "seed:admin": "tsx --env-file-if-exists=.env infra/seed/criar-administrador.ts",
-    "seed": "tsx --env-file-if-exists=.env infra/seed/index.ts"
+    "seed": "tsx --env-file-if-exists=.env infra/seed/index.ts",
+    "icones": "node apps/mobile/scripts/gerar-icones.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

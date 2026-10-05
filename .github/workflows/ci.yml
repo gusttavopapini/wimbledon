@@ -52,6 +52,21 @@ jobs:
             exit 1
           }
 
+      # Os SVG do app são cópia exata do design system; o módulo dos ícones é gerado deles.
+      - name: Ícones de especialidade sincronizados com o design system
+        run: |
+          for svg in design-system/assets/Especialidades/*.svg; do
+            cmp -s "$svg" "apps/mobile/assets/especialidades/$(basename "$svg")" || {
+              echo "::error::$(basename "$svg") difere do design system. Copie de novo para apps/mobile/assets/especialidades."
+              exit 1
+            }
+          done
+          npm run icones
+          git diff --exit-code apps/mobile/src/components/iconesEspecialidade.ts || {
+            echo "::error file=apps/mobile/src/components/iconesEspecialidade.ts::Rode npm run icones e commite."
+            exit 1
+          }
+
       - name: Regras do Firestore continuam fechadas
         run: |
           grep -q "allow read, write: if false;" infra/firestore.rules

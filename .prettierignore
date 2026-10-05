@@ -7,3 +7,4 @@ design-system
 apps/mobile/src/theme/tokens.ts
 gerar-tema.mjs
 firebase-debug.log
+apps/mobile/src/components/iconesEspecialidade.ts
