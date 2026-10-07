@@ -35,6 +35,20 @@ podem morar na mesma linha de `usuarios`, gravados na mesma transação.
 - No login com um e-mail que não existe, a API compara a senha com um hash
   fixo de mesmo custo. Assim, o tempo de resposta não revela quais e-mails têm
   conta.
+- **A ordem das verificações no `POST /entrar` é fixa:**
+  1. Busca a conta pelo e-mail.
+  2. Compara a senha com o bcrypt, contra o hash fixo se a conta não existir ou
+     ainda não tiver senha (pré-cadastro).
+  3. Se a senha não confere, responde 401 `CREDENCIAIS_INVALIDAS`.
+  4. **Só depois**, se a conta estiver `inativo`, responde 403
+     `CONTA_DESATIVADA`.
+
+  Quem não sabe a senha recebe sempre a mesma resposta, exista a conta ou não,
+  esteja ela ativa ou desativada. Responder `CONTA_DESATIVADA` antes de
+  conferir a senha revelaria a qualquer pessoa que aquele e-mail tem uma conta
+  desativada. Um teste de integração cobre esse caso: conta desativada com
+  senha errada recebe 401 `CREDENCIAIS_INVALIDAS`, e com a senha certa recebe
+  403 `CONTA_DESATIVADA`.
 
 ### Tokens
 
@@ -55,14 +69,14 @@ podem morar na mesma linha de `usuarios`, gravados na mesma transação.
 
 ### Rotas (em `/api/v1/auth`)
 
-| Rota                        | O que faz                                                                                                                                                |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `POST /entrar`              | E-mail e senha → `{tokenAcesso, tokenRenovacao, tipo, expiraEm}`. Credencial errada: 401 `CREDENCIAIS_INVALIDAS`. Conta inativa: 403 `CONTA_DESATIVADA`. |
-| `POST /renovar`             | Recebe o refresh token, **revoga-o e emite um par novo** (rotação a cada uso). Token desconhecido, expirado ou revogado: 401 `NAO_AUTENTICADO`.          |
-| `POST /sair`                | Revoga a sessão do refresh token informado. Responde 204 sempre, inclusive se o token já não valer: sair é idempotente.                                  |
-| `POST /esqueci-senha`       | Responde **204 sempre**, exista a conta ou não. O e-mail é enviado fora do ciclo da resposta, para o tempo não revelar nada.                             |
-| `POST /redefinir-senha`     | Token do link + nova senha. Troca o hash, marca o token como usado e **revoga todas as sessões** da conta.                                               |
-| `POST /cadastro`, `GET /me` | Continuam como estavam. O cadastro passa a gravar o `senha_hash` na mesma transação do usuário.                                                          |
+| Rota                        | O que faz                                                                                                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /entrar`              | E-mail e senha → `{tokenAcesso, tokenRenovacao, tipo, expiraEm}`. Credencial errada: 401 `CREDENCIAIS_INVALIDAS`. Conta inativa, **com a senha certa**: 403 `CONTA_DESATIVADA`. |
+| `POST /renovar`             | Recebe o refresh token, **revoga-o e emite um par novo** (rotação a cada uso). Token desconhecido, expirado ou revogado: 401 `NAO_AUTENTICADO`.                                 |
+| `POST /sair`                | Revoga a sessão do refresh token informado. Responde 204 sempre, inclusive se o token já não valer: sair é idempotente.                                                         |
+| `POST /esqueci-senha`       | Responde **204 sempre**, exista a conta ou não. O e-mail é enviado fora do ciclo da resposta, para o tempo não revelar nada.                                                    |
+| `POST /redefinir-senha`     | Token do link + nova senha. Troca o hash, marca o token como usado e **revoga todas as sessões** da conta.                                                                      |
+| `POST /cadastro`, `GET /me` | Continuam como estavam. O cadastro passa a gravar o `senha_hash` na mesma transação do usuário.                                                                                 |
 
 Todas as rotas acima, menos `/me`, têm limite de requisições por IP, como o
 cadastro já tinha.
