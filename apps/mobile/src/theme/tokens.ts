@@ -1,6 +1,6 @@
-// GERADO POR gerar-tema.mjs A PARTIR DO DESIGN SYSTEM — NÃO EDITE À MÃO.
+// GERADO POR scripts/gerar-tema.mjs A PARTIR DO DESIGN SYSTEM — NÃO EDITE À MÃO.
 // Fonte: "Saúde na Palma da Mão" v1. Para mudar um valor, mude no design system
-// e rode: node gerar-tema.mjs
+// e rode: npm run tema
 //
 // Fonte Heebo: @expo-google-fonts/heebo (Heebo_400Regular, Heebo_700Bold).
 

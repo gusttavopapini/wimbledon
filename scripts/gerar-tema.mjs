@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 /**
- * Gera apps/mobile/src/theme/tokens.ts a partir de project/tokens.json.
+ * Gera apps/mobile/src/theme/tokens.ts a partir de design-system/tokens.json.
  *
  * Rode sempre que o design system mudar, nunca edite tokens.ts à mão:
- *   node gerar-tema.mjs [caminho/para/tokens.json] [caminho/de/saida.ts]
+ *   npm run tema
+ *   node scripts/gerar-tema.mjs [caminho/para/tokens.json] [caminho/de/saida.ts]
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 
-const entrada = resolve(process.argv[2] ?? 'project/tokens.json');
+const entrada = resolve(process.argv[2] ?? 'design-system/tokens.json');
 const saida = resolve(process.argv[3] ?? 'apps/mobile/src/theme/tokens.ts');
 
 const t = JSON.parse(readFileSync(entrada, 'utf8'));
@@ -97,9 +98,9 @@ const sombras = {
 
 const j = (v) => JSON.stringify(v, null, 2).replace(/"([A-Za-z_$][\w$]*)":/g, '$1:');
 
-const conteudo = `// GERADO POR gerar-tema.mjs A PARTIR DO DESIGN SYSTEM — NÃO EDITE À MÃO.
+const conteudo = `// GERADO POR scripts/gerar-tema.mjs A PARTIR DO DESIGN SYSTEM — NÃO EDITE À MÃO.
 // Fonte: "${t.name}" v${t.version}. Para mudar um valor, mude no design system
-// e rode: node gerar-tema.mjs
+// e rode: npm run tema
 //
 // Fonte Heebo: @expo-google-fonts/heebo (Heebo_400Regular, Heebo_700Bold).
 

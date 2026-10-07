@@ -51,7 +51,7 @@ export default tseslint.config(
       '**/coverage/**',
       '**/.expo/**',
       'design-system/**',
-      'gerar-tema.mjs',
+      'scripts/gerar-tema.mjs',
       'apps/mobile/src/theme/tokens.ts',
       'apps/mobile/expo-env.d.ts',
     ],
