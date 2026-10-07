@@ -122,6 +122,29 @@ pessoa precisa entrar de novo em todos os aparelhos.
   requisição. Várias requisições que falham juntas esperam a **mesma**
   renovação: duas renovações paralelas com o mesmo token seriam tomadas por
   reúso e derrubariam a sessão.
+- **Na web, a renovação também é serializada entre abas.** Todas as abas do
+  PWA compartilham o mesmo refresh token no `localStorage`, mas cada uma tem o
+  seu access token em memória. Sem coordenação, duas abas que recebem 401 ao
+  mesmo tempo mandariam o mesmo refresh token para `/renovar`. A segunda seria
+  tomada por reúso e derrubaria todas as sessões da pessoa: um **falso reúso**.
+  Por isso:
+  1. A renovação roda dentro de `navigator.locks.request('saude-palma:renovacao', …)`
+     ([Web Locks API](https://developer.mozilla.org/docs/Web/API/Web_Locks_API)),
+     um lock exclusivo do navegador para aquela origem, compartilhado entre
+     abas e janelas.
+  2. **Depois de obter o lock**, a aba relê o refresh token do `localStorage`,
+     em vez de usar o valor que tinha quando recebeu o 401. Se outra aba
+     renovou enquanto ela esperava, a releitura traz o token novo e a
+     renovação usa esse token, sem reúso.
+  3. Se o `localStorage` estiver vazio depois do lock (outra aba saiu da
+     conta), a aba também sai, sem chamar a API.
+  4. Navegadores sem Web Locks ficam só com a serialização dentro da aba. No
+     pior caso, a pessoa precisa entrar de novo; nenhum dado é exposto.
+
+  A lógica fica num módulo puro do app, com o armazenamento, o lock e a
+  chamada à API injetados, e é testada com duas "abas" simuladas que dividem
+  o mesmo armazenamento. No Android e no iOS há uma só instância do app, e
+  basta a serialização interna.
 
 ## Consequências
 
