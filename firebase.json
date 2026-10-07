@@ -14,6 +14,15 @@
     ],
     "headers": [
       {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Referrer-Policy",
+            "value": "no-referrer"
+          }
+        ]
+      },
+      {
         "source": "/_expo/**",
         "headers": [
           {

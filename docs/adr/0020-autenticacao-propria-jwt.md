@@ -95,7 +95,18 @@ pessoa precisa entrar de novo em todos os aparelhos.
 - Tabela `redefinicoes_senha`: guarda o SHA-256 do token (32 bytes aleatórios),
   com validade de **1 hora** e **uso único** (`usado_em`). Pedir um link novo
   invalida os anteriores ainda não usados.
-- O link segue o formato `APP_URL/redefinir-senha?token=…`.
+- O link segue o formato `APP_URL/redefinir-senha?token=…` e abre a tela
+  `(publico)/redefinir-senha.tsx`, onde a pessoa digita a nova senha.
+- **O token não fica no endereço.** Na web, a tela lê o token da URL e, logo
+  em seguida, tira-o da barra de endereço com
+  `history.replaceState(null, '', '/redefinir-senha')`. Assim ele não fica no
+  histórico do navegador, não aparece num print da tela e não é copiado por
+  quem compartilhar o endereço. O token passa a viver só no estado da tela até
+  o envio.
+- **O token não vaza por `Referer`.** O Firebase Hosting envia
+  `Referrer-Policy: no-referrer` em todas as respostas do PWA (`firebase.json`),
+  então nenhuma requisição saindo da página leva o endereço com o token. A API
+  já envia o mesmo cabeçalho pelo Helmet.
 - O envio fica atrás da interface `EnviadorEmail`, escolhida por
   `EMAIL_PROVEDOR`:
   - `log`: só desenvolvimento e testes. Registra o link no log da API.
