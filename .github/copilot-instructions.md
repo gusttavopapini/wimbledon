@@ -1,0 +1,7 @@
+# Instruções para o GitHub Copilot
+
+As instruções deste projeto estão **somente** no [`AGENTS.md`](../AGENTS.md) da
+raiz do repositório. Leia esse arquivo inteiro antes de sugerir qualquer código
+e siga-o. Este arquivo é só um ponteiro: não acrescente regras aqui.
+
+Responda sempre em português do Brasil.

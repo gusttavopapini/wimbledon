@@ -1,6 +1,8 @@
 # ADR 0003 — Identidade: perfis em custom claims e unicidade por documentos-trava
 
-- **Status:** aceita
+- **Status:** substituída — identidade e perfis pelo
+  [ADR 0020](0020-autenticacao-propria-jwt.md); unicidade pelo
+  [ADR 0021](0021-integridade-por-constraint.md)
 - **Data:** 2026-10-04
 
 ## Contexto

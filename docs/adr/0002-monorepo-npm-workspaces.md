@@ -1,6 +1,7 @@
 # ADR 0002 — Monorepo com npm workspaces
 
-- **Status:** aceita
+- **Status:** aceita — o item sobre testes no Firebase Emulator Suite foi substituído
+  pelo [ADR 0019](0019-prisma-e-migrations.md) (Postgres real em Docker e no CI)
 - **Data:** 2026-10-04
 
 ## Contexto

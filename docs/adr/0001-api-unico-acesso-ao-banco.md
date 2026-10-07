@@ -1,6 +1,8 @@
 # ADR 0001 — A API é o único caminho até o banco
 
-- **Status:** aceita
+- **Status:** aceita — a regra continua valendo; o mecanismo (Firestore, Admin SDK,
+  `firestore.rules`, Firebase JS SDK para login) foi substituído pelos
+  [ADR 0018](0018-postgresql-no-neon.md) e [ADR 0020](0020-autenticacao-propria-jwt.md)
 - **Data:** 2026-10-04
 
 ## Contexto
