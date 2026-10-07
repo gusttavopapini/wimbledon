@@ -1,0 +1,35 @@
+# Postgres local para desenvolvimento e testes (ADR 0018). Mesma versão
+# principal do Neon. Credenciais só locais: nunca use estas em produção.
+#
+#   npm run banco:subir    # sobe e espera ficar saudável
+#   npm run banco:parar    # para (os dados ficam no volume)
+#
+# Bancos criados:
+#   saude        desenvolvimento (DATABASE_URL do .env.example)
+#   saude_teste  testes de integração (as migrations são aplicadas pelo setup)
+name: saude-palma
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: saude
+      POSTGRES_PASSWORD: saude
+      POSTGRES_DB: saude
+      TZ: UTC
+      PGTZ: UTC
+    ports:
+      - '${PG_PORTA:-5432}:5432'
+    volumes:
+      - dados-postgres:/var/lib/postgresql/data
+      - ./postgres/criar-banco-teste.sql:/docker-entrypoint-initdb.d/criar-banco-teste.sql:ro
+    healthcheck:
+      # Por TCP: durante a inicialização o servidor temporário só escuta no socket
+      # Unix, e um pg_isready sem host daria "saudável" antes da hora.
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U saude -d saude']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  dados-postgres:

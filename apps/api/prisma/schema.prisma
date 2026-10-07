@@ -1,0 +1,500 @@
+// Esquema do banco da API (PostgreSQL 17). ADRs 0018, 0019 e 0021.
+//
+// Convenções:
+// - Modelos no singular em PascalCase e campos em camelCase, como no código;
+//   tabelas e colunas em snake_case no banco (@@map / @map).
+// - Todo instante é timestamptz (gravado em UTC; a API apresenta em -03:00).
+// - Ids: uuid gerado pelo banco (gen_random_uuid), exceto especialidades, cujo
+//   id é o nome do ícone no design system (cardiologia, clinicoGeral…).
+// - Chaves estrangeiras com ON DELETE RESTRICT: exclusão é sempre lógica
+//   (ativo/ativa/status), nenhuma linha referenciada é apagada.
+// - O que o Prisma não declara (índices únicos parciais, CHECK, gatilho da
+//   auditoria) está em SQL nas migrations. Ao gerar uma migration nova, confira
+//   que ela NÃO remove "chamados_medico_horario" nem "chamados_paciente_horario".
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  moduleFormat        = "esm"
+  importFileExtension = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enumerações
+// ---------------------------------------------------------------------------
+
+enum Perfil {
+  paciente
+  recepcionista
+  medico
+  manutencao
+  administrativo
+
+  @@map("perfil")
+}
+
+enum StatusUsuario {
+  ativo
+  pre_cadastro
+  inativo
+
+  @@map("status_usuario")
+}
+
+enum Sexo {
+  feminino
+  masculino
+  outro
+  prefiro_nao_informar
+
+  @@map("sexo")
+}
+
+/// Por onde o termo de uso e privacidade foi aceito (RN13).
+enum CanalConsentimento {
+  app
+  pwa
+  recepcao
+  seed
+
+  @@map("canal_consentimento")
+}
+
+enum TipoUnidade {
+  hospital
+  clinica
+
+  @@map("tipo_unidade")
+}
+
+enum TipoConselho {
+  CRM
+
+  @@map("tipo_conselho")
+}
+
+/// ADR-012 do DAES: um só ciclo de vida para consulta marcada e atendimento espontâneo.
+enum TipoChamado {
+  agendado
+  espontaneo
+
+  @@map("tipo_chamado")
+}
+
+enum StatusChamado {
+  agendado
+  aguardando_recepcao
+  aguardando_medico
+  chamando
+  em_atendimento
+  concluido
+  cancelado
+  nao_compareceu
+  encaminhado_emergencia
+
+  @@map("status_chamado")
+}
+
+/// Ordena a fila médica (RN22): emergencia > prioritario > rotina.
+enum Urgencia {
+  rotina
+  prioritario
+  emergencia
+
+  @@map("urgencia")
+}
+
+enum OrigemChamado {
+  app
+  pwa
+  whatsapp
+  recepcao
+
+  @@map("origem_chamado")
+}
+
+// ---------------------------------------------------------------------------
+// Pessoas e acesso
+// ---------------------------------------------------------------------------
+
+/// Toda pessoa com conta. Perfil e unidades viajam no JWT, lidos daqui (ADR 0020).
+model Usuario {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome           String        @db.VarChar(120)
+  /// Sempre em minúsculas (CHECK). UNIQUE: 409 EMAIL_JA_CADASTRADO.
+  email          String        @unique(map: "usuarios_email_key") @db.VarChar(254)
+  /// Só os 11 dígitos (CHECK). UNIQUE: 409 CPF_JA_CADASTRADO.
+  cpf            String        @unique(map: "usuarios_cpf_key") @db.Char(11)
+  /// bcrypt, custo 12. Nulo só em pré-cadastro (WhatsApp, RF30), que ainda não entra.
+  senhaHash      String?       @map("senha_hash") @db.VarChar(72)
+  /// E.164 sem o "+": 5581999991234.
+  telefone       String?       @db.VarChar(13)
+  dataNascimento DateTime?     @map("data_nascimento") @db.Date
+  sexo           Sexo?
+  perfil         Perfil
+  /// Preenchido se e somente se o perfil for recepcionista ou manutencao (CHECK, RN19).
+  unidadeId      String?       @map("unidade_id") @db.Uuid
+  status         StatusUsuario
+
+  preferenciaLetraGrande      Boolean @default(false) @map("preferencia_letra_grande")
+  preferenciaAltoContraste    Boolean @default(false) @map("preferencia_alto_contraste")
+  /// RN18: lembrete por WhatsApp só com autorização.
+  preferenciaLembreteWhatsapp Boolean @default(false) @map("preferencia_lembrete_whatsapp")
+
+  /// RN13: versão e data do aceite do termo.
+  consentimentoVersaoTermo    String             @map("consentimento_versao_termo") @db.VarChar(20)
+  consentimentoAceitoEm       DateTime           @map("consentimento_aceito_em") @db.Timestamptz(3)
+  consentimentoCanal          CanalConsentimento @map("consentimento_canal")
+  /// RN26: aceite específico para exibir e anunciar o nome completo no painel.
+  consentimentoExibicaoPainel Boolean            @map("consentimento_exibicao_painel")
+
+  expoPushTokens String[] @default([]) @map("expo_push_tokens")
+  /// Quem criou a conta; no autocadastro, a própria pessoa.
+  criadoPorId    String   @map("criado_por_id") @db.Uuid
+  criadoEm       DateTime @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm   DateTime @default(now()) @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  unidade   Unidade? @relation(fields: [unidadeId], references: [id], onDelete: Restrict)
+  criadoPor Usuario  @relation("UsuarioCriadoPor", fields: [criadoPorId], references: [id], onDelete: Restrict)
+
+  usuariosCriados      Usuario[]          @relation("UsuarioCriadoPor")
+  medico               Medico?            @relation("MedicoConta")
+  medicosCriados       Medico[]           @relation("MedicoCriadoPor")
+  chamadosComoPaciente Chamado[]          @relation("ChamadoPaciente")
+  chamadosCriados      Chamado[]          @relation("ChamadoCriadoPor")
+  chegadasConfirmadas  Chamado[]          @relation("ChamadoChegadaConfirmadaPor")
+  chamadosCancelados   Chamado[]          @relation("ChamadoCanceladoPor")
+  bloqueiosCriados     Bloqueio[]
+  sessoes              Sessao[]
+  redefinicoesSenha    RedefinicaoSenha[]
+  registrosDeAuditoria Auditoria[]
+
+  @@index([unidadeId, perfil])
+  @@map("usuarios")
+}
+
+/// Um refresh token (ADR 0020). Só o SHA-256 é guardado. Rotacionar = revogar
+/// esta linha e apontar para a nova em substituida_por_id.
+model Sessao {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuarioId        String    @map("usuario_id") @db.Uuid
+  /// Todas as rotações de um mesmo login compartilham a família.
+  familiaId        String    @map("familia_id") @db.Uuid
+  /// SHA-256 em hexadecimal do refresh token.
+  tokenHash        String    @unique(map: "sessoes_token_hash_key") @map("token_hash") @db.Char(64)
+  criadoEm         DateTime  @default(now()) @map("criado_em") @db.Timestamptz(3)
+  expiraEm         DateTime  @map("expira_em") @db.Timestamptz(3)
+  revogadaEm       DateTime? @map("revogada_em") @db.Timestamptz(3)
+  substituidaPorId String?   @unique(map: "sessoes_substituida_por_id_key") @map("substituida_por_id") @db.Uuid
+  ip               String?   @db.Inet
+  userAgent        String?   @map("user_agent") @db.VarChar(300)
+
+  usuario        Usuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+  substituidaPor Sessao? @relation("SessaoRotacao", fields: [substituidaPorId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  substitui      Sessao? @relation("SessaoRotacao")
+
+  @@index([usuarioId, revogadaEm])
+  @@index([familiaId])
+  @@map("sessoes")
+}
+
+/// Pedido de nova senha (ADR 0020): token de uso único, válido por 1 hora.
+model RedefinicaoSenha {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuarioId    String    @map("usuario_id") @db.Uuid
+  /// SHA-256 em hexadecimal do token enviado por e-mail.
+  tokenHash    String    @unique(map: "redefinicoes_senha_token_hash_key") @map("token_hash") @db.Char(64)
+  criadoEm     DateTime  @default(now()) @map("criado_em") @db.Timestamptz(3)
+  expiraEm     DateTime  @map("expira_em") @db.Timestamptz(3)
+  /// Preenchido quando a senha é trocada com este token.
+  usadoEm      DateTime? @map("usado_em") @db.Timestamptz(3)
+  /// Preenchido quando um link mais novo é pedido para a mesma conta.
+  invalidadoEm DateTime? @map("invalidado_em") @db.Timestamptz(3)
+  ip           String?   @db.Inet
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Restrict)
+
+  @@index([usuarioId])
+  @@map("redefinicoes_senha")
+}
+
+/// RF34: trilha de auditoria. Só inserção: um gatilho recusa UPDATE e DELETE.
+model Auditoria {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// Nulo quando a ação não tem pessoa autenticada (ex.: seed).
+  atorId     String?  @map("ator_id") @db.Uuid
+  atorPerfil Perfil?  @map("ator_perfil")
+  /// Unidade do ator no momento da ação (recepção e manutenção).
+  unidadeId  String?  @map("unidade_id") @db.Uuid
+  /// criar, atualizar, desativar, alocar, desalocar, redefinir_senha…
+  acao       String   @db.VarChar(40)
+  /// usuario, medico, chamado…
+  recurso    String   @db.VarChar(40)
+  recursoId  String   @map("recurso_id") @db.VarChar(64)
+  em         DateTime @default(now()) @db.Timestamptz(3)
+  ip         String?  @db.Inet
+  /// Quais campos mudaram (nomes, nunca valores sensíveis como senha ou CPF).
+  detalhes   Json?    @db.JsonB
+
+  ator    Usuario? @relation(fields: [atorId], references: [id], onDelete: Restrict)
+  unidade Unidade? @relation(fields: [unidadeId], references: [id], onDelete: Restrict)
+
+  @@index([recurso, recursoId, em])
+  @@index([atorId, em])
+  @@index([unidadeId, em])
+  @@map("auditoria")
+}
+
+// ---------------------------------------------------------------------------
+// Cadastros base
+// ---------------------------------------------------------------------------
+
+model Especialidade {
+  /// Nome do ícone no design system: cardiologia, clinicoGeral… Derivado do nome
+  /// na criação e nunca alterado. Chave primária: 409 ESPECIALIDADE_JA_CADASTRADA.
+  id            String   @id @db.VarChar(64)
+  nome          String   @db.VarChar(60)
+  descricao     String   @db.VarChar(300)
+  palavrasChave String[] @default([]) @map("palavras_chave")
+  ativa         Boolean  @default(true)
+  criadoEm      DateTime @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm  DateTime @default(now()) @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  unidades         UnidadeEspecialidade[]
+  medicos          MedicoEspecialidade[]
+  disponibilidades Disponibilidade[]
+  chamados         Chamado[]
+
+  @@index([ativa, nome])
+  @@map("especialidades")
+}
+
+model Unidade {
+  id                 String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome               String      @db.VarChar(120)
+  tipo               TipoUnidade
+  /// Só os 14 dígitos (CHECK). UNIQUE: 409 CNPJ_JA_CADASTRADO.
+  cnpj               String      @unique(map: "unidades_cnpj_key") @db.Char(14)
+  enderecoLogradouro String      @map("endereco_logradouro") @db.VarChar(120)
+  enderecoNumero     String      @map("endereco_numero") @db.VarChar(10)
+  enderecoBairro     String      @map("endereco_bairro") @db.VarChar(60)
+  enderecoCidade     String      @map("endereco_cidade") @db.VarChar(60)
+  enderecoUf         String      @map("endereco_uf") @db.Char(2)
+  enderecoCep        String      @map("endereco_cep") @db.Char(8)
+  /// Bairro em minúsculas e sem acento, para a busca (RF09).
+  bairroBusca        String      @map("bairro_busca") @db.VarChar(60)
+  telefone           String      @db.VarChar(13)
+  ativa              Boolean     @default(true)
+  criadoEm           DateTime    @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm       DateTime    @default(now()) @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  especialidades   UnidadeEspecialidade[]
+  medicos          MedicoUnidade[]
+  usuarios         Usuario[]
+  consultorios     Consultorio[]
+  disponibilidades Disponibilidade[]
+  bloqueios        Bloqueio[]
+  chamados         Chamado[]
+  auditoria        Auditoria[]
+
+  @@index([ativa, nome])
+  @@index([bairroBusca])
+  @@map("unidades")
+}
+
+model UnidadeEspecialidade {
+  unidadeId       String   @map("unidade_id") @db.Uuid
+  especialidadeId String   @map("especialidade_id") @db.VarChar(64)
+  criadoEm        DateTime @default(now()) @map("criado_em") @db.Timestamptz(3)
+
+  unidade       Unidade       @relation(fields: [unidadeId], references: [id], onDelete: Restrict)
+  especialidade Especialidade @relation(fields: [especialidadeId], references: [id], onDelete: Restrict)
+
+  @@id([unidadeId, especialidadeId])
+  @@index([especialidadeId])
+  @@map("unidades_especialidades")
+}
+
+model Medico {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  /// Conta do médico no app. Pode ficar vazia: o cadastro vem antes da conta.
+  /// UNIQUE: uma conta ligada a no máximo um médico.
+  usuarioId      String?      @unique(map: "medicos_usuario_id_key") @map("usuario_id") @db.Uuid
+  /// Com "Dr." ou "Dra.", como aparece para o paciente.
+  nome           String       @db.VarChar(120)
+  conselhoTipo   TipoConselho @default(CRM) @map("conselho_tipo")
+  conselhoNumero String       @map("conselho_numero") @db.VarChar(7)
+  conselhoUf     String       @map("conselho_uf") @db.Char(2)
+  ativo          Boolean      @default(true)
+  /// Sempre um administrativo (RN24).
+  criadoPorId    String       @map("criado_por_id") @db.Uuid
+  criadoEm       DateTime     @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm   DateTime     @default(now()) @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  usuario   Usuario? @relation("MedicoConta", fields: [usuarioId], references: [id], onDelete: Restrict)
+  criadoPor Usuario  @relation("MedicoCriadoPor", fields: [criadoPorId], references: [id], onDelete: Restrict)
+
+  unidades         MedicoUnidade[]
+  especialidades   MedicoEspecialidade[]
+  disponibilidades Disponibilidade[]
+  bloqueios        Bloqueio[]
+  chamados         Chamado[]
+
+  /// Um registro por conselho, UF e número: 409 CONSELHO_JA_CADASTRADO.
+  @@unique([conselhoTipo, conselhoUf, conselhoNumero], map: "medicos_conselho_key")
+  @@index([ativo, nome])
+  @@map("medicos")
+}
+
+/// Alocação do médico numa unidade (RF42). Desalocar remove a linha; o histórico
+/// fica na auditoria.
+model MedicoUnidade {
+  medicoId  String   @map("medico_id") @db.Uuid
+  unidadeId String   @map("unidade_id") @db.Uuid
+  criadoEm  DateTime @default(now()) @map("criado_em") @db.Timestamptz(3)
+
+  medico  Medico  @relation(fields: [medicoId], references: [id], onDelete: Restrict)
+  unidade Unidade @relation(fields: [unidadeId], references: [id], onDelete: Restrict)
+
+  @@id([medicoId, unidadeId])
+  @@index([unidadeId])
+  @@map("medicos_unidades")
+}
+
+model MedicoEspecialidade {
+  medicoId        String   @map("medico_id") @db.Uuid
+  especialidadeId String   @map("especialidade_id") @db.VarChar(64)
+  criadoEm        DateTime @default(now()) @map("criado_em") @db.Timestamptz(3)
+
+  medico        Medico        @relation(fields: [medicoId], references: [id], onDelete: Restrict)
+  especialidade Especialidade @relation(fields: [especialidadeId], references: [id], onDelete: Restrict)
+
+  @@id([medicoId, especialidadeId])
+  @@index([especialidadeId])
+  @@map("medicos_especialidades")
+}
+
+// ---------------------------------------------------------------------------
+// Agenda (modelada agora; as rotas entram no módulo de agenda)
+// ---------------------------------------------------------------------------
+
+/// Sala de atendimento da unidade (ex.: "04", "Sala Azul").
+model Consultorio {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  unidadeId     String   @map("unidade_id") @db.Uuid
+  identificacao String   @db.VarChar(30)
+  descricao     String?  @db.VarChar(200)
+  ativo         Boolean  @default(true)
+  criadoEm      DateTime @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm  DateTime @default(now()) @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  unidade  Unidade   @relation(fields: [unidadeId], references: [id], onDelete: Restrict)
+  chamados Chamado[]
+
+  /// Duas salas com o mesmo nome na mesma unidade confundiriam o painel.
+  @@unique([unidadeId, identificacao], map: "consultorios_unidade_identificacao_key")
+  @@index([unidadeId, ativo])
+  @@map("consultorios")
+}
+
+/// Disponibilidade recorrente do médico numa unidade (RF10). Os horários livres
+/// são calculados: disponibilidades − bloqueios − chamados que ocupam horário.
+model Disponibilidade {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  medicoId        String    @map("medico_id") @db.Uuid
+  unidadeId       String    @map("unidade_id") @db.Uuid
+  especialidadeId String    @map("especialidade_id") @db.VarChar(64)
+  /// 0 = domingo … 6 = sábado (CHECK).
+  diasSemana      Int[]     @map("dias_semana") @db.SmallInt
+  /// Hora local de Recife.
+  horaInicio      DateTime  @map("hora_inicio") @db.Time(0)
+  horaFim         DateTime  @map("hora_fim") @db.Time(0)
+  duracaoMinutos  Int       @map("duracao_minutos") @db.SmallInt
+  vigenciaInicio  DateTime? @map("vigencia_inicio") @db.Date
+  vigenciaFim     DateTime? @map("vigencia_fim") @db.Date
+  ativa           Boolean   @default(true)
+  criadoEm        DateTime  @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm    DateTime  @default(now()) @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  medico        Medico        @relation(fields: [medicoId], references: [id], onDelete: Restrict)
+  unidade       Unidade       @relation(fields: [unidadeId], references: [id], onDelete: Restrict)
+  especialidade Especialidade @relation(fields: [especialidadeId], references: [id], onDelete: Restrict)
+
+  @@index([medicoId, ativa])
+  @@index([unidadeId, especialidadeId, ativa])
+  @@map("disponibilidades")
+}
+
+/// Período em que o médico não atende (RF11).
+model Bloqueio {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  medicoId     String   @map("medico_id") @db.Uuid
+  /// Nulo = vale para todas as unidades do médico.
+  unidadeId    String?  @map("unidade_id") @db.Uuid
+  inicio       DateTime @db.Timestamptz(3)
+  fim          DateTime @db.Timestamptz(3)
+  motivo       String?  @db.VarChar(200)
+  ativo        Boolean  @default(true)
+  criadoPorId  String   @map("criado_por_id") @db.Uuid
+  criadoEm     DateTime @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm DateTime @default(now()) @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  medico    Medico   @relation(fields: [medicoId], references: [id], onDelete: Restrict)
+  unidade   Unidade? @relation(fields: [unidadeId], references: [id], onDelete: Restrict)
+  criadoPor Usuario  @relation(fields: [criadoPorId], references: [id], onDelete: Restrict)
+
+  @@index([medicoId, inicio])
+  @@map("bloqueios")
+}
+
+/// Consulta agendada ou atendimento espontâneo (ADR-012 do DAES). O próprio
+/// chamado é a reserva do horário: o índice único parcial
+/// chamados_medico_horario (migration) barra o overbooking (RN02, ADR 0021).
+model Chamado {
+  id                     String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  pacienteId             String        @map("paciente_id") @db.Uuid
+  unidadeId              String        @map("unidade_id") @db.Uuid
+  especialidadeId        String        @map("especialidade_id") @db.VarChar(64)
+  tipo                   TipoChamado
+  /// Obrigatório no agendado; no espontâneo, nulo até o aceite (P14).
+  medicoId               String?       @map("medico_id") @db.Uuid
+  consultorioId          String?       @map("consultorio_id") @db.Uuid
+  /// Só no agendado (CHECK). Instante de início e de fim do horário.
+  inicio                 DateTime?     @db.Timestamptz(3)
+  fim                    DateTime?     @db.Timestamptz(3)
+  status                 StatusChamado
+  urgencia               Urgencia      @default(rotina)
+  origem                 OrigemChamado
+  chegadaConfirmadaEm    DateTime?     @map("chegada_confirmada_em") @db.Timestamptz(3)
+  chegadaConfirmadaPorId String?       @map("chegada_confirmada_por_id") @db.Uuid
+  aceiteEm               DateTime?     @map("aceite_em") @db.Timestamptz(3)
+  atendimentoInicioEm    DateTime?     @map("atendimento_inicio_em") @db.Timestamptz(3)
+  atendimentoFimEm       DateTime?     @map("atendimento_fim_em") @db.Timestamptz(3)
+  canceladoEm            DateTime?     @map("cancelado_em") @db.Timestamptz(3)
+  canceladoPorId         String?       @map("cancelado_por_id") @db.Uuid
+  motivoCancelamento     String?       @map("motivo_cancelamento") @db.VarChar(300)
+  lembrete24hEnviadoEm   DateTime?     @map("lembrete_24h_enviado_em") @db.Timestamptz(3)
+  lembrete2hEnviadoEm    DateTime?     @map("lembrete_2h_enviado_em") @db.Timestamptz(3)
+  criadoPorId            String        @map("criado_por_id") @db.Uuid
+  criadoEm               DateTime      @default(now()) @map("criado_em") @db.Timestamptz(3)
+  atualizadoEm           DateTime      @default(now()) @updatedAt @map("atualizado_em") @db.Timestamptz(3)
+
+  paciente             Usuario       @relation("ChamadoPaciente", fields: [pacienteId], references: [id], onDelete: Restrict)
+  unidade              Unidade       @relation(fields: [unidadeId], references: [id], onDelete: Restrict)
+  especialidade        Especialidade @relation(fields: [especialidadeId], references: [id], onDelete: Restrict)
+  medico               Medico?       @relation(fields: [medicoId], references: [id], onDelete: Restrict)
+  consultorio          Consultorio?  @relation(fields: [consultorioId], references: [id], onDelete: Restrict)
+  chegadaConfirmadaPor Usuario?      @relation("ChamadoChegadaConfirmadaPor", fields: [chegadaConfirmadaPorId], references: [id], onDelete: Restrict)
+  canceladoPor         Usuario?      @relation("ChamadoCanceladoPor", fields: [canceladoPorId], references: [id], onDelete: Restrict)
+  criadoPor            Usuario       @relation("ChamadoCriadoPor", fields: [criadoPorId], references: [id], onDelete: Restrict)
+
+  @@index([pacienteId, criadoEm(sort: Desc)])
+  @@index([unidadeId, status, inicio])
+  @@index([medicoId, status, inicio])
+  @@index([unidadeId, status, urgencia, chegadaConfirmadaEm])
+  @@map("chamados")
+}

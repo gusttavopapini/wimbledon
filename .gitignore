@@ -13,6 +13,8 @@ serviceAccount*.json
 *.key
 
 # --- Dependências e builds ---------------------------------------------------
+# Cliente Prisma: gerado por `prisma generate` (postinstall da API e build).
+apps/api/src/generated/
 node_modules/
 dist/
 coverage/

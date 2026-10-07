@@ -70,6 +70,20 @@ CREATE UNIQUE INDEX chamados_medico_horario
 - O Prisma não declara índice parcial no schema, então ele é escrito em SQL na
   migration ([ADR 0019](0019-prisma-e-migrations.md)).
 
+### Paciente sem dois chamados no mesmo horário (RN03)
+
+Mesmo mecanismo, na mesma migration:
+
+```sql
+CREATE UNIQUE INDEX chamados_paciente_horario
+  ON chamados (paciente_id, inicio)
+  WHERE status NOT IN ('cancelado', 'nao_compareceu');
+```
+
+Ele substitui o passo do ADR-005 do DAES que lia os chamados ativos do paciente
+no horário antes de gravar. Conflito → 409 `HORARIO_INDISPONIVEL`, a mesma
+resposta da RN02.
+
 ### Um plantão ativo por médico (RN20)
 
 Quando a tabela de plantões existir (E2), ela segue o mesmo padrão: um índice

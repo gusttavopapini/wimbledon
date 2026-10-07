@@ -60,9 +60,12 @@ forma de acessar o banco que:
   aponta cada repository afetado.
 - O Prisma não conhece o índice parcial escrito à mão. Toda migration nova deve
   ser revisada antes do commit: se o Prisma gerar
-  `DROP INDEX "chamados_medico_horario"`, essa linha sai. Um teste de
-  integração confere que o índice existe e que ele barra o segundo agendamento
-  no mesmo horário.
+  `DROP INDEX "chamados_medico_horario"`, essa linha sai. Na versão 7.10 isso
+  foi verificado: com o índice aplicado, `prisma migrate dev --create-only` sem
+  mudança no schema gera uma migration vazia. A revisão continua obrigatória,
+  porque o comportamento pode mudar numa versão futura. Um teste de integração
+  confere que o índice existe e que ele barra o segundo agendamento no mesmo
+  horário.
 - `prisma generate` precisa rodar depois do `npm ci`. O `postinstall` da API
   cuida disso; em build, o script `build` gera antes do `tsc`.
 - Os testes de integração precisam de um Postgres (`npm run banco:subir`). O

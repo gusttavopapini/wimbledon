@@ -50,6 +50,7 @@ export default tseslint.config(
       '**/dist/**',
       '**/coverage/**',
       '**/.expo/**',
+      'apps/api/src/generated/**',
       'design-system/**',
       'scripts/gerar-tema.mjs',
       'apps/mobile/src/theme/tokens.ts',

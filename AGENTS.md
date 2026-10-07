@@ -281,6 +281,8 @@ Defenda estas regras em todo código novo.
   `HORARIO_INDISPONIVEL`. Os horários livres são calculados: disponibilidades,
   menos bloqueios, menos chamados ativos
   ([ADR 0021](docs/adr/0021-integridade-por-constraint.md)).
+- **RN03:** o paciente não tem dois chamados ativos começando no mesmo
+  horário. Quem garante é o índice único parcial `chamados_paciente_horario`.
 - **RN04:** cancelar ou reagendar só até 2 h antes do horário.
 - **RN06:** a chegada só é confirmada no dia, pela recepção da unidade do
   chamado.
@@ -415,7 +417,8 @@ Não trate estes itens como decididos sem confirmação:
 - [ ] `npm run build -w @saude/api` e `npm run exportar:web -w @saude/mobile`
       passam.
 - [ ] Se o `schema.prisma` mudou, a migration foi gerada, **revisada** (sem
-      `DROP INDEX "chamados_medico_horario"` nem perda de dados) e commitada
+      `DROP INDEX` de `chamados_medico_horario` ou
+      `chamados_paciente_horario` nem perda de dados) e commitada
       junto.
 - [ ] Rota nova ou alterada: o `openapi.yaml` está atualizado e o checklist da
       seção 7 foi cumprido.

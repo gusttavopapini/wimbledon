@@ -8,3 +8,4 @@ apps/mobile/src/theme/tokens.ts
 scripts/gerar-tema.mjs
 firebase-debug.log
 apps/mobile/src/components/iconesEspecialidade.ts
+apps/api/src/generated
