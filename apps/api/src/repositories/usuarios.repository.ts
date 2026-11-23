@@ -98,6 +98,42 @@ export function criarUsuariosRepository(db: Firestore) {
       return doc.exists ? deDocumento(doc.id, doc.data()!) : null;
     },
 
+    async buscarPorCpf(cpf: string): Promise<Usuario | null> {
+      const r = await usuarios.where('cpf', '==', cpf).limit(1).get();
+      const doc = r.docs[0];
+      return doc ? deDocumento(doc.id, doc.data()) : null;
+    },
+
+    async buscarPorTelefone(telefone: string): Promise<Usuario | null> {
+      const r = await usuarios.where('telefone', '==', telefone).limit(1).get();
+      const doc = r.docs[0];
+      return doc ? deDocumento(doc.id, doc.data()) : null;
+    },
+
+    /** Equipe fixa de uma unidade (recepcionistas e manutenção). */
+    async listarDaUnidade(unidadeId: string): Promise<Usuario[]> {
+      const r = await usuarios.where('unidadeId', '==', unidadeId).get();
+      return r.docs
+        .map((d) => deDocumento(d.id, d.data()))
+        .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    },
+
+    async listarPorPerfil(perfil: string): Promise<Usuario[]> {
+      const r = await usuarios.where('perfil', '==', perfil).get();
+      return r.docs
+        .map((d) => deDocumento(d.id, d.data()))
+        .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    },
+
+    async definirStatus(id: string, status: Usuario['status']): Promise<void> {
+      await usuarios.doc(id).update({ status, atualizadoEm: FieldValue.serverTimestamp() });
+    },
+
+    /** Token do Expo para notificações push (sem repetir). */
+    async adicionarPushToken(id: string, token: string): Promise<void> {
+      await usuarios.doc(id).update({ expoPushTokens: FieldValue.arrayUnion(token) });
+    },
+
     /** Unidades do médico no documento do usuário (espelho das claims). */
     async definirUnidades(id: string, unidadeIds: string[]): Promise<void> {
       await usuarios.doc(id).update({ unidadeIds, atualizadoEm: FieldValue.serverTimestamp() });

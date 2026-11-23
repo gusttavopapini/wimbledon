@@ -28,7 +28,7 @@ export interface OpcoesApp {
   limites?: Partial<Limites>;
 }
 
-const LIMITES_PADRAO: Limites = { geral: 300, cadastro: 10, janelaMs: 15 * 60 * 1000 };
+const LIMITES_PADRAO: Limites = { geral: 1500, cadastro: 10, janelaMs: 15 * 60 * 1000 };
 
 function limitador(limite: number, janelaMs: number) {
   const opcoes: Partial<OpcoesLimite> = {
@@ -74,6 +74,10 @@ export function criarApp(ambiente: Ambiente, opcoes: OpcoesApp = {}): Express {
       db: firebase.db,
       fuso: ambiente.TZ_PADRAO,
       limiteCadastro: limitador(limites.cadastro, limites.janelaMs),
+      limitePareamento: limitador(limites.cadastro, limites.janelaMs),
+      ia: { apiKey: ambiente.ANTHROPIC_API_KEY, modelo: ambiente.ANTHROPIC_MODEL },
+      integracaoApiKey: ambiente.INTEGRACAO_API_KEY,
+      logger,
     }),
   );
 

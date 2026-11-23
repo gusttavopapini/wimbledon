@@ -15,6 +15,16 @@ export type CodigoErro =
   | 'MEDICO_INATIVO'
   | 'USUARIO_NAO_E_MEDICO'
   | 'LIMITE_EXCEDIDO'
+  | 'HORARIO_INDISPONIVEL'
+  | 'CONSULTA_NO_MESMO_HORARIO'
+  | 'CHAMADO_JA_ACEITO'
+  | 'PLANTAO_JA_ATIVO'
+  | 'SEM_PLANTAO_ATIVO'
+  | 'CHEGADA_FORA_DO_PRAZO'
+  | 'PRAZO_ENCERRADO'
+  | 'STATUS_NAO_PERMITE'
+  | 'PAREAMENTO_INVALIDO'
+  | 'IA_INDISPONIVEL'
   | 'ERRO_INTERNO';
 
 /**
@@ -61,6 +71,23 @@ export const MENSAGENS = {
   USUARIO_NAO_E_MEDICO:
     'A conta escolhida não é de um médico. Confira a conta ou deixe o campo em branco.',
   LIMITE_EXCEDIDO: 'Foram muitas tentativas seguidas. Espere alguns minutos e tente de novo.',
+  HORARIO_INDISPONIVEL:
+    'Esse horário acabou de ser reservado por outra pessoa. Escolha outro horário na lista.',
+  CONSULTA_NO_MESMO_HORARIO:
+    'Você já tem uma consulta marcada nesse mesmo horário. Escolha outro horário.',
+  CHAMADO_JA_ACEITO: 'Outro médico já chamou este paciente. Atualize a fila e escolha o próximo.',
+  PLANTAO_JA_ATIVO: 'Você já tem um plantão aberto. Encerre o plantão atual antes de abrir outro.',
+  SEM_PLANTAO_ATIVO: 'Abra o seu plantão e escolha o consultório antes de chamar pacientes.',
+  CHEGADA_FORA_DO_PRAZO:
+    'A chegada só pode ser confirmada no dia da consulta. Confira a data com o paciente.',
+  PRAZO_ENCERRADO:
+    'Faltam menos de 2 horas para a consulta. Para cancelar ou trocar o horário, ligue para a unidade.',
+  STATUS_NAO_PERMITE:
+    'Esta ação não vale para a situação atual do atendimento. Atualize a tela e confira.',
+  PAREAMENTO_INVALIDO:
+    'Esse código não vale mais. Confira o número que aparece na TV ou peça um código novo.',
+  IA_INDISPONIVEL:
+    'A pré-triagem está fora do ar agora. Você pode escolher a especialidade e marcar a consulta normalmente.',
   ERRO_INTERNO: 'Algo não funcionou do nosso lado. Tente de novo em alguns minutos.',
 } as const satisfies Record<CodigoErro, string>;
 
@@ -80,4 +107,5 @@ export const erros = {
   /** 422: os dados têm o formato certo, mas apontam para algo que não existe. */
   naoProcessavel: (codigo: CodigoErro, detalhes?: unknown) =>
     new AppError(codigo, 422, MENSAGENS[codigo], detalhes),
+  iaIndisponivel: () => new AppError('IA_INDISPONIVEL', 503, MENSAGENS.IA_INDISPONIVEL),
 };

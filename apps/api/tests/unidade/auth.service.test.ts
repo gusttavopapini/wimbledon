@@ -19,6 +19,12 @@ function fakes() {
     buscarPorId: vi.fn<UsuariosRepository['buscarPorId']>(async () => null),
     atualizar: vi.fn<UsuariosRepository['atualizar']>(),
     definirUnidades: vi.fn<UsuariosRepository['definirUnidades']>(),
+    buscarPorCpf: vi.fn<UsuariosRepository['buscarPorCpf']>(),
+    buscarPorTelefone: vi.fn<UsuariosRepository['buscarPorTelefone']>(),
+    listarDaUnidade: vi.fn<UsuariosRepository['listarDaUnidade']>(),
+    listarPorPerfil: vi.fn<UsuariosRepository['listarPorPerfil']>(),
+    definirStatus: vi.fn<UsuariosRepository['definirStatus']>(),
+    adicionarPushToken: vi.fn<UsuariosRepository['adicionarPushToken']>(),
   };
   const auth = {
     createUser: vi.fn(async () => ({})),

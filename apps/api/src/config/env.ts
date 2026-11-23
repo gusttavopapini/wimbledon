@@ -20,6 +20,11 @@ const esquemaAmbiente = z
     FIRESTORE_EMULATOR_HOST: z.string().min(1).optional(),
     FIREBASE_AUTH_EMULATOR_HOST: z.string().min(1).optional(),
     TZ_PADRAO: z.string().default('America/Recife'),
+    /** Claude (Anthropic) para a pré-triagem. Sem chave, usa o provedor de palavras-chave. */
+    ANTHROPIC_API_KEY: z.string().min(1).optional(),
+    ANTHROPIC_MODEL: z.string().min(1).default('claude-haiku-5-5'),
+    /** X-Api-Key das rotas /integracoes/* (N8N). Sem ela, as rotas ficam fechadas. */
+    INTEGRACAO_API_KEY: z.string().min(24, 'use ao menos 24 caracteres aleatórios').optional(),
     LOG_LEVEL: z
       .enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
       .default('info'),

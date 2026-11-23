@@ -1,4 +1,5 @@
 import type { Perfil } from '../schemas/campos.js';
+import type { PainelDispositivo } from './atendimento.js';
 
 export interface UsuarioAutenticado {
   uid: string;
@@ -12,5 +13,7 @@ declare module 'express-serve-static-core' {
   interface Request {
     /** Preenchido pelo middleware autenticar. */
     usuario?: UsuarioAutenticado;
+    /** Preenchido pelo middleware autenticarDispositivo (painel de TV). */
+    dispositivo?: PainelDispositivo;
   }
 }

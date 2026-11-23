@@ -1,0 +1,7 @@
+.env
+.env.*
+!.env.example
+**/node_modules
+apps/mobile/android
+apps/mobile/ios
+coverage

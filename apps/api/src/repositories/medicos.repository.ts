@@ -49,6 +49,17 @@ export function criarMedicosRepository(db: Firestore) {
       return doc.exists ? comDatas<Medico>(doc.id, doc.data()!) : null;
     },
 
+    /** Cadastro de médico ligado à conta (perfil medico) do app. */
+    async buscarPorUsuarioId(usuarioId: string): Promise<Medico | null> {
+      const r = await colecao.where('usuarioId', '==', usuarioId).limit(1).get();
+      const doc = r.docs[0];
+      return doc ? comDatas<Medico>(doc.id, doc.data()) : null;
+    },
+
+    async vincularUsuario(id: string, usuarioId: string): Promise<void> {
+      await colecao.doc(id).update({ usuarioId, atualizadoEm: FieldValue.serverTimestamp() });
+    },
+
     /** Médico + trava do registro no conselho na mesma transação. */
     async criar(medico: SemDatas<Medico>): Promise<{ conflito: boolean }> {
       const { id, ...dados } = medico;

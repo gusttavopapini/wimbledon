@@ -8,6 +8,7 @@ import { carregarAmbiente } from '../../apps/api/src/config/env.js';
 import { inicializarFirebase } from '../../apps/api/src/integrations/firebaseAdmin.js';
 import { criarCadastrosBase } from './cadastros-base.js';
 import { executarSeedAdministrador } from './criar-administrador.js';
+import { criarDemo, SENHA_DEMO_PADRAO } from './demo.js';
 
 const EMULADOR = {
   FIREBASE_PROJECT_ID: 'demo-saude-palma',
@@ -21,7 +22,10 @@ async function principal(): Promise<void> {
   const ambiente = carregarAmbiente();
   const firebase = inicializarFirebase(ambiente);
 
-  await executarSeedAdministrador(firebase, ambiente.FIREBASE_PROJECT_ID, noEmulador);
+  // Sem ADMIN_EMAIL, a conta administrativa de demonstração (abaixo) cumpre o papel.
+  if (noEmulador || process.env.ADMIN_EMAIL) {
+    await executarSeedAdministrador(firebase, ambiente.FIREBASE_PROJECT_ID, noEmulador);
+  }
 
   const r = await criarCadastrosBase(firebase);
   console.log('Cadastros base (dados fictícios):');
@@ -34,6 +38,16 @@ async function principal(): Promise<void> {
   console.log(
     `  médicos:        ${r.medicos.criados} criados, ${r.medicos.existentes} já existiam`,
   );
+
+  if (!process.argv.includes('--sem-demo')) {
+    const senha = process.env.SENHA_DEMO ?? SENHA_DEMO_PADRAO;
+    const d = await criarDemo(firebase, senha);
+    console.log(
+      `Demonstração: ${d.consultorios} consultórios e ${d.janelas} janelas de agenda criados.`,
+    );
+    console.log(`Contas de teste (senha: ${senha}):`);
+    for (const linha of d.linhas) console.log(linha);
+  }
 }
 
 principal().catch((erro: unknown) => {
