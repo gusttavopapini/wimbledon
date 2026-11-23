@@ -53,3 +53,7 @@ apps/mobile/expo-env.d.ts
 
 # --- Claude Code: preferências pessoais de cada dev ---------------------------
 .claude/settings.local.json
+
+# Atalho do Mac
+.firebase-preparado
+api.log
