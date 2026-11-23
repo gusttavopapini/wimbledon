@@ -1,0 +1,38 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "base": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://SEU-PROJETO.vercel.app/api/v1",
+        "EXPO_PUBLIC_FIREBASE_API_KEY": "COLE_A_WEB_API_KEY_DO_FIREBASE",
+        "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN": "wimbledon-90871.firebaseapp.com",
+        "EXPO_PUBLIC_FIREBASE_PROJECT_ID": "wimbledon-90871"
+      }
+    },
+    "celular": {
+      "extends": "base",
+      "distribution": "internal",
+      "android": { "buildType": "apk" },
+      "ios": { "simulator": false }
+    },
+    "tv": {
+      "extends": "base",
+      "distribution": "internal",
+      "env": {
+        "APP_VARIANT": "tv",
+        "EXPO_PUBLIC_MODO": "tv"
+      },
+      "android": { "buildType": "apk" }
+    },
+    "producao": {
+      "extends": "base",
+      "android": { "buildType": "app-bundle" }
+    }
+  },
+  "submit": {
+    "producao": {}
+  }
+}

@@ -1,4 +1,4 @@
-import type { Timestamp} from 'firebase-admin/firestore';
+import type { Timestamp } from 'firebase-admin/firestore';
 import { FieldValue, type Firestore } from 'firebase-admin/firestore';
 
 import type { PainelDispositivo } from '../types/atendimento.js';

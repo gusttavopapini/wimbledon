@@ -137,15 +137,13 @@ export function criarIntegracoesController(deps: {
       const c = await chamados.agendar(comoAtor(p.id), dados, 'whatsapp');
       const [item] = await chamados.enriquecer([c]);
       const a = apresentarChamado(item!, fuso);
-      res
-        .status(201)
-        .json({
-          id: a.id,
-          data: a.data,
-          hora: a.hora,
-          medico: a.medico?.nome,
-          unidade: a.unidade.nome,
-        });
+      res.status(201).json({
+        id: a.id,
+        data: a.data,
+        hora: a.hora,
+        medico: a.medico?.nome,
+        unidade: a.unidade.nome,
+      });
     }),
 
     cancelar: h(async (req, res) => {

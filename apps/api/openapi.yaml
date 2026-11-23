@@ -3,17 +3,25 @@ info:
   title: Saúde na Palma da Mão — API
   version: 0.1.0
   summary: Pré-triagem, agendamento e fila presencial do polo médico do Recife.
-  description: |
-    Único ponto de acesso aos dados. Nenhum cliente (app, PWA, painel de TV,
+  description: 'Único ponto de acesso aos dados. Nenhum cliente (app, PWA, painel de TV,
+
     automações N8N) acessa o Firestore diretamente.
 
+
     - Base: `/api/v1`. Recursos no plural, em português, camelCase.
+
     - Datas em ISO 8601 com offset `-03:00` (America/Recife); gravadas em UTC.
+
     - Autenticação: `Authorization: Bearer <ID token do Firebase Auth>`.
+
     - Todo erro segue o esquema `Erro`.
+
+    '
 servers:
   - url: http://localhost:3333
     description: Desenvolvimento local
+  - url: https://SEU-PROJETO.vercel.app
+    description: Vercel (produção)
 tags:
   - name: Saúde
     description: Monitoramento da API
@@ -23,10 +31,25 @@ tags:
     description: Dados e preferências da própria conta
   - name: Cadastros
     description: Especialidades, unidades e médicos. Leitura pública; escrita do administrativo.
+  - name: Agenda
+    description: Consultórios, disponibilidades, bloqueios e horários livres
+  - name: Chamados
+    description: Agendamento, cancelamento e documentos do paciente
+  - name: Fila
+    description: Chegada, plantão, fila e atendimento
+  - name: Pré-triagem
+    description: Sugestão de especialidade por IA
+  - name: Gestão
+    description: Equipe, pacientes no balcão e indicadores
+  - name: Painel de TV
+    description: Pareamento e chamadas na TV
+  - name: Integrações
+    description: Ferramentas do agente do N8N (WhatsApp)
 paths:
   /health:
     get:
-      tags: [Saúde]
+      tags:
+        - Saúde
       summary: Verifica se a API está no ar
       operationId: verificarSaude
       security: []
@@ -43,13 +66,18 @@ paths:
                 em: '2026-10-04T20:40:00.000-03:00'
   /api/v1/auth/cadastro:
     post:
-      tags: [Acesso]
+      tags:
+        - Acesso
       summary: Cria a conta de um paciente (público)
-      description: |
-        Valida os dados, garante CPF e e-mail únicos (transação com documentos-trava,
+      description: 'Valida os dados, garante CPF e e-mail únicos (transação com documentos-trava,
+
         segura contra cadastros simultâneos), cria a conta no Firebase Auth, grava
+
         `usuarios/{uid}` e define a claim `perfil: "paciente"`. Perfil e status não
+
         podem ser enviados pelo cliente. Limite: 10 cadastros por IP a cada 15 minutos.
+
+        '
       operationId: cadastrarPaciente
       security: []
       requestBody:
@@ -102,14 +130,18 @@ paths:
                   value:
                     erro:
                       codigo: CPF_JA_CADASTRADO
-                      mensagem: Já existe uma conta com esse CPF. Toque em Entrar ou, se não lembrar a senha, em Esqueci minha senha.
+                      mensagem:
+                        Já existe uma conta com esse CPF. Toque em Entrar ou, se não lembrar a
+                        senha, em Esqueci minha senha.
                       detalhes: null
                       requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
                 email:
                   value:
                     erro:
                       codigo: EMAIL_JA_CADASTRADO
-                      mensagem: Já existe uma conta com esse e-mail. Toque em Entrar ou, se não lembrar a senha, em Esqueci minha senha.
+                      mensagem:
+                        Já existe uma conta com esse e-mail. Toque em Entrar ou, se não lembrar
+                        a senha, em Esqueci minha senha.
                       detalhes: null
                       requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
         '429':
@@ -118,7 +150,8 @@ paths:
           $ref: '#/components/responses/ErroInterno'
   /api/v1/auth/me:
     get:
-      tags: [Acesso]
+      tags:
+        - Acesso
       summary: Devolve o usuário logado e o perfil
       operationId: buscarMe
       responses:
@@ -128,7 +161,9 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [usuario, perfil]
+                required:
+                  - usuario
+                  - perfil
                 properties:
                   usuario:
                     $ref: '#/components/schemas/Usuario'
@@ -169,14 +204,20 @@ paths:
           $ref: '#/components/responses/ErroInterno'
   /api/v1/usuarios/me:
     put:
-      tags: [Usuários]
+      tags:
+        - Usuários
       summary: Substitui os dados editáveis e as preferências de acessibilidade
-      description: |
-        Envia o conjunto editável completo. Campo opcional ausente (`sexo`,
+      description: 'Envia o conjunto editável completo. Campo opcional ausente (`sexo`,
+
         `telefone`, `dataNascimento`) é removido. Ligar `lembreteWhatsapp` exige
+
         telefone (400). `consentimento.exibicaoPainel`, se enviado, troca o aceite de
+
         exibir o nome completo no painel de TV; se ausente, mantém o atual.
+
         CPF, e-mail, perfil e status não são aceitos (400).
+
+        '
       operationId: atualizarMe
       requestBody:
         required: true
@@ -214,7 +255,8 @@ paths:
           $ref: '#/components/responses/ErroInterno'
   /api/v1/especialidades:
     get:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Lista as especialidades ativas, por nome (público)
       operationId: listarEspecialidades
       security: []
@@ -225,7 +267,8 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [itens]
+                required:
+                  - itens
                 properties:
                   itens:
                     type: array
@@ -236,7 +279,10 @@ paths:
                   - id: cardiologia
                     nome: Cardiologia
                     descricao: Cuida do coração, da pressão e da circulação do sangue.
-                    palavrasChave: [coração, pressão alta, palpitação]
+                    palavrasChave:
+                      - coração
+                      - pressão alta
+                      - palpitação
                     ativa: true
                     criadoEm: '2026-10-05T09:00:00.000-03:00'
                     atualizadoEm: '2026-10-05T09:00:00.000-03:00'
@@ -245,7 +291,8 @@ paths:
         '500':
           $ref: '#/components/responses/ErroInterno'
     post:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Cadastra uma especialidade (administrativo)
       description: O id sai do nome ("Clínico geral" vira `clinicoGeral`) e casa com o ícone do app.
       operationId: criarEspecialidade
@@ -258,7 +305,10 @@ paths:
             example:
               nome: Cardiologia
               descricao: Cuida do coração, da pressão e da circulação do sangue.
-              palavrasChave: [coração, pressão alta, palpitação]
+              palavrasChave:
+                - coração
+                - pressão alta
+                - palpitação
       responses:
         '201':
           description: Especialidade criada
@@ -287,7 +337,8 @@ paths:
     parameters:
       - $ref: '#/components/parameters/Id'
     get:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Uma especialidade ativa (público)
       operationId: buscarEspecialidade
       security: []
@@ -307,7 +358,8 @@ paths:
         '500':
           $ref: '#/components/responses/ErroInterno'
     put:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Substitui os dados de uma especialidade (administrativo); ativa true reativa
       operationId: atualizarEspecialidade
       requestBody:
@@ -319,7 +371,9 @@ paths:
             example:
               nome: Cardiologia
               descricao: Cuida do coração, da pressão e da circulação do sangue.
-              palavrasChave: [coração, pressão alta]
+              palavrasChave:
+                - coração
+                - pressão alta
               ativa: true
       responses:
         '200':
@@ -341,7 +395,8 @@ paths:
         '500':
           $ref: '#/components/responses/ErroInterno'
     delete:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Desativa uma especialidade (administrativo). Nunca apaga.
       operationId: desativarEspecialidade
       responses:
@@ -361,25 +416,32 @@ paths:
           $ref: '#/components/responses/ErroInterno'
   /api/v1/unidades:
     get:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Lista as unidades ativas, por nome (público)
-      description: |
-        `especialidadeId` e `bairro` filtram no banco (bairro sem diferenciar
+      description: '`especialidadeId` e `bairro` filtram no banco (bairro sem diferenciar
+
         maiúscula e acento). `busca` procura um trecho no nome, no bairro ou na rua.
+
+        '
       operationId: listarUnidades
       security: []
       parameters:
         - name: busca
           in: query
-          schema: { type: string, maxLength: 60 }
+          schema:
+            type: string
+            maxLength: 60
           example: boa vista
         - name: bairro
           in: query
-          schema: { type: string }
+          schema:
+            type: string
           example: Ilha do Leite
         - name: especialidadeId
           in: query
-          schema: { type: string }
+          schema:
+            type: string
           example: cardiologia
       responses:
         '200':
@@ -388,7 +450,8 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [itens]
+                required:
+                  - itens
                 properties:
                   itens:
                     type: array
@@ -401,7 +464,8 @@ paths:
         '500':
           $ref: '#/components/responses/ErroInterno'
     post:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Cadastra uma unidade (administrativo)
       operationId: criarUnidade
       requestBody:
@@ -422,7 +486,9 @@ paths:
                 uf: PE
                 cep: 50070-120
               telefone: (81) 3200-1000
-              especialidadeIds: [cardiologia, clinicoGeral]
+              especialidadeIds:
+                - cardiologia
+                - clinicoGeral
       responses:
         '201':
           description: Unidade criada
@@ -453,7 +519,8 @@ paths:
     parameters:
       - $ref: '#/components/parameters/Id'
     get:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Uma unidade ativa (público)
       operationId: buscarUnidade
       security: []
@@ -473,7 +540,8 @@ paths:
         '500':
           $ref: '#/components/responses/ErroInterno'
     put:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Substitui os dados de uma unidade (administrativo); ativa true reativa
       operationId: atualizarUnidade
       requestBody:
@@ -494,7 +562,10 @@ paths:
                 uf: PE
                 cep: '50070120'
               telefone: '558132001000'
-              especialidadeIds: [cardiologia, clinicoGeral, pediatria]
+              especialidadeIds:
+                - cardiologia
+                - clinicoGeral
+                - pediatria
               ativa: true
       responses:
         '200':
@@ -520,7 +591,8 @@ paths:
         '500':
           $ref: '#/components/responses/ErroInterno'
     delete:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Desativa uma unidade (administrativo). Nunca apaga.
       operationId: desativarUnidade
       responses:
@@ -540,17 +612,20 @@ paths:
           $ref: '#/components/responses/ErroInterno'
   /api/v1/medicos:
     get:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Lista os médicos ativos, por nome (público)
       operationId: listarMedicos
       security: []
       parameters:
         - name: unidadeId
           in: query
-          schema: { type: string }
+          schema:
+            type: string
         - name: especialidadeId
           in: query
-          schema: { type: string }
+          schema:
+            type: string
           example: cardiologia
       responses:
         '200':
@@ -559,7 +634,8 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [itens]
+                required:
+                  - itens
                 properties:
                   itens:
                     type: array
@@ -572,7 +648,8 @@ paths:
         '500':
           $ref: '#/components/responses/ErroInterno'
     post:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Cadastra um médico (somente administrativo; a manutenção não cadastra)
       operationId: criarMedico
       requestBody:
@@ -583,9 +660,14 @@ paths:
               $ref: '#/components/schemas/CriarMedico'
             example:
               nome: Dra. Helena Marinho Duarte
-              conselho: { tipo: CRM, numero: '214365', uf: PE }
-              especialidadeIds: [cardiologia]
-              unidadeIds: [Xk3c9aQ2LmT0pR8sV1wZ]
+              conselho:
+                tipo: CRM
+                numero: '214365'
+                uf: PE
+              especialidadeIds:
+                - cardiologia
+              unidadeIds:
+                - Xk3c9aQ2LmT0pR8sV1wZ
               usuarioId: null
       responses:
         '201':
@@ -617,7 +699,8 @@ paths:
     parameters:
       - $ref: '#/components/parameters/Id'
     get:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Um médico ativo (público)
       operationId: buscarMedico
       security: []
@@ -637,7 +720,8 @@ paths:
         '500':
           $ref: '#/components/responses/ErroInterno'
     put:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Substitui os dados de um médico (somente administrativo)
       description: Ao tirar uma unidade ou desativar, a conta ligada perde o acesso na hora (tokens revogados).
       operationId: atualizarMedico
@@ -649,9 +733,15 @@ paths:
               $ref: '#/components/schemas/AtualizarMedico'
             example:
               nome: Dra. Helena Marinho Duarte
-              conselho: { tipo: CRM, numero: '214365', uf: PE }
-              especialidadeIds: [cardiologia, clinicoGeral]
-              unidadeIds: [Xk3c9aQ2LmT0pR8sV1wZ]
+              conselho:
+                tipo: CRM
+                numero: '214365'
+                uf: PE
+              especialidadeIds:
+                - cardiologia
+                - clinicoGeral
+              unidadeIds:
+                - Xk3c9aQ2LmT0pR8sV1wZ
               usuarioId: null
               ativo: true
       responses:
@@ -678,7 +768,8 @@ paths:
         '500':
           $ref: '#/components/responses/ErroInterno'
     delete:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Desativa um médico (somente administrativo). Nunca apaga.
       operationId: desativarMedico
       responses:
@@ -700,11 +791,14 @@ paths:
     parameters:
       - $ref: '#/components/parameters/Id'
     post:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Aloca o médico numa unidade (administrativo ou manutenção da própria unidade)
-      description: |
-        Idempotente: 201 com Location na primeira vez, 200 se o médico já estava
+      description: 'Idempotente: 201 com Location na primeira vez, 200 se o médico já estava
+
         na unidade. Manutenção de outra unidade recebe 403 FORA_DA_UNIDADE.
+
+        '
       operationId: alocarMedico
       requestBody:
         required: true
@@ -713,7 +807,8 @@ paths:
             schema:
               type: object
               additionalProperties: false
-              required: [unidadeId]
+              required:
+                - unidadeId
               properties:
                 unidadeId:
                   type: string
@@ -755,9 +850,11 @@ paths:
       - name: unidadeId
         in: path
         required: true
-        schema: { type: string }
+        schema:
+          type: string
     delete:
-      tags: [Cadastros]
+      tags:
+        - Cadastros
       summary: Desaloca o médico de uma unidade (administrativo ou manutenção da própria unidade)
       description: Idempotente. A conta ligada perde o acesso à unidade na hora.
       operationId: desalocarMedico
@@ -776,6 +873,1663 @@ paths:
           $ref: '#/components/responses/LimiteExcedido'
         '500':
           $ref: '#/components/responses/ErroInterno'
+  /api/v1/medicos/me:
+    get:
+      tags:
+        - Agenda
+      summary: Médico logado e plantão aberto (perfil medico)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: &id001
+        - tokenFirebase: []
+  /api/v1/medicos/me/agenda:
+    get:
+      tags:
+        - Agenda
+      summary: Agenda do dia do médico logado
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/medicos/{id}/horarios:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+        - Agenda
+      summary: Horários livres (disponibilidades − bloqueios − reservas, RN02). Público.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      description: 'Query: unidadeId (obrigatório), de (AAAA-MM-DD), dias (1-60, padrão 14).'
+  /api/v1/medicos/{id}/disponibilidades:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+        - Agenda
+      summary: Janelas semanais do médico (equipe)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+    post:
+      tags:
+        - Agenda
+      summary: Cria janela semanal (manutenção da unidade ou administrativo)
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              unidadeId: Xk3c9aQ2LmT0pR8sV1wZ
+              diaSemana: 1
+              inicio: 08:00
+              fim: '12:00'
+              duracaoMinutos: 30
+  /api/v1/medicos/{id}/bloqueios:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+        - Agenda
+      summary: Bloqueios do médico (equipe)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+    post:
+      tags:
+        - Agenda
+      summary: Bloqueia um dia ou trecho do dia
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              unidadeId: Xk3c9aQ2LmT0pR8sV1wZ
+              data: '2026-12-24'
+              inicio: null
+              fim: null
+              motivo: Recesso
+  /api/v1/disponibilidades/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    delete:
+      tags:
+        - Agenda
+      summary: Desativa uma janela (exclusão lógica)
+      responses:
+        '204':
+          description: Sem conteúdo
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/bloqueios/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    delete:
+      tags:
+        - Agenda
+      summary: Desativa um bloqueio
+      responses:
+        '204':
+          description: Sem conteúdo
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/unidades/{unidadeId}/consultorios:
+    parameters:
+      - name: unidadeId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Agenda
+      summary: Consultórios da unidade (equipe da unidade)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+    post:
+      tags:
+        - Agenda
+      summary: Cria consultório (manutenção/administrativo)
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              nome: Consultório 4
+  /api/v1/consultorios/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+        - Agenda
+      summary: Renomeia ou desativa consultório
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              ativo: false
+  /api/v1/chamados:
+    post:
+      tags:
+        - Chamados
+      summary: Agenda consulta (paciente; ou equipe em nome do paciente)
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      description:
+        Cria reservasHorario/{medicoId}_{AAAAMMDDTHHmm} e a reserva do paciente na MESMA transação.
+        409 HORARIO_INDISPONIVEL ou CONSULTA_NO_MESMO_HORARIO.
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              medicoId: Qm7d2bR4NpU1sT9vW3xY
+              unidadeId: Xk3c9aQ2LmT0pR8sV1wZ
+              especialidadeId: cardiologia
+              data: '2026-11-25'
+              hora: 09:30
+              formaPagamento: convenio
+  /api/v1/chamados/me:
+    get:
+      tags:
+        - Chamados
+      summary: Consultas do paciente logado (próximas primeiro)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/chamados/espontaneos:
+    post:
+      tags:
+        - Chamados
+      summary: Atendimento sem horário (recepção). Já entra na fila; não escolhe médico (P14).
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              unidadeId: Xk3c9aQ2LmT0pR8sV1wZ
+              pacienteId: u123
+              especialidadeId: clinicoGeral
+              urgencia: prioritario
+  /api/v1/chamados/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+        - Chamados
+      summary: Detalhe do chamado (dono, ou equipe da unidade)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/chamados/{id}/documentos:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+        - Chamados
+      summary: Documentos emitidos no atendimento
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/chamados/{id}/cancelar:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Chamados
+      summary: Cancela (paciente até 2 h antes, RN04). Libera o horário.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /api/v1/chamados/{id}/reagendar:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Chamados
+      summary: Troca o horário (RN04)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              data: '2026-11-26'
+              hora: '10:00'
+  /api/v1/chamados/{id}/chegada:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Fila
+      summary: Confirma a chegada no dia (recepção da unidade, RN06). Entra na fila (RN08).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /api/v1/chamados/{id}/falta:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Fila
+      summary: Marca falta
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /api/v1/chamados/{id}/aceitar:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Fila
+      summary: Médico chama o paciente. travasAceite/{id} na mesma transação (RN21). Aparece na TV.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      description: 409 CHAMADO_JA_ACEITO; 422 SEM_PLANTAO_ATIVO.
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /api/v1/chamados/{id}/chamar-novamente:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Fila
+      summary: Mostra o nome de novo na TV
+      responses:
+        '204':
+          description: Sem conteúdo
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /api/v1/chamados/{id}/atendimento:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Fila
+      summary: iniciar | nao_compareceu | emergencia
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              acao: iniciar
+  /api/v1/chamados/{id}/concluir:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Fila
+      summary: Conclui e emite documentos
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              orientacao: Beber bastante água.
+              documentos:
+                - tipo: receita
+                  titulo: Receita
+                  conteudo: Uso conforme orientação.
+                  itens:
+                    - Dipirona 500 mg, 1 comprimido de 6/6 h se dor
+  /api/v1/unidades/{unidadeId}/chamados:
+    parameters:
+      - name: unidadeId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Fila
+      summary: 'Agenda do dia da unidade (recepção/médico/gestão). Query: data.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/unidades/{unidadeId}/indicadores:
+    parameters:
+      - name: unidadeId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Gestão
+      summary: Números do dia (manutenção/administrativo)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/plantoes:
+    post:
+      tags:
+        - Fila
+      summary: Abre plantão escolhendo o consultório (P13). Um por médico (RN20).
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      description: 409 PLANTAO_JA_ATIVO.
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              unidadeId: Xk3c9aQ2LmT0pR8sV1wZ
+              consultorioId: c1
+  /api/v1/plantoes/atual:
+    get:
+      tags:
+        - Fila
+      summary: Plantão aberto do médico
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+    delete:
+      tags:
+        - Fila
+      summary: Encerra o plantão
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/plantoes/atual/fila:
+    get:
+      tags:
+        - Fila
+      summary: Fila do plantão ordenada por urgência, horário e chegada (RN22)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/documentos/me:
+    get:
+      tags:
+        - Chamados
+      summary: Documentos do paciente
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/documentos/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+        - Chamados
+      summary: Um documento
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/pretriagens:
+    post:
+      tags:
+        - Pré-triagem
+      summary:
+        Pré-triagem com IA (Claude). Sinais de alerta checados na API; a IA não escolhe a unidade
+        (RF45).
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+        '503':
+          $ref: '#/components/responses/IaIndisponivel'
+      description:
+        'Só idade, sexo e relato vão para a IA (RN12). Em alerta: alerta=true, urgencia=emergencia
+        e nenhuma unidade.'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              relato: 'Sinto: Dor de cabeça. Há quanto tempo: Há alguns dias.'
+  /api/v1/equipe/contas:
+    post:
+      tags:
+        - Gestão
+      summary: 'Cria conta de equipe (RN24: manutenção só cria recepcionista)'
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      description: Sem senha, devolve uma senha provisória UMA vez.
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              nome: Rita Souza Lima
+              cpf: '52998224725'
+              email: rita@exemplo.com
+              perfil: recepcionista
+              unidadeId: Xk3c9aQ2LmT0pR8sV1wZ
+    get:
+      tags:
+        - Gestão
+      summary: 'Contas por perfil (administrativo). Query: perfil.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/unidades/{unidadeId}/equipe:
+    parameters:
+      - name: unidadeId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Gestão
+      summary: Contas e médicos da unidade
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/usuarios/{id}/redefinir-senha:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Gestão
+      summary: Senha provisória (manutenção/administrativo; nunca recepção, RN23)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /api/v1/usuarios/{id}/status:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+        - Gestão
+      summary: Desativa ou reativa conta
+      responses:
+        '204':
+          description: Sem conteúdo
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              ativo: false
+  /api/v1/usuarios/me/push-token:
+    post:
+      tags:
+        - Usuários
+      summary: Registra token do Expo para notificações
+      responses:
+        '204':
+          description: Sem conteúdo
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              token: ExponentPushToken[xxxx]
+  /api/v1/pacientes:
+    get:
+      tags:
+        - Gestão
+      summary: 'Busca paciente por CPF (balcão). Query: cpf.'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+    post:
+      tags:
+        - Gestão
+      summary: Pré-cadastro no balcão (status pre_cadastro)
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              nome: José da Silva Teste
+              cpf: '52998224725'
+              telefone: (81) 99999-1234
+              exibicaoPainel: false
+  /api/v1/unidades/{unidadeId}/paineis:
+    parameters:
+      - name: unidadeId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Painel de TV
+      summary: TVs pareadas da unidade
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+    post:
+      tags:
+        - Painel de TV
+      summary: Aprova o código mostrado na TV e cria o dispositivo
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              codigo: '482913'
+              nome: TV da recepção
+  /api/v1/paineis/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    delete:
+      tags:
+        - Painel de TV
+      summary: Desliga a TV (o token deixa de valer)
+      responses:
+        '204':
+          description: Sem conteúdo
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '403':
+          $ref: '#/components/responses/AcessoNegado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id001
+  /api/v1/painel/pareamentos:
+    post:
+      tags:
+        - Painel de TV
+      summary: A TV pede um código de 6 números (público, com limite)
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /api/v1/painel/pareamentos/consulta:
+    post:
+      tags:
+        - Painel de TV
+      summary: A TV pergunta se foi aprovada; recebe o token uma vez
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              codigo: '482913'
+              segredo: segredo-recebido-no-pareamento
+  /api/v1/painel/estado:
+    get:
+      tags:
+        - Painel de TV
+      summary: Chamada atual e anteriores (X-Device-Token, RN25). Fallback de polling.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: &id002
+        - tokenDispositivo: []
+  /api/v1/painel/eventos:
+    get:
+      tags:
+        - Painel de TV
+      summary: SSE (text/event-stream). Na Vercel a conexão dura ~50 s e o cliente reconecta (ADR 0023).
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id002
+  /api/v1/integracoes/triagem:
+    post:
+      tags:
+        - Integrações
+      summary: Pré-triagem pelo WhatsApp (N8N)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+        '503':
+          $ref: '#/components/responses/IaIndisponivel'
+      security: &id003
+        - chaveIntegracao: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              telefone: '5581990000001'
+              relato: Estou com tosse há uma semana
+  /api/v1/integracoes/especialidades/{id}/unidades:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+        - Integrações
+      summary: Unidades que atendem a especialidade
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id003
+  /api/v1/integracoes/medicos:
+    get:
+      tags:
+        - Integrações
+      summary: Médicos por unidade/especialidade
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id003
+  /api/v1/integracoes/horarios:
+    get:
+      tags:
+        - Integrações
+      summary: Até 3 dias com até 6 horários (para caber no WhatsApp)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id003
+  /api/v1/integracoes/pacientes/{telefone}/consultas:
+    parameters:
+      - name: telefone
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Integrações
+      summary: Consultas ativas do paciente pelo telefone
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id003
+  /api/v1/integracoes/agendamentos:
+    post:
+      tags:
+        - Integrações
+      summary: Agenda pelo WhatsApp
+      responses:
+        '201':
+          description: Criado
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '409':
+          $ref: '#/components/responses/Conflito'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              telefone: '5581990000001'
+              medicoId: Qm7d2bR4NpU1sT9vW3xY
+              unidadeId: Xk3c9aQ2LmT0pR8sV1wZ
+              especialidadeId: pneumologia
+              data: '2026-11-25'
+              hora: 09:30
+  /api/v1/integracoes/agendamentos/{id}/cancelar:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags:
+        - Integrações
+      summary: Cancela pelo WhatsApp (RN04)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '400':
+          $ref: '#/components/responses/DadosInvalidos'
+        '401':
+          $ref: '#/components/responses/NaoAutenticado'
+        '404':
+          $ref: '#/components/responses/NaoEncontrado'
+        '422':
+          $ref: '#/components/responses/NaoProcessavel'
+        '429':
+          $ref: '#/components/responses/LimiteExcedido'
+        '500':
+          $ref: '#/components/responses/ErroInterno'
+      security: *id003
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+            example:
+              telefone: '5581990000001'
 components:
   securitySchemes:
     tokenFirebase:
@@ -783,6 +2537,16 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: ID token emitido pelo Firebase Auth após o login no app.
+    tokenDispositivo:
+      type: apiKey
+      in: header
+      name: X-Device-Token
+      description: Token do painel de TV, obtido no pareamento. Só leitura, uma unidade (RN25).
+    chaveIntegracao:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Chave das integrações (N8N). Só vale em /integracoes/*.
   parameters:
     Id:
       name: id
@@ -791,7 +2555,7 @@ components:
       description: Letras, números, "_" e "-". Outro formato responde 400.
       schema:
         type: string
-        pattern: '^[A-Za-z0-9_-]{1,128}$'
+        pattern: ^[A-Za-z0-9_-]{1,128}$
   responses:
     AcessoNegado:
       description: Perfil sem permissão (ACESSO_NEGADO) ou unidade de outra pessoa (FORA_DA_UNIDADE).
@@ -804,7 +2568,9 @@ components:
               value:
                 erro:
                   codigo: ACESSO_NEGADO
-                  mensagem: Sua conta não tem acesso a esta parte do app. Se precisar, fale com a administração da unidade.
+                  mensagem:
+                    Sua conta não tem acesso a esta parte do app. Se precisar, fale com a administração
+                    da unidade.
                   detalhes: null
                   requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
             unidade:
@@ -823,14 +2589,19 @@ components:
           example:
             erro:
               codigo: CNPJ_JA_CADASTRADO
-              mensagem: Já existe uma unidade com esse CNPJ. Confira os números ou edite a unidade que já existe.
+              mensagem:
+                Já existe uma unidade com esse CNPJ. Confira os números ou edite a unidade que
+                já existe.
               detalhes: null
               requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
     NaoProcessavel:
-      description: |
-        Formato certo, mas aponta para algo que não existe ou está desativado:
+      description: 'Formato certo, mas aponta para algo que não existe ou está desativado:
+
         ESPECIALIDADE_NAO_CADASTRADA, UNIDADE_NAO_CADASTRADA, MEDICO_NAO_CADASTRADO,
+
         MEDICO_INATIVO ou USUARIO_NAO_E_MEDICO.
+
+        '
       content:
         application/json:
           schema:
@@ -838,7 +2609,9 @@ components:
           example:
             erro:
               codigo: MEDICO_NAO_CADASTRADO
-              mensagem: Esse médico não está cadastrado. Peça para a administração cadastrar o médico antes de alocar.
+              mensagem:
+                Esse médico não está cadastrado. Peça para a administração cadastrar o médico
+                antes de alocar.
               detalhes:
                 - campo: id
                   mensagem: Não há médico cadastrado com o id Qm7d2bR4NpU1sT9vW3xY.
@@ -880,7 +2653,9 @@ components:
           example:
             erro:
               codigo: NAO_ENCONTRADO
-              mensagem: Não encontramos os dados da sua conta. Saia e entre de novo; se continuar, fale com a recepção.
+              mensagem:
+                Não encontramos os dados da sua conta. Saia e entre de novo; se continuar, fale
+                com a recepção.
               detalhes: null
               requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
     LimiteExcedido:
@@ -907,14 +2682,28 @@ components:
               mensagem: Algo não funcionou do nosso lado. Tente de novo em alguns minutos.
               detalhes: null
               requestId: 3f1c2a9e-0b7d-4c55-9a51-2f7d8e6b1c40
+    IaIndisponivel:
+      description: IA fora do ar (IA_INDISPONIVEL)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Erro'
   schemas:
     Perfil:
       type: string
-      enum: [paciente, recepcionista, medico, manutencao, administrativo]
+      enum:
+        - paciente
+        - recepcionista
+        - medico
+        - manutencao
+        - administrativo
     Preferencias:
       type: object
       additionalProperties: false
-      required: [letraGrande, altoContraste, lembreteWhatsapp]
+      required:
+        - letraGrande
+        - altoContraste
+        - lembreteWhatsapp
       properties:
         letraGrande:
           type: boolean
@@ -925,7 +2714,14 @@ components:
     Cadastro:
       type: object
       additionalProperties: false
-      required: [nome, cpf, dataNascimento, telefone, email, senha, consentimento]
+      required:
+        - nome
+        - cpf
+        - dataNascimento
+        - telefone
+        - email
+        - senha
+        - consentimento
       properties:
         nome:
           type: string
@@ -954,7 +2750,10 @@ components:
         consentimento:
           type: object
           additionalProperties: false
-          required: [versaoTermo, aceito, exibicaoPainel]
+          required:
+            - versaoTermo
+            - aceito
+            - exibicaoPainel
           properties:
             versaoTermo:
               type: string
@@ -964,17 +2763,29 @@ components:
               const: true
             canal:
               type: string
-              enum: [app, pwa]
+              enum:
+                - app
+                - pwa
               default: app
             exibicaoPainel:
               type: boolean
-              description: Aceite específico para exibir e anunciar o nome completo no painel de TV da recepção.
+              description:
+                Aceite específico para exibir e anunciar o nome completo no painel de TV da
+                recepção.
     Sexo:
       type: string
-      enum: [feminino, masculino, outro, prefiro_nao_informar]
+      enum:
+        - feminino
+        - masculino
+        - outro
+        - prefiro_nao_informar
     ContaCriada:
       type: object
-      required: [id, nome, perfil, status]
+      required:
+        - id
+        - nome
+        - perfil
+        - status
       properties:
         id:
           type: string
@@ -984,11 +2795,16 @@ components:
           $ref: '#/components/schemas/Perfil'
         status:
           type: string
-          enum: [ativo, pre_cadastro, inativo]
+          enum:
+            - ativo
+            - pre_cadastro
+            - inativo
     AtualizarMe:
       type: object
       additionalProperties: false
-      required: [nome, preferencias]
+      required:
+        - nome
+        - preferencias
       properties:
         nome:
           type: string
@@ -1004,14 +2820,24 @@ components:
         consentimento:
           type: object
           additionalProperties: false
-          required: [exibicaoPainel]
+          required:
+            - exibicaoPainel
           properties:
             exibicaoPainel:
               type: boolean
     Usuario:
       type: object
       required:
-        [id, nome, email, cpf, perfil, preferencias, consentimento, status, criadoEm, atualizadoEm]
+        - id
+        - nome
+        - email
+        - cpf
+        - perfil
+        - preferencias
+        - consentimento
+        - status
+        - criadoEm
+        - atualizadoEm
       properties:
         id:
           type: string
@@ -1022,12 +2848,16 @@ components:
           format: email
         cpf:
           type: string
-          pattern: '^\d{11}$'
+          pattern: ^\d{11}$
         telefone:
-          type: [string, 'null']
+          type:
+            - string
+            - 'null'
           description: E.164 sem o "+"
         dataNascimento:
-          type: [string, 'null']
+          type:
+            - string
+            - 'null'
           format: date
         sexo:
           oneOf:
@@ -1036,7 +2866,9 @@ components:
         perfil:
           $ref: '#/components/schemas/Perfil'
         unidadeId:
-          type: [string, 'null']
+          type:
+            - string
+            - 'null'
         unidadeIds:
           type: array
           items:
@@ -1045,7 +2877,11 @@ components:
           $ref: '#/components/schemas/Preferencias'
         consentimento:
           type: object
-          required: [versaoTermo, aceitoEm, canal, exibicaoPainel]
+          required:
+            - versaoTermo
+            - aceitoEm
+            - canal
+            - exibicaoPainel
           properties:
             versaoTermo:
               type: string
@@ -1054,12 +2890,19 @@ components:
               format: date-time
             canal:
               type: string
-              enum: [app, pwa, recepcao, seed]
+              enum:
+                - app
+                - pwa
+                - recepcao
+                - seed
             exibicaoPainel:
               type: boolean
         status:
           type: string
-          enum: [ativo, pre_cadastro, inativo]
+          enum:
+            - ativo
+            - pre_cadastro
+            - inativo
         criadoEm:
           type: string
           format: date-time
@@ -1069,164 +2912,292 @@ components:
           format: date-time
     Especialidade:
       type: object
-      required: [id, nome, descricao, palavrasChave, ativa, criadoEm, atualizadoEm]
+      required:
+        - id
+        - nome
+        - descricao
+        - palavrasChave
+        - ativa
+        - criadoEm
+        - atualizadoEm
       properties:
         id:
           type: string
           description: Igual ao nome do ícone no app (cardiologia, clinicoGeral…).
-        nome: { type: string }
-        descricao: { type: string }
+        nome:
+          type: string
+        descricao:
+          type: string
         palavrasChave:
           type: array
-          items: { type: string }
-        ativa: { type: boolean }
-        criadoEm: { type: string, format: date-time }
-        atualizadoEm: { type: string, format: date-time }
+          items:
+            type: string
+        ativa:
+          type: boolean
+        criadoEm:
+          type: string
+          format: date-time
+        atualizadoEm:
+          type: string
+          format: date-time
     CriarEspecialidade:
       unevaluatedProperties: false
       allOf:
         - $ref: '#/components/schemas/CamposEspecialidade'
     CamposEspecialidade:
       type: object
-      required: [nome, descricao]
+      required:
+        - nome
+        - descricao
       properties:
-        nome: { type: string, minLength: 3, maxLength: 60 }
-        descricao: { type: string, minLength: 10, maxLength: 300 }
+        nome:
+          type: string
+          minLength: 3
+          maxLength: 60
+        descricao:
+          type: string
+          minLength: 10
+          maxLength: 300
         palavrasChave:
           type: array
           maxItems: 30
-          items: { type: string }
+          items:
+            type: string
     AtualizarEspecialidade:
       unevaluatedProperties: false
       allOf:
         - $ref: '#/components/schemas/CamposEspecialidade'
         - type: object
-          required: [palavrasChave, ativa]
+          required:
+            - palavrasChave
+            - ativa
           properties:
-            ativa: { type: boolean }
+            ativa:
+              type: boolean
     Endereco:
       type: object
       additionalProperties: false
-      required: [logradouro, numero, bairro, cidade, uf, cep]
+      required:
+        - logradouro
+        - numero
+        - bairro
+        - cidade
+        - uf
+        - cep
       properties:
-        logradouro: { type: string }
-        numero: { type: string }
-        bairro: { type: string }
-        cidade: { type: string }
-        uf: { type: string, minLength: 2, maxLength: 2 }
-        cep: { type: string, description: 'Com ou sem máscara; gravado com 8 dígitos.' }
+        logradouro:
+          type: string
+        numero:
+          type: string
+        bairro:
+          type: string
+        cidade:
+          type: string
+        uf:
+          type: string
+          minLength: 2
+          maxLength: 2
+        cep:
+          type: string
+          description: Com ou sem máscara; gravado com 8 dígitos.
     Unidade:
       type: object
-      required: [id, nome, tipo, cnpj, endereco, bairroBusca, telefone, especialidadeIds, ativa]
+      required:
+        - id
+        - nome
+        - tipo
+        - cnpj
+        - endereco
+        - bairroBusca
+        - telefone
+        - especialidadeIds
+        - ativa
       properties:
-        id: { type: string }
-        nome: { type: string }
-        tipo: { type: string, enum: [hospital, clinica] }
-        cnpj: { type: string, pattern: '^\d{14}$' }
+        id:
+          type: string
+        nome:
+          type: string
+        tipo:
+          type: string
+          enum:
+            - hospital
+            - clinica
+        cnpj:
+          type: string
+          pattern: ^\d{14}$
         endereco:
           $ref: '#/components/schemas/Endereco'
         bairroBusca:
           type: string
           description: Bairro em minúsculo e sem acento, gerado pela API.
-        telefone: { type: string, description: E.164 sem o "+" }
+        telefone:
+          type: string
+          description: E.164 sem o "+"
         especialidadeIds:
           type: array
-          items: { type: string }
-        ativa: { type: boolean }
-        criadoEm: { type: string, format: date-time }
-        atualizadoEm: { type: string, format: date-time }
+          items:
+            type: string
+        ativa:
+          type: boolean
+        criadoEm:
+          type: string
+          format: date-time
+        atualizadoEm:
+          type: string
+          format: date-time
     CriarUnidade:
       unevaluatedProperties: false
       allOf:
         - $ref: '#/components/schemas/CamposUnidade'
     CamposUnidade:
       type: object
-      required: [nome, tipo, cnpj, endereco, telefone, especialidadeIds]
+      required:
+        - nome
+        - tipo
+        - cnpj
+        - endereco
+        - telefone
+        - especialidadeIds
       properties:
-        nome: { type: string }
-        tipo: { type: string, enum: [hospital, clinica] }
-        cnpj: { type: string, description: Com ou sem máscara. }
+        nome:
+          type: string
+        tipo:
+          type: string
+          enum:
+            - hospital
+            - clinica
+        cnpj:
+          type: string
+          description: Com ou sem máscara.
         endereco:
           $ref: '#/components/schemas/Endereco'
-        telefone: { type: string }
+        telefone:
+          type: string
         especialidadeIds:
           type: array
           minItems: 1
-          items: { type: string }
+          items:
+            type: string
     AtualizarUnidade:
       unevaluatedProperties: false
       allOf:
         - $ref: '#/components/schemas/CamposUnidade'
         - type: object
-          required: [ativa]
+          required:
+            - ativa
           properties:
-            ativa: { type: boolean }
+            ativa:
+              type: boolean
     Conselho:
       type: object
       additionalProperties: false
-      required: [tipo, numero, uf]
+      required:
+        - tipo
+        - numero
+        - uf
       properties:
-        tipo: { type: string, const: CRM }
-        numero: { type: string, description: Só dígitos; zeros à esquerda são removidos. }
-        uf: { type: string }
+        tipo:
+          type: string
+          const: CRM
+        numero:
+          type: string
+          description: Só dígitos; zeros à esquerda são removidos.
+        uf:
+          type: string
     Medico:
       type: object
-      required: [id, nome, conselho, especialidadeIds, unidadeIds, ativo]
+      required:
+        - id
+        - nome
+        - conselho
+        - especialidadeIds
+        - unidadeIds
+        - ativo
       properties:
-        id: { type: string }
-        nome: { type: string, description: Com "Dr." ou "Dra." }
+        id:
+          type: string
+        nome:
+          type: string
+          description: Com "Dr." ou "Dra."
         conselho:
           $ref: '#/components/schemas/Conselho'
         especialidadeIds:
           type: array
-          items: { type: string }
+          items:
+            type: string
         unidadeIds:
           type: array
-          items: { type: string }
-        ativo: { type: boolean }
-        criadoEm: { type: string, format: date-time }
-        atualizadoEm: { type: string, format: date-time }
+          items:
+            type: string
+        ativo:
+          type: boolean
+        criadoEm:
+          type: string
+          format: date-time
+        atualizadoEm:
+          type: string
+          format: date-time
     MedicoCompleto:
       allOf:
         - $ref: '#/components/schemas/Medico'
         - type: object
-          required: [usuarioId, criadoPorAdministrativo]
+          required:
+            - usuarioId
+            - criadoPorAdministrativo
           properties:
-            usuarioId: { type: [string, 'null'] }
-            criadoPorAdministrativo: { type: string }
+            usuarioId:
+              type:
+                - string
+                - 'null'
+            criadoPorAdministrativo:
+              type: string
     CriarMedico:
       unevaluatedProperties: false
       allOf:
         - $ref: '#/components/schemas/CamposMedico'
     CamposMedico:
       type: object
-      required: [nome, conselho, especialidadeIds, unidadeIds]
+      required:
+        - nome
+        - conselho
+        - especialidadeIds
+        - unidadeIds
       properties:
-        nome: { type: string }
+        nome:
+          type: string
         conselho:
           $ref: '#/components/schemas/Conselho'
         especialidadeIds:
           type: array
           minItems: 1
-          items: { type: string }
+          items:
+            type: string
         unidadeIds:
           type: array
           minItems: 1
-          items: { type: string }
+          items:
+            type: string
         usuarioId:
-          type: [string, 'null']
+          type:
+            - string
+            - 'null'
           description: Conta do médico no app (perfil medico), se já existir.
     AtualizarMedico:
       unevaluatedProperties: false
       allOf:
         - $ref: '#/components/schemas/CamposMedico'
         - type: object
-          required: [ativo]
+          required:
+            - ativo
           properties:
-            ativo: { type: boolean }
+            ativo:
+              type: boolean
     Saude:
       type: object
-      required: [status, versao, em]
+      required:
+        - status
+        - versao
+        - em
       properties:
         status:
           type: string
@@ -1240,11 +3211,15 @@ components:
           description: Momento da resposta, em UTC
     Erro:
       type: object
-      required: [erro]
+      required:
+        - erro
       properties:
         erro:
           type: object
-          required: [codigo, mensagem, requestId]
+          required:
+            - codigo
+            - mensagem
+            - requestId
           properties:
             codigo:
               type: string
@@ -1276,7 +3251,9 @@ components:
                 - type: array
                   items:
                     type: object
-                    required: [campo, mensagem]
+                    required:
+                      - campo
+                      - mensagem
                     properties:
                       campo:
                         type: string

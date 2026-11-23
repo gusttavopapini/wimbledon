@@ -14,6 +14,7 @@ const ROTA_DO_DESTINO: Record<Destino, string> = {
 /** As telas do fluxo de marcar consulta pertencem ao Início. */
 function destinoDaRota(nome: string): Destino {
   if (nome === 'consultas' || nome === 'perfil' || nome === 'ajustes') return nome;
+  if (nome.startsWith('consulta/')) return 'consultas';
   return 'inicio';
 }
 
@@ -46,6 +47,14 @@ export default function LayoutApp() {
       <Tabs.Screen name="especialidades" options={{ href: null }} />
       <Tabs.Screen name="especialidades/[id]/unidades" options={{ href: null }} />
       <Tabs.Screen name="unidades/[id]/medicos" options={{ href: null }} />
+      <Tabs.Screen name="agendar/horario" options={{ href: null }} />
+      <Tabs.Screen name="agendar/revisao" options={{ href: null }} />
+      <Tabs.Screen name="agendar/confirmada" options={{ href: null }} />
+      <Tabs.Screen name="consulta/[id]" options={{ href: null }} />
+      <Tabs.Screen name="triagem/index" options={{ href: null }} />
+      <Tabs.Screen name="triagem/resultado" options={{ href: null }} />
+      <Tabs.Screen name="documentos/index" options={{ href: null }} />
+      <Tabs.Screen name="documentos/[id]" options={{ href: null }} />
     </Tabs>
   );
 }

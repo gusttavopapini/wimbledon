@@ -70,7 +70,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.mjs', '**/*.config.{js,ts,mjs}', 'infra/**'],
+    files: ['**/*.mjs', '**/*.config.{js,ts,mjs}', 'infra/**', 'apps/mobile/plugins/**'],
     languageOptions: { globals: globals.node },
     rules: { 'no-console': 'off' },
   },

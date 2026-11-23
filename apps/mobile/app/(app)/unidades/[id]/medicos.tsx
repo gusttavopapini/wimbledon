@@ -1,5 +1,5 @@
-import { useLocalSearchParams } from 'expo-router';
-import { Fragment, useState } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { Fragment } from 'react';
 import { View } from 'react-native';
 
 import { CabecalhoTela } from '@/components/CabecalhoTela';
@@ -7,7 +7,6 @@ import { CartaoProfissional } from '@/components/CartaoProfissional';
 import { ChipEspecialidade } from '@/components/Chip';
 import { EstadoTela } from '@/components/EstadoTela';
 import { Folha } from '@/components/Folha';
-import { Mensagem } from '@/components/Mensagem';
 import { Tela } from '@/components/Tela';
 import { useEspecialidades, useMedicos, useUnidade } from '@/hooks/useCadastros';
 import { useTema } from '@/hooks/useTema';
@@ -15,9 +14,14 @@ import { useVoltar } from '@/hooks/useVoltar';
 import { juntarComE } from '@/utils/texto';
 
 export default function MedicosDaUnidade() {
-  const { id = '', especialidadeId } = useLocalSearchParams<{
+  const {
+    id = '',
+    especialidadeId,
+    preTriagemId,
+  } = useLocalSearchParams<{
     id: string;
     especialidadeId?: string;
+    preTriagemId?: string;
   }>();
   const voltar = useVoltar('/especialidades');
   const unidade = useUnidade(id);
@@ -47,6 +51,7 @@ export default function MedicosDaUnidade() {
             nomeEspecialidade={nomeEspecialidade}
             nomeDe={nomeDe}
             especialidades={especialidades}
+            preTriagemId={preTriagemId}
           />
         )}
       </Folha>
@@ -61,7 +66,9 @@ function Lista({
   nomeEspecialidade,
   nomeDe,
   especialidades,
+  preTriagemId,
 }: {
+  preTriagemId?: string;
   unidadeId: string;
   especialidadeId?: string;
   nomeUnidade: string;
@@ -72,7 +79,6 @@ function Lista({
   const { espacamento } = useTema();
   const voltar = useVoltar('/especialidades');
   const { data, isPending, isError, refetch } = useMedicos(unidadeId, especialidadeId);
-  const [tocado, setTocado] = useState<string | null>(null);
 
   // O cartão mostra o nome das especialidades: as duas listas precisam chegar.
   if (isPending || especialidades.isPending) {
@@ -124,13 +130,19 @@ function Lista({
                   ids.map(nomeDe).filter((nome): nome is string => Boolean(nome)),
                 )}
                 unidade={nomeUnidade}
-                aoTocar={() => setTocado(medico.id)}
+                aoTocar={() =>
+                  router.push({
+                    pathname: '/agendar/horario',
+                    params: {
+                      medicoId: medico.id,
+                      unidadeId,
+                      especialidadeId: especialidadeId ?? medico.especialidadeIds[0] ?? '',
+                      ...(preTriagemId ? { preTriagemId } : {}),
+                    },
+                  })
+                }
               />
             </View>
-            {/* Única ponta solta aceita: some quando a agenda (RF12) existir. */}
-            {tocado === medico.id ? (
-              <Mensagem tipo="informacao" titulo="A escolha de horário entra na próxima entrega." />
-            ) : null}
           </Fragment>
         );
       })}

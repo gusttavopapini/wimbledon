@@ -1,28 +1,36 @@
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
+import type { Chamado } from '@/api/atendimento';
 import { Avatar } from '@/components/Avatar';
 import { Botao } from '@/components/Botao';
+import { Cartao } from '@/components/Cartao';
 import { CartaoEspecialidade, GradeEspecialidades } from '@/components/CartaoEspecialidade';
 import { EstadoTela } from '@/components/EstadoTela';
 import { Folha } from '@/components/Folha';
+import { Atalho, GradeAtalhos, Linha, Secao, Selo } from '@/components/Pecas';
 import { Tela } from '@/components/Tela';
 import { Texto } from '@/components/Texto';
 import { Topo } from '@/components/Topo';
+import { useMeusChamados } from '@/hooks/useAtendimento';
 import { useEspecialidades } from '@/hooks/useCadastros';
 import { useSessao } from '@/hooks/useSessao';
 import { useTema } from '@/hooks/useTema';
+import { quandoPorExtenso } from '@/utils/datas';
 import { saudacao } from '@/utils/saudacao';
 
 const QUANTIDADE_NA_HOME = 6;
+const EM_ANDAMENTO = [
+  'agendado',
+  'aguardando_recepcao',
+  'aguardando_medico',
+  'chamando',
+  'em_atendimento',
+];
 
-/**
- * Início do paciente. Ainda sem "Próxima consulta" (depende do agendamento) e
- * sem "Contar meus sintomas" (pré-triagem, Sprint 5): melhor ausente que inerte.
- */
+/** Início do paciente: próxima consulta, o que fazer agora e as especialidades. */
 export default function Inicio() {
   const { usuario } = useSessao();
-  const { espacamento } = useTema();
   const nome = usuario?.nome ?? '';
 
   return (
@@ -33,42 +41,87 @@ export default function Inicio() {
         subtitulo="Como está sua saúde hoje?"
       />
       <Folha>
-        <Botao principal icone="calendar-plus" aoTocar={() => router.push('/especialidades')}>
-          Marcar consulta
-        </Botao>
+        <ProximaConsulta />
 
-        <View style={{ gap: espacamento.espacamento16 }}>
-          <Texto estilo="tituloSecao" cor="primariaEscura" accessibilityRole="header">
-            Especialidades
-          </Texto>
+        <Secao titulo="O que você quer fazer?">
+          <GradeAtalhos>
+            <Atalho
+              icone="calendar-plus"
+              rotulo="Marcar consulta"
+              aoTocar={() => router.push('/especialidades')}
+            />
+            <Atalho
+              icone="heart-pulse"
+              rotulo="Contar meus sintomas"
+              aoTocar={() => router.push('/triagem')}
+            />
+            <Atalho
+              icone="calendar"
+              rotulo="Minhas consultas"
+              aoTocar={() => router.push('/consultas')}
+            />
+            <Atalho
+              icone="file-text"
+              rotulo="Receitas e exames"
+              aoTocar={() => router.push('/documentos')}
+            />
+          </GradeAtalhos>
+        </Secao>
+
+        <Secao titulo="Especialidades">
           <EspecialidadesDaHome />
-        </View>
-
-        <View style={{ gap: espacamento.espacamento16 }}>
-          <Texto estilo="tituloSecao" cor="primariaEscura" accessibilityRole="header">
-            Acesso rápido
-          </Texto>
-          <Botao
-            variante="secundario"
-            larguraTotal
-            icone="calendar"
-            iconeFim="chevron-right"
-            aoTocar={() => router.push('/consultas')}
-          >
-            Minhas consultas
-          </Botao>
-        </View>
+        </Secao>
       </Folha>
     </Tela>
+  );
+}
+
+function ProximaConsulta() {
+  const { data } = useMeusChamados();
+  const proxima = data?.find((c) => EM_ANDAMENTO.includes(c.status));
+  if (!proxima) return null;
+  return <CartaoProxima chamado={proxima} />;
+}
+
+function CartaoProxima({ chamado }: { chamado: Chamado }) {
+  const { espacamento } = useTema();
+  return (
+    <Cartao titulo="Sua próxima consulta">
+      <View style={{ gap: espacamento.espacamento12 }}>
+        <Selo status={chamado.status} />
+        <Linha
+          icone="calendar"
+          rotulo="Quando"
+          valor={quandoPorExtenso(chamado.data, chamado.hora)}
+        />
+        <Linha
+          icone="stethoscope"
+          rotulo={chamado.especialidade.nome}
+          valor={chamado.medico?.nome ?? 'O primeiro médico disponível'}
+        />
+        <Linha icone="map-pin" rotulo="Onde" valor={chamado.unidade.nome} />
+        {chamado.status === 'chamando' && chamado.consultorio ? (
+          <Texto estilo="tituloSecao" cor="sucesso">
+            É a sua vez! Vá ao {chamado.consultorio}.
+          </Texto>
+        ) : null}
+        <Botao
+          variante="secundario"
+          larguraTotal
+          iconeFim="chevron-right"
+          aoTocar={() => router.push(`/consulta/${chamado.id}`)}
+        >
+          Acompanhar atendimento
+        </Botao>
+      </View>
+    </Cartao>
   );
 }
 
 function EspecialidadesDaHome() {
   const { data, isPending, isError, refetch } = useEspecialidades();
 
-  if (isPending) {
-    return <EstadoTela tipo="carregando" titulo="Carregando as especialidades" />;
-  }
+  if (isPending) return <EstadoTela tipo="carregando" titulo="Carregando as especialidades" />;
   if (isError) {
     return (
       <EstadoTela
@@ -89,7 +142,6 @@ function EspecialidadesDaHome() {
       />
     );
   }
-
   return (
     <>
       <GradeEspecialidades>

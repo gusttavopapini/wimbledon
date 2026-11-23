@@ -7,6 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 
+import { ambiente } from '@/ambiente';
 import { criarQueryClient } from '@/api/consultas';
 import { SessaoProvider } from '@/auth/SessaoProvider';
 import { Botao } from '@/components/Botao';
@@ -17,6 +18,8 @@ import { Topo } from '@/components/Topo';
 import { useSessao } from '@/hooks/useSessao';
 import { useTema } from '@/hooks/useTema';
 import { TemaProvider } from '@/theme/TemaProvider';
+
+import TelaPainel from './painel';
 
 // Segura a splash até a Heebo carregar e a sessão ser conhecida: sem isso a
 // primeira tela pisca com a fonte do sistema ou mostra "Entrar" a quem já entrou.
@@ -42,15 +45,18 @@ export default function LayoutRaiz() {
 
 function Navegacao() {
   const { cores } = useTema();
-  const { estado, falha } = useSessao();
-  const pronto = estado !== 'carregando' || falha !== null;
+  const { estado, falha, usuario } = useSessao();
+  const pronto = ambiente.modoTv || estado !== 'carregando' || falha !== null;
 
   useEffect(() => {
     if (pronto) void SplashScreen.hideAsync();
   }, [pronto]);
 
+  // Build da TV (EXPO_PUBLIC_MODO=tv): só o painel, sem login de pessoa (RN25).
+  if (ambiente.modoTv) return <TelaPainel />;
   if (!pronto) return null;
   if (falha) return <FalhaAoCarregarSessao />;
+  const perfil = usuario?.perfil;
 
   return (
     <>
@@ -59,13 +65,26 @@ function Navegacao() {
       <Stack
         screenOptions={{ headerShown: false, contentStyle: { backgroundColor: cores.superficie } }}
       >
-        {/* Quem entrou não vê as telas públicas; quem não entrou vai para Entrar. */}
-        <Stack.Protected guard={estado === 'entrou'}>
+        {/* Quem entrou vê só a área do seu perfil; quem não entrou vai para Entrar. */}
+        <Stack.Protected guard={estado === 'entrou' && perfil === 'paciente'}>
           <Stack.Screen name="(app)" />
+        </Stack.Protected>
+        <Stack.Protected guard={estado === 'entrou' && perfil === 'recepcionista'}>
+          <Stack.Screen name="recepcao" />
+        </Stack.Protected>
+        <Stack.Protected guard={estado === 'entrou' && perfil === 'medico'}>
+          <Stack.Screen name="medico" />
+        </Stack.Protected>
+        <Stack.Protected
+          guard={estado === 'entrou' && (perfil === 'manutencao' || perfil === 'administrativo')}
+        >
+          <Stack.Screen name="gestao" />
         </Stack.Protected>
         <Stack.Protected guard={estado === 'deslogado'}>
           <Stack.Screen name="(publico)" />
         </Stack.Protected>
+        {/* PWA em modo quiosque numa TV (P12): /painel, sem login de pessoa. */}
+        <Stack.Screen name="painel" />
       </Stack>
     </>
   );
