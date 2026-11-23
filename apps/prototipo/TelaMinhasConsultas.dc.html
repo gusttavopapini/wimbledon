@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "consultas" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="11 Minhas consultas" style="display:flex;flex-direction:column;gap:16px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Minhas consultas</h1>
+    <div role="tablist" style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <sc-for list="{{ cons.tabs }}" as="t" hint-placeholder-count="2">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.CategoryChip" label="{{ t.label }}" selected="{{ t.selected }}" onClick="{{ t.onClick }}" hint-size="100%,48px"></x-import>
+      </sc-for>
+    </div>
+    <sc-if value="{{ cons.empty }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 8px;text-align:center">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar-x" size="{{ 44 }}" hint-size="44px,44px"></x-import>
+        <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">{{ cons.emptyTxt }}</p>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="calendar-plus" onClick="{{ cons.onBook }}" hint-size="200px,48px">Agendar consulta</x-import>
+      </div>
+    </sc-if>
+    <sc-for list="{{ cons.list }}" as="c" hint-placeholder-count="2">
+      <article style="border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06);padding:14px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <dc-import name="SpecialtyIcon" src="{{ c.img }}" size="md" hint-size="56px,56px"></dc-import>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+            <span style="font:700 calc(18px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ c.name }}</span>
+            <span style="font:400 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ c.spec }} · {{ c.clinic }}</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar" hint-size="24px,24px"></x-import>{{ c.when }}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.StatusBadge" status="{{ c.badge }}" label="{{ c.badgeLabel }}" hint-size="120px,32px"></x-import>
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" onClick="{{ c.onOpen }}" hint-size="140px,48px">Ver detalhes</x-import>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

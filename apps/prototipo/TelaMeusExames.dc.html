@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "exames" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="17 Meus exames" style="display:flex;flex-direction:column;gap:16px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Meus exames</h1>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" icon="search" placeholder="Pesquisar exame ou laboratório" value="{{ exs.query }}" onChange="{{ exs.onQuery }}" hint-size="100%,56px"></x-import>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <sc-for list="{{ exs.periods }}" as="c" hint-placeholder-count="3">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.CategoryChip" label="{{ c.label }}" selected="{{ c.selected }}" onClick="{{ c.onClick }}" hint-size="100px,48px"></x-import>
+      </sc-for>
+    </div>
+    <sc-if value="{{ exs.empty }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 8px;text-align:center">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="flask-conical-off" size="{{ 44 }}" hint-size="44px,44px"></x-import>
+        <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">Nenhum exame encontrado neste período.</p>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" onClick="{{ exs.onClear }}" hint-size="180px,48px">Mostrar todos</x-import>
+      </div>
+    </sc-if>
+    <sc-for list="{{ exs.groups }}" as="g" hint-placeholder-count="2">
+      <section style="display:flex;flex-direction:column;gap:10px">
+        <h2 style="margin:0;font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ g.title }}</h2>
+        <sc-for list="{{ g.items }}" as="e" hint-placeholder-count="2">
+          <button type="button" onClick="{{ e.onClick }}" style="display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06);background:var(--white);cursor:pointer;text-align:left;color:var(--ink)">
+            <span style="width:48px;height:48px;flex:none;border-radius:12px;background:var(--qa-lilac-bg);display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ e.icon }}" color="var(--qa-lilac-ink)" hint-size="24px,24px"></x-import></span>
+            <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;align-items:flex-start">
+              <span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ e.name }}</span>
+              <span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ e.date }}</span>
+              <span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ e.lab }}</span>
+              <span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ e.doctor }}</span>
+              <span style="margin-top:6px"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.StatusBadge" status="{{ e.badge }}" label="{{ e.badgeLabel }}" hint-size="160px,32px"></x-import></span>
+            </span>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" hint-size="24px,24px"></x-import>
+          </button>
+        </sc-for>
+      </section>
+    </sc-for>
+    <div style="display:flex;gap:8px;font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="shield-check" size="{{ 20 }}" hint-size="20px,20px"></x-import><span>Seus documentos de saúde só abrem após confirmar sua identidade (LGPD). Dados demonstrativos.</span></div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "ajuda" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="Ajuda e suporte" style="display:flex;flex-direction:column;gap:14px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Ajuda e suporte</h1>
+    <section style="display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06)"><span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">Como remarcar uma consulta?</span><span style="font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">Em Consultas, toque em Ver detalhes e depois em Remarcar.</span></section>
+    <section style="display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06)"><span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">Onde vejo meus exames?</span><span style="font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">Na tela inicial, em Acesso rápido, toque em Meus exames.</span></section>
+    <section style="display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06)"><span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">Esqueci minha senha</span><span style="font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">Na tela de login, toque em Esqueceu a senha? e siga o link enviado por e-mail.</span></section>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="whatsapp" full-width="{{ true }}" onClick="{{ onWhats }}" hint-size="100%,48px">Falar com a equipe pelo WhatsApp</x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="phone" full-width="{{ true }}" onClick="{{ onCall }}" hint-size="100%,48px">Ligar para o suporte</x-import>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

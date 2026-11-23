@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<span role="img" aria-label="{{ alt }}" style="width:{{ box }};height:{{ box }};flex:none;border-radius:50%;background:#f7e4e4;display:flex;align-items:center;justify-content:center;overflow:hidden">
+  <img src="{{ src }}" alt="" style="width:{{ art }};height:{{ art }};object-fit:contain;display:block">
+</span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;120px&quot;,&quot;height&quot;:&quot;120px&quot;},&quot;src&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;assets/icons/specialties/cardiologia.png&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;alt&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Cardiologia&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;size&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;lg&quot;,&quot;md&quot;,&quot;sm&quot;],&quot;default&quot;:&quot;lg&quot;,&quot;tsType&quot;:&quot;'lg'|'md'|'sm'&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const S = { lg: [72, 50], md: [56, 40], sm: [44, 32] };
+    const [b, a] = S[this.props.size] || S.lg;
+    return { src: this.props.src || '', alt: this.props.alt || '', box: b + 'px', art: a + 'px' };
+  }
+}
+</script>
+</body>
+</html>

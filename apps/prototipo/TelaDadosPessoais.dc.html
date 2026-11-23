@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "dados" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="23 Dados pessoais" style="display:flex;flex-direction:column;gap:16px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Dados pessoais</h1>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Nome completo" value="{{ dp.name }}" onChange="{{ dp.onName }}" hint-size="100%,84px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Telefone" value="{{ dp.phone }}" onChange="{{ dp.onPhone }}" input-mode="tel" hint-size="100%,84px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="E-mail" value="{{ dp.email }}" onChange="{{ dp.onEmail }}" hint-size="100%,84px"></x-import>
+    <section style="display:flex;flex-direction:column;gap:10px;padding:14px 16px;background:var(--surface-2);border-radius:14px">
+      <span style="display:flex;gap:8px;align-items:center;font:500 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="lock" size="{{ 20 }}" color="var(--ink-muted)" hint-size="20px,20px"></x-import>Alteração apenas na recepção da clínica</span>
+      <div style="display:flex;flex-direction:column"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">CPF</span><span style="font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ dp.cpf }}</span></div>
+      <div style="display:flex;flex-direction:column"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Data de nascimento</span><span style="font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ dp.birth }}</span></div>
+      <div style="display:flex;flex-direction:column"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Convênio</span><span style="font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ dp.plan }}</span></div>
+    </section>
+    <sc-if value="{{ dp.hasErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="padding:12px 14px;background:var(--error-bg);color:var(--error);border-radius:14px;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ dp.err }}</div></sc-if>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" full-width="{{ true }}" onClick="{{ dp.onSave }}" hint-size="100%,56px">Salvar alterações</x-import>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

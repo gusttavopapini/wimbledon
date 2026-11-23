@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "ajustes" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="25 Ajustes" style="display:flex;flex-direction:column;gap:18px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Ajustes</h1>
+    <section style="display:flex;flex-direction:column;gap:10px">
+      <h2 style="margin:0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Tamanho do texto</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <sc-for list="{{ aj.sizes }}" as="c" hint-placeholder-count="3">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.CategoryChip" label="{{ c.label }}" selected="{{ c.selected }}" onClick="{{ c.onClick }}" hint-size="100px,48px"></x-import>
+        </sc-for>
+      </div>
+      <span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Vale para todas as telas do aplicativo.</span>
+    </section>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ aj.rows }}" as="it" hint-placeholder-count="4">
+        <button type="button" onClick="{{ it.onClick }}" style="display:flex;gap:14px;align-items:center;min-height:60px;padding:0 14px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06);background:var(--white);cursor:pointer;text-align:left;color:var(--ink);font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ it.icon }}" hint-size="24px,24px"></x-import><span style="flex:1">{{ it.label }}</span><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" hint-size="24px,24px"></x-import>
+        </button>
+      </sc-for>
+    </div>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="whatsapp" full-width="{{ true }}" onClick="{{ onWhats }}" hint-size="100%,48px">Atendimento pelo WhatsApp</x-import>
+    <button type="button" onClick="{{ aj.onLogout }}" style="min-height:48px;border-radius:14px;border:2px solid var(--border-control);background:var(--white);color:var(--error);font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="log-out" color="var(--error)" hint-size="22px,22px"></x-import>Sair da conta</button>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "acompanhamento" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="15 Acompanhamento do atendimento" style="display:flex;flex-direction:column;gap:16px">
+    <div style="text-align:center">
+      <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Acompanhe seu atendimento</h1>
+      <p style="margin:4px 0 0;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ ap.name }} · {{ ap.when }}</p>
+    </div>
+    <div style="display:flex;gap:10px;padding:12px 14px;background:var(--teal-100);border-radius:14px;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="id-card" color="var(--teal-700)" hint-size="24px,24px"></x-import>
+      <span>Ao chegar, informe seu CPF na recepção. Os passos abaixo mudam sozinhos.</span>
+    </div>
+    <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+      <sc-for list="{{ tr.steps }}" as="st" hint-placeholder-count="6">
+        <li style="display:flex;gap:14px">
+          <div style="display:flex;flex-direction:column;align-items:center">
+            <span style="width:32px;height:32px;border-radius:50%;background:{{ st.dot }};border:2px solid {{ st.dotBorder }};display:flex;align-items:center;justify-content:center;flex:none"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ st.icon }}" size="{{ 18 }}" color="{{ st.iconColor }}" hint-size="18px,18px"></x-import></span>
+            <sc-if value="{{ st.hasLine }}" hint-placeholder-val="{{ true }}"><span style="width:3px;flex:1;min-height:28px;background:{{ st.line }}"></span></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;padding:4px 0 16px;min-width:0">
+            <span style="font-family:var(--font-family);font-size:calc(18px*var(--fs,1));line-height:calc(24px*var(--fs,1));font-weight:{{ st.weight }};color:{{ st.color }}">{{ st.title }}</span>
+            <span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ st.desc }}</span>
+            <span style="font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ st.time }}</span>
+          </div>
+        </li>
+      </sc-for>
+    </ol>
+    <span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted);text-align:center">{{ tr.updated }}</span>
+    <sc-if value="{{ tr.notFinished }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:8px;padding:12px;border:2px dashed var(--border-control);border-radius:14px">
+        <span style="font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Simulação (demonstrativo) — próxima ação: {{ tr.nextActor }}</span>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="play" full-width="{{ true }}" onClick="{{ tr.onAdvance }}" hint-size="100%,48px">Simular próxima etapa</x-import>
+      </div>
+    </sc-if>
+    <sc-if value="{{ tr.finished }}" hint-placeholder-val="{{ false }}">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="file-text" full-width="{{ true }}" onClick="{{ tr.onDocs }}" hint-size="100%,56px">Ver orientações e documentos</x-import>
+    </sc-if>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

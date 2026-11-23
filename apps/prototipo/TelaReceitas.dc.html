@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "receitas" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="20 Receitas médicas" style="display:flex;flex-direction:column;gap:14px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Receitas médicas</h1>
+    <sc-if value="{{ noRx }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--ink-muted);text-align:center">Você ainda não tem receitas.</p></sc-if>
+    <sc-for list="{{ rxs }}" as="r" hint-placeholder-count="2">
+      <article style="display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06)">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <span style="width:48px;height:48px;flex:none;border-radius:12px;background:var(--qa-rose-bg);display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="pill" color="var(--qa-rose-ink)" hint-size="24px,24px"></x-import></span>
+          <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+            <span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ r.name }}</span>
+            <span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ r.spec }} · {{ r.clinic }}</span>
+            <span style="font:500 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)">{{ r.date }}</span>
+          </div>
+        </div>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="file-text" full-width="{{ true }}" onClick="{{ r.onClick }}" hint-size="100%,48px">Ver receita</x-import>
+      </article>
+    </sc-for>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

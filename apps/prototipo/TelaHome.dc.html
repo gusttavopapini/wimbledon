@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "home" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js).
+     O cabeçalho (saudação, busca, sino, sintomas, WhatsApp) fica no arquivo principal, dentro de <header>. -->
+  <div data-screen-label="Home" style="--font-family:'Roboto',Helvetica,Arial,sans-serif;display:flex;flex-direction:column;gap:20px;font-family:var(--font-family);color:var(--ink)">
+
+    <sc-if value="{{ home.hasNext }}" hint-placeholder-val="{{ true }}">
+      <section style="display:flex;flex-direction:column;gap:10px">
+        <h2 style="margin:0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Próxima consulta</h2>
+        <button type="button" onClick="{{ home.next.onClick }}" style="display:flex;align-items:center;gap:14px;min-height:72px;padding:12px 14px;background:var(--white);border:1.5px solid var(--border-subtle);border-radius:16px;cursor:pointer;text-align:left;color:var(--ink)">
+          <dc-import name="SpecialtyIcon" src="{{ home.next.img }}" size="sm" hint-size="44px,44px"></dc-import>
+          <span style="flex:1;min-width:0;display:flex;flex-direction:column">
+            <span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ home.next.when }}</span>
+            <span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ home.next.line }}</span>
+            <sc-if value="{{ home.next.hasStage }}" hint-placeholder-val="{{ false }}"><span style="font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--success)">{{ home.next.stage }}</span></sc-if>
+          </span>
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" color="var(--teal-600)" hint-size="24px,24px"></x-import>
+        </button>
+      </section>
+    </sc-if>
+
+    <!-- Modo simplificado (Acessibilidade) — mantido -->
+    <sc-if value="{{ home.simple }}" hint-placeholder-val="{{ false }}">
+      <section style="display:flex;flex-direction:column;gap:12px">
+        <h2 style="margin:0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">O que você quer fazer?</h2>
+        <sc-for list="{{ home.big }}" as="b" hint-placeholder-count="5">
+          <button type="button" onClick="{{ b.onClick }}" style="display:flex;align-items:center;gap:16px;min-height:72px;padding:0 18px;border:0;border-radius:16px;background:{{ b.bg }};color:{{ b.ink }};font:600 calc(19px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);text-align:left;cursor:pointer">
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ b.icon }}" size="{{ 28 }}" color="currentColor" hint-size="28px,28px"></x-import>
+            <span style="flex:1">{{ b.label }}</span>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" color="currentColor" hint-size="24px,24px"></x-import>
+          </button>
+        </sc-for>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ home.full }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column">
+
+      <!-- Especialidades -->
+      <section style="display:flex;flex-direction:column;padding:0 4px 0 7px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <h2 style="margin:0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Especialidades</h2>
+          <button type="button" onClick="{{ home.onAllSpecs }}" style="min-height:48px;display:flex;align-items:center;gap:2px;background:transparent;border:0;color:var(--teal-600);font:600 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer;padding:0 0 0 8px">Ver todas<x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" size="{{ 16 }}" color="var(--teal-600)" hint-size="16px,16px"></x-import></button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(calc(100px*var(--fs,1)),1fr));gap:16px 0;align-items:start">
+          <sc-for list="{{ home.specs }}" as="sp" hint-placeholder-count="3">
+            <button type="button" onClick="{{ sp.onClick }}" style="display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;min-height:48px;background:transparent;border:0;padding:0;cursor:pointer;text-align:center;overflow:visible">
+              <span style="width:92px;height:92px;border-radius:50%;background:#f6e1e1;display:flex;align-items:center;justify-content:center;flex:none">
+                <img src="{{ sp.illo }}" alt="" style="width:74px;height:74px;object-fit:contain;display:block">
+              </span>
+              <span style="font:400 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--teal-600);max-width:100%;overflow-wrap:break-word;hyphens:manual;text-align:center">{{ sp.label }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+
+      <div style="display:flex;justify-content:center;margin-top:21px">
+        <button type="button" onClick="{{ home.onBook }}" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;width:250px;max-width:100%;min-height:48px;padding:0 20px;border:0;border-radius:8px;background:var(--teal-600);color:var(--on-brand);font:500 calc(17px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar-plus" size="{{ 22 }}" color="#ffffff" hint-size="22px,22px"></x-import>Agendar consulta
+        </button>
+      </div>
+
+      <!-- Acesso rápido -->
+      <section style="display:flex;flex-direction:column;gap:7px;margin-top:9px">
+        <h2 style="margin:0;font:700 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Acesso rápido</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <sc-for list="{{ home.qa }}" as="q" hint-placeholder-count="4">
+            <button type="button" onClick="{{ q.onClick }}" style="display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:8px;min-height:90px;width:100%;padding:12px 12px 12px;border:0;border-radius:14px;background:{{ q.bg }};color:{{ q.ink }};font:500 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);text-align:left;cursor:pointer">
+              <span style="width:36px;height:36px;border-radius:10px;background:var(--white);display:flex;align-items:center;justify-content:center;flex:none">
+                <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ q.icon }}" size="{{ 20 }}" color="{{ q.ink }}" hint-size="20px,20px"></x-import>
+              </span>
+              <span>{{ q.label }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+    </div>
+    </sc-if>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

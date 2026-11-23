@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "agendar" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="01 Tipo de agendamento" style="display:flex;flex-direction:column;gap:20px">
+    <div style="text-align:center">
+      <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Agendar consulta</h1>
+      <p style="margin:6px 0 0;font:400 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Como você prefere começar?</p>
+    </div>
+    <sc-for list="{{ agendar }}" as="o" hint-placeholder-count="2">
+      <button type="button" onClick="{{ o.onClick }}" style="display:flex;gap:16px;align-items:center;padding:20px 16px;background:var(--white);border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06);text-align:left;cursor:pointer;color:var(--ink)">
+        <span style="width:64px;height:64px;flex:none;border-radius:50%;background:{{ o.bg }};color:{{ o.ink }};display:flex;align-items:center;justify-content:center">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ o.icon }}" size="{{ 32 }}" color="currentColor" hint-size="32px,32px"></x-import>
+        </span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:4px">
+          <span style="font:700 calc(19px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ o.title }}</span>
+          <span style="font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ o.text }}</span>
+        </span>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" hint-size="24px,24px"></x-import>
+      </button>
+    </sc-for>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

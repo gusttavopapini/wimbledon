@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "login" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js).
+     O cabeçalho (degradê + pulmões + "Olá!") fica no arquivo principal, dentro de <header>. -->
+  <div data-screen-label="Login" style="--font-family:'Roboto',Helvetica,Arial,sans-serif;display:flex;flex-direction:column;font-family:var(--font-family);color:var(--ink)">
+    <h1 style="margin:0;font:700 calc(28px*var(--fs,1))/calc(36px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Entrar</h1>
+
+    <div style="margin-top:12px">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" variant="soft" label="E-mail" icon="mail" placeholder="nome@email.com" value="{{ login.email }}" onChange="{{ login.onEmail }}" hint-size="100%,84px"></x-import>
+    </div>
+    <div style="margin-top:12px">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" variant="soft" revealable="{{ true }}" label="Senha" icon="lock" type="password" placeholder="Sua senha" value="{{ login.pw }}" onChange="{{ login.onPw }}" hint-size="100%,84px"></x-import>
+    </div>
+    <button type="button" onClick="{{ login.onForgot }}" style="align-self:flex-end;min-height:48px;margin-top:0;padding:0 4px;background:transparent;border:0;color:var(--teal-600);font:600 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer">Esqueci minha senha</button>
+
+    <div style="margin-top:0">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" size="lg" elevated="{{ true }}" full-width="{{ true }}" onClick="{{ login.onEnter }}" hint-size="100%,56px">Entrar</x-import>
+    </div>
+
+    <div style="margin-top:24px;display:flex;align-items:center;gap:12px;color:var(--ink-muted);font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family)">
+      <span style="flex:1;height:1px;background:var(--border-subtle)"></span>ou continue com<span style="flex:1;height:1px;background:var(--border-subtle)"></span>
+    </div>
+    <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <button type="button" onClick="{{ login.onSocial }}" style="display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 12px;background:var(--white);border:1.5px solid var(--border-subtle);border-radius:14px;color:var(--ink);font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer">
+        <img src="assets/icons/social/google.svg" alt="" width="22" height="22" style="display:block;flex:none">Google
+      </button>
+      <button type="button" onClick="{{ login.onSocial }}" style="display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:0 12px;background:var(--white);border:1.5px solid var(--border-subtle);border-radius:14px;color:var(--ink);font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer">
+        <img src="assets/icons/social/facebook.svg" alt="" width="22" height="22" style="display:block;flex:none">Facebook
+      </button>
+    </div>
+
+    <div style="margin-top:54px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:6px;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">
+      <span>Ainda não tem conta?</span>
+      <a href="#" onClick="{{ login.onCad }}" style="display:inline-flex;align-items:center;min-height:48px;padding:0 4px;color:var(--teal-600);font-weight:700;text-decoration:none">Criar conta</a>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

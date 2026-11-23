@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "receita" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="21 Detalhes da receita" style="display:flex;flex-direction:column;gap:16px">
+    <div style="text-align:center">
+      <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Receita médica</h1>
+      <p style="margin:4px 0 0;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Emitida em {{ rx.date }}</p>
+    </div>
+    <sc-for list="{{ rx.meds }}" as="m" hint-placeholder-count="2">
+      <section style="border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06);padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+        <span style="display:flex;gap:10px;align-items:center;font:700 calc(18px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="pill" color="var(--qa-rose-ink)" hint-size="24px,24px"></x-import>{{ m.name }}</span>
+        <sc-for list="{{ m.rows }}" as="r" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ r.l }}</span><span style="font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ r.val }}</span></div>
+        </sc-for>
+      </section>
+    </sc-for>
+    <section style="display:flex;flex-direction:column;gap:6px">
+      <h2 style="margin:0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Orientações do médico</h2>
+      <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">{{ rx.notes }}</p>
+    </section>
+    <div style="display:flex;flex-direction:column;padding:12px 14px;background:var(--teal-100);border-radius:14px">
+      <span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ rx.doctor }}</span>
+      <span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)">{{ rx.crm }} · {{ rx.clinic }}</span>
+    </div>
+    <div style="display:flex;gap:8px;font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="info" size="{{ 20 }}" hint-size="20px,20px"></x-import><span>Informações exatamente como o médico registrou. Nada foi alterado pelo aplicativo.</span></div>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="eye" full-width="{{ true }}" onClick="{{ rx.onView }}" hint-size="100%,56px">Visualizar receita</x-import>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(140px*var(--fs,1))),1fr));gap:12px">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="download" onClick="{{ rx.onPdf }}" hint-size="100%,48px">Baixar PDF</x-import>
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="share-2" onClick="{{ rx.onShare }}" hint-size="100%,48px">Compartilhar</x-import>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

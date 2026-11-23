@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "cadastro" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="Cadastro" style="display:flex;flex-direction:column;gap:16px">
+    <div>
+      <h1 style="margin:0;font:700 calc(28px*var(--fs,1))/calc(36px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Cadastro</h1>
+      <p style="margin:4px 0 0;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Informe seus dados abaixo</p>
+    </div>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Nome completo" placeholder="Ex.: Ana Maria Souza" hint-size="100%,84px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="CPF" placeholder="000.000.000-00" input-mode="numeric" hint-size="100%,84px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Endereço" placeholder="Rua, número e bairro" hint="Usado para mostrar as clínicas mais perto de você." hint-size="100%,104px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="E-mail" placeholder="nome@exemplo.com" hint-size="100%,84px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Senha" type="password" hint-size="100%,84px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" full-width="{{ true }}" onClick="{{ login.onCadDone }}" hint-size="100%,56px">Cadastrar</x-import>
+    <div style="text-align:center;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Já tem uma conta? <a href="#" onClick="{{ login.onBackLogin }}">Entrar</a></div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

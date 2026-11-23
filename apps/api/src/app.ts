@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+
 import cors from 'cors';
 import express, { type Express } from 'express';
 import { rateLimit, type Options as OpcoesLimite } from 'express-rate-limit';
@@ -60,6 +63,24 @@ export function criarApp(ambiente: Ambiente, opcoes: OpcoesApp = {}): Express {
     helmet({ contentSecurityPolicy: false }),
     docsRoutes,
   );
+  // Front do paciente (protótipo em apps/prototipo): aberto pelo app dentro de
+  // uma WebView (celular) ou de um iframe (navegador). Ele não fala com o banco:
+  // os dados passam pela ponte com o app, que chama esta mesma API.
+  const pastaPrototipo = fileURLToPath(new URL('../../prototipo/', import.meta.url));
+  if (existsSync(pastaPrototipo)) {
+    app.use(
+      '/app',
+      helmet({
+        // O protótipo compila os componentes no navegador (Babel) e usa estilos inline.
+        contentSecurityPolicy: false,
+        // Precisa abrir dentro do app (iframe no navegador).
+        frameguard: false,
+        crossOriginResourcePolicy: { policy: 'cross-origin' },
+      }),
+      express.static(pastaPrototipo, { index: 'index.html', maxAge: '10m' }),
+    );
+  }
+
   app.use(helmet());
   app.use(cors({ origin: ambiente.CORS_ORIGINS, credentials: false }));
   app.use(express.json({ limit: '100kb' }));

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/sa-de-na-palma-da-m-o-design-system-077ed474-cd90-447d-a64f-aec9bc55e560/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/sa-de-na-palma-da-m-o-design-system-077ed474-cd90-447d-a64f-aec9bc55e560/tokens/colors.css">
+<link rel="stylesheet" href="_ds/sa-de-na-palma-da-m-o-design-system-077ed474-cd90-447d-a64f-aec9bc55e560/tokens/typography.css">
+<link rel="stylesheet" href="_ds/sa-de-na-palma-da-m-o-design-system-077ed474-cd90-447d-a64f-aec9bc55e560/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/sa-de-na-palma-da-m-o-design-system-077ed474-cd90-447d-a64f-aec9bc55e560/tokens/base.css">
+<link rel="stylesheet" href="_ds/sa-de-na-palma-da-m-o-design-system-077ed474-cd90-447d-a64f-aec9bc55e560/styles.css">
+<script src="_ds/sa-de-na-palma-da-m-o-design-system-077ed474-cd90-447d-a64f-aec9bc55e560/_ds_bundle.js"></script>
+<script src="spm-data.js"></script>
+<script src="spm-core.js"></script>
+<script src="spm-view.js"></script>
+<script src="spm-view2.js"></script>
+<script src="spm-view3.js"></script>
+<script src="spm-a11y.js"></script>
+<style>body{margin:0;background:#e3eded}a{color:var(--teal-600);font-weight:700}a:hover{color:var(--teal-700)}*{box-sizing:border-box}button:focus-visible,a:focus-visible{outline:3px solid var(--teal-600);outline-offset:2px}.ds-tf-glass::placeholder{color:rgba(255,255,255,.85);opacity:1}.ds-tf-pill::placeholder{color:var(--teal-600);opacity:.85}.spm-tri{display:flex;flex-direction:column;gap:1rem;width:100%;max-width:30rem;margin:0 auto;font-family:'Roboto',Helvetica,Arial,sans-serif;color:var(--ink)}.spm-tri-top{display:flex;flex-direction:column;align-items:center;gap:.625rem;text-align:center;padding-top:.25rem}.spm-tri-badge{width:4.5rem;height:4.5rem;border-radius:50%;background:var(--qa-sand-bg);display:flex;align-items:center;justify-content:center}.spm-tri-title{margin:0;font-weight:700;font-size:calc(1.375rem*var(--fs,1));line-height:calc(1.875rem*var(--fs,1));color:var(--teal-600)}.spm-tri-sub{margin:0;font-size:calc(1rem*var(--fs,1));line-height:calc(1.5rem*var(--fs,1));color:var(--ink);text-wrap:pretty;max-width:20rem}.spm-tri-cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:.75rem}@media (max-width:339.98px){.spm-tri-cards{grid-template-columns:1fr}}.spm-tri-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:1rem .75rem;border-radius:.875rem;background:#e3f1f1;text-align:center;font-weight:600;font-size:calc(1rem*var(--fs,1));line-height:calc(1.375rem*var(--fs,1))}.spm-tri-warn{display:flex;gap:.625rem;align-items:flex-start;padding:.875rem 1rem;background:var(--warning-bg);border-radius:.875rem;font-size:calc(1rem*var(--fs,1));line-height:calc(1.5rem*var(--fs,1))}.spm-tri-warn strong{font-weight:700}.spm-tri-actions{margin-top:.5rem;display:flex;flex-direction:column;gap:.75rem;padding-bottom:env(safe-area-inset-bottom)}.spm-tri-btn{width:100%;min-height:3.5rem;display:flex;align-items:center;justify-content:center;gap:.5rem;padding:0 1.25rem;border-radius:.75rem;font-weight:600;font-size:calc(1.0625rem*var(--fs,1));line-height:calc(1.375rem*var(--fs,1));cursor:pointer}.spm-tri-btn--primary{border:0;background:var(--teal-600);color:#fff;box-shadow:0 6px 16px rgba(3,117,127,.22)}.spm-tri-btn--outline{border:1.5px solid var(--teal-600);background:var(--white);color:var(--teal-600)}@media (max-height:700px){.spm-tri{gap:.625rem}.spm-tri-top{gap:.375rem;padding-top:0}.spm-tri-badge{width:3.5rem;height:3.5rem}.spm-tri-card{padding:.75rem}.spm-tri-actions{margin-top:.25rem;gap:.625rem}}.spm-hc header img,.spm-hc header [aria-hidden="true"][style*="linear-gradient"]{filter:brightness(.62)}.spm-hc main{text-shadow:none}@keyframes spmPulse{0%,100%{opacity:.35}50%{opacity:1}}</style>
+</helmet>
+<div class="{{ rootClass }}" style="{{ themeStyle }}">
+<div style="min-height:100dvh;background:var(--page);font-family:var(--font-family);display:flex;justify-content:center;overflow-x:hidden">
+<div style="position:relative;width:100%;max-width:480px;min-height:100dvh;background:var(--white);box-shadow:0 0 0 1px rgba(3,117,127,.08)">
+  <div style="zoom:{{ zoom }};min-height:100dvh;display:flex;flex-direction:column">
+
+    <header style="position:relative;overflow:hidden;padding:calc(env(safe-area-inset-top) + 16px) 20px 48px;color:#ffffff;min-height:88px;background:{{ headerBg }}">
+      <sc-if value="{{ s.login }}" hint-placeholder-val="{{ true }}">
+        <!-- Cabeçalho da tela de Login -->
+        <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(160deg,#025371 0%,#077390 100%)"></div>
+        <img src="assets/pulmao.png" alt="" style="position:absolute;right:-40px;top:-20px;height:calc(100% + 20px);width:auto;max-width:80%;object-fit:contain;object-position:right top;opacity:.5;pointer-events:none">
+        <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(90deg,#025371 0%,rgba(2,83,113,.8) 30%,rgba(2,83,113,0) 75%)"></div>
+        <div style="--font-family:'Roboto',Helvetica,Arial,sans-serif;position:relative;min-height:236px;display:flex;flex-direction:column;justify-content:flex-start;padding:36px 4px 0;font-family:var(--font-family)">
+          <span style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 10px;border-radius:999px;background:rgba(255,255,255,.14);color:#ffffff;font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family)">
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="heart-pulse" size="{{ 20 }}" color="#ffffff" hint-size="20px,20px"></x-import>Saúde na Palma da Mão
+          </span>
+          <div style="margin-top:20px;font:700 calc(40px*var(--fs,1))/calc(48px*var(--fs,1)) var(--font-family);color:#ffffff">Olá!</div>
+          <div style="margin-top:4px;font:400 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:#ffffff">Seja bem-vindo!</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ s.cadastro }}" hint-placeholder-val="{{ false }}">
+        <img src="assets/pulmao.png" alt="" style="position:absolute;right:-8px;top:calc(env(safe-area-inset-top) + 8px);width:176px;height:auto;pointer-events:none">
+        <div style="position:relative;min-height:168px;display:flex;flex-direction:column;justify-content:center;gap:4px;max-width:60%">
+          <div style="font:700 calc(40px*var(--fs,1))/calc(48px*var(--fs,1)) var(--font-family)">Olá!</div>
+          <div style="font:400 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">Seja bem-vindo!</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ notHero }}" hint-placeholder-val="{{ false }}">
+        <img src="assets/pulmao.png" alt="" style="position:absolute;right:-20px;top:-6px;width:132px;height:auto;opacity:.38;pointer-events:none">
+      </sc-if>
+      <sc-if value="{{ s.especialidades }}" hint-placeholder-val="{{ false }}">
+        <img src="assets/pulmao.png" alt="" style="position:absolute;right:-40px;top:-30px;width:230px;height:auto;opacity:.28;mix-blend-mode:screen;pointer-events:none">
+      </sc-if>
+      <sc-if value="{{ showA11yTop }}" hint-placeholder-val="{{ false }}">
+        <div style="position:relative;display:flex;justify-content:flex-end;margin:-6px -4px 0 0">
+          <dc-import name="BotaoAcessibilidade" onClick="{{ a11y.onPanel }}" hint-size="160px,48px"></dc-import>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}">
+        <div style="position:relative;margin:-8px 0 0 -4px">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.BackButton" inverse="{{ true }}" onClick="{{ onBack }}" hint-size="100px,48px"></x-import>
+        </div>
+      </sc-if>
+      <sc-if value="{{ s.home }}" hint-placeholder-val="{{ false }}">
+        <!-- Cabeçalho da tela Home (fundo em ondas + pulmões suaves) -->
+        <img src="assets/pulmao.png" alt="" style="position:absolute;right:-70px;top:-24px;height:calc(100% + 24px);width:auto;max-width:90%;object-fit:contain;object-position:right top;opacity:.28;mix-blend-mode:screen;pointer-events:none">
+        <div style="--font-family:'Roboto',Helvetica,Arial,sans-serif;position:relative;display:flex;flex-direction:column;font-family:var(--font-family);color:#ffffff;margin:-2px -7px 8px 8px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start">
+            <button type="button" onClick="{{ home.onProfile }}" aria-label="Meu perfil" style="width:56px;height:56px;padding:0;border-radius:50%;border:2px solid #ffffff;background:var(--teal-100);overflow:hidden;cursor:pointer;flex:none">
+              <img src="assets/paciente.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block">
+            </button>
+            <div style="flex:1;min-width:0;display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:8px;margin-top:4px">
+              <dc-import name="BotaoAcessibilidade" onClick="{{ a11y.onPanel }}" hint-size="160px,48px"></dc-import>
+              <div style="display:flex;gap:4px">
+              <button type="button" onClick="{{ home.onSearch }}" aria-label="Buscar" style="width:48px;height:48px;padding:0;border-radius:50%;border:0;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;cursor:pointer">
+                <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="search" size="{{ 22 }}" color="#ffffff" hint-size="22px,22px"></x-import>
+              </button>
+              <button type="button" onClick="{{ home.onBell }}" aria-label="Notificações" style="position:relative;width:48px;height:48px;padding:0;border-radius:50%;border:0;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;cursor:pointer">
+                <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="bell" size="{{ 22 }}" color="#ffffff" hint-size="22px,22px"></x-import>
+                <sc-if value="{{ home.hasUnread }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;border-radius:11px;background:var(--white);color:var(--teal-600);font:700 calc(14px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);padding:0 6px;text-align:center">{{ home.unread }}</span></sc-if>
+              </button>
+              </div>
+            </div>
+          </div>
+          <div style="text-align:center;margin:4px 7px 0 -8px">
+            <div style="font:400 calc(18px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ home.greet }}</div>
+            <div style="font:700 calc(20px*var(--fs,1))/calc(28px*var(--fs,1)) var(--font-family)">Como está sua saúde hoje?</div>
+          </div>
+          <div style="margin:11px 5px 0 3px">
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" variant="glass" placeholder="Gostaria de relatar sintomas..." value="{{ symptom }}" onChange="{{ home.onSymptom }}" hint-size="100%,56px"></x-import>
+          </div>
+          <sc-if value="{{ home.hasSymptom }}" hint-placeholder-val="{{ false }}">
+            <div style="margin:12px 2px 0 0">
+              <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="inverse" icon="arrow-right" full-width="{{ true }}" onClick="{{ home.onSymptomGo }}" hint-size="100%,48px">Continuar na pré-triagem</x-import>
+            </div>
+          </sc-if>
+          <div style="display:flex;justify-content:center;margin:12px 7px 0 -8px">
+            <button type="button" onClick="{{ onWhats }}" style="display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px 0 18px;border-radius:999px;border:0;background:#dcf9f6;color:var(--success);font:400 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer">
+              <img src="assets/icons/social/whatsapp.svg" alt="" width="24" height="24" style="display:block;flex:none">Prefiro conversar pelo WhatsApp
+            </button>
+          </div>
+        </div>
+      </sc-if>
+    </header>
+
+    <main style="flex:1;margin-top:{{ mainTop }};position:relative;background:var(--white);border-radius:32px 32px 0 0;box-shadow:{{ mainShadow }};padding:{{ mainPadTop }} {{ mainPadX }} {{ mainPad }};display:flex;flex-direction:column;gap:20px;color:var(--ink);min-width:0">
+      <sc-if value="{{ hasTip }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:var(--teal-100);border-radius:12px;font:400 calc(16px*var(--fs,1))/calc(23px*var(--fs,1)) var(--font-family);color:var(--ink)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="lightbulb" color="var(--teal-700)" hint-size="24px,24px"></x-import><span>{{ tip }}</span></div>
+      </sc-if>
+
+      <sc-if value="{{ s.login }}" hint-placeholder-val="{{ true }}">
+        <dc-import name="TelaLogin" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.cadastro }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaCadastro" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.home }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaHome" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.agendar }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaTipoAgendamento" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.especialidades }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaEspecialidades" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.medicos }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaProfissionais" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.medico }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaDetalhesProfissional" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.horario }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaHorario" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.revisao }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaRevisaoAgendamento" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.confirmada }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaConsultaConfirmada" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.triagemIntro }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaPreTriagemIntro" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.triagem }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaPreTriagem" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.triagemResult }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaPreTriagemResultado" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.consultas }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaMinhasConsultas" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.consulta }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaDetalhesConsulta" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.acompanhamento }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaAcompanhamento" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.historico }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaHistoricoConsulta" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.exames }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaMeusExames" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.exame }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaDetalhesExame" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.documento }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaDocumento" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.receitas }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaReceitas" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.receita }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaDetalhesReceita" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.perfil }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaPerfil" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.dados }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaDadosPessoais" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.endereco }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaEndereco" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.ajustes }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaAjustes" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.notificacoes }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaNotificacoes" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.privacidade }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaPrivacidade" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.senha }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaAlterarSenha" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.ajuda }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaAjuda" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+
+      <sc-if value="{{ s.acessibilidade }}" hint-placeholder-val="{{ false }}">
+        <dc-import name="TelaAcessibilidade" vm="{{ vm }}" hint-size="100%,600px"></dc-import>
+      </sc-if>
+    </main>
+  </div>
+
+  <sc-if value="{{ showNav }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:6;background:var(--white);padding-bottom:env(safe-area-inset-bottom)">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.BottomNav" variant="soft" items="{{ navItems }}" active="{{ navActive }}" onChange="{{ onTab }}" hint-size="100%,84px"></x-import>
+    </div>
+  </sc-if>
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div role="status" style="position:fixed;left:50%;transform:translateX(-50%);width:min(440px,calc(100% - 32px));bottom:calc(96px + env(safe-area-inset-bottom));z-index:9;background:#17393d;color:#ffffff;border-radius:14px;padding:14px 16px;font:400 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);box-shadow:var(--shadow-card)">{{ toast }}</div>
+  </sc-if>
+  <sc-if value="{{ modal.any }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:10;background:rgba(23,57,61,.55);display:flex;align-items:flex-end;justify-content:center">
+      <div role="dialog" aria-modal="true" style="width:100%;max-width:480px;max-height:92dvh;overflow-y:auto;background:var(--white);border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px;color:var(--ink)">
+        <sc-if value="{{ modal.cancel }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="14 Cancelamento" style="display:flex;flex-direction:column;gap:14px">
+            <span style="width:64px;height:64px;border-radius:50%;background:var(--error-bg);display:flex;align-items:center;justify-content:center;align-self:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar-x" size="{{ 32 }}" color="var(--error)" hint-size="32px,32px"></x-import></span>
+            <h2 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);text-align:center">Cancelar esta consulta?</h2>
+            <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);text-align:center">{{ modal.cancelTxt }}</p>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" full-width="{{ true }}" onClick="{{ modal.close }}" hint-size="100%,56px">Manter consulta</x-import>
+            <button type="button" onClick="{{ modal.onCancelYes }}" style="min-height:56px;border-radius:14px;border:2px solid var(--error);background:var(--white);color:var(--error);font:500 calc(18px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer">Confirmar cancelamento</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ modal.resched }}" hint-placeholder-val="{{ false }}">
+          <div data-screen-label="13 Confirmar reagendamento" style="display:flex;flex-direction:column;gap:14px">
+            <h2 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);text-align:center">Confirmar novo horário?</h2>
+            <div style="display:flex;flex-direction:column;gap:8px;padding:14px 16px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06)">
+              <div style="display:flex;flex-direction:column"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">De</span><span style="font:400 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);text-decoration:line-through">{{ modal.reschedFrom }}</span></div>
+              <div style="display:flex;flex-direction:column"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Para</span><span style="font:700 calc(18px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ modal.reschedTo }}</span></div>
+            </div>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" full-width="{{ true }}" onClick="{{ modal.onReschedYes }}" hint-size="100%,56px">Confirmar alteração</x-import>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" full-width="{{ true }}" onClick="{{ modal.close }}" hint-size="100%,48px">Escolher outro horário</x-import>
+          </div>
+        </sc-if>
+        <sc-if value="{{ modal.logout }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <h2 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);text-align:center">Sair da conta?</h2>
+            <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);text-align:center">Suas consultas continuam marcadas. Para entrar de novo, use seu e-mail e senha.</p>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" full-width="{{ true }}" onClick="{{ modal.close }}" hint-size="100%,56px">Continuar no app</x-import>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="log-out" full-width="{{ true }}" onClick="{{ modal.onLogoutYes }}" hint-size="100%,48px">Sair</x-import>
+          </div>
+        </sc-if>
+        <sc-if value="{{ modal.unlock }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <span style="width:64px;height:64px;border-radius:50%;background:var(--teal-100);display:flex;align-items:center;justify-content:center;align-self:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="shield-check" size="{{ 32 }}" color="var(--teal-700)" hint-size="32px,32px"></x-import></span>
+            <h2 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);text-align:center">Confirme que é você</h2>
+            <p style="margin:0;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);text-align:center">Documentos de saúde são protegidos. Digite sua senha para continuar.</p>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Senha" type="password" value="{{ modal.pw }}" onChange="{{ modal.onPw }}" error="{{ modal.pwErr }}" hint="Na demonstração: demo1234" hint-size="100%,104px"></x-import>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" full-width="{{ true }}" onClick="{{ modal.onUnlock }}" hint-size="100%,56px">Abrir documentos</x-import>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="fingerprint" full-width="{{ true }}" onClick="{{ modal.onBio }}" hint-size="100%,48px">Usar digital</x-import>
+            <button type="button" onClick="{{ modal.close }}" style="min-height:48px;background:transparent;border:0;color:var(--teal-600);font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer">Agora não</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ modal.a11y }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <h2 id="spm-a11y-title" style="margin:0;font:700 calc(24px*var(--fs,1))/1.25 var(--font-family);color:var(--teal-600)">Acessibilidade</h2>
+              <button type="button" onClick="{{ modal.close }}" style="min-height:60px;min-width:120px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 18px;border-radius:14px;border:2px solid var(--teal-600);background:var(--white);color:var(--teal-600);font:600 calc(20px*var(--fs,1))/1.2 var(--font-family);cursor:pointer"><span aria-hidden="true" style="display:flex"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="x" size="{{ 24 }}" color="var(--teal-600)" hint-size="24px,24px"></x-import></span>Fechar</button>
+            </div>
+
+            <section style="display:flex;flex-direction:column;gap:10px">
+              <h3 style="margin:0;font:700 calc(20px*var(--fs,1))/1.3 var(--font-family);color:var(--ink)">Tamanho da letra</h3>
+              <div role="group" aria-label="Tamanho da letra" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+                <sc-for list="{{ a11yM.sizes }}" as="z" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ z.onClick }}" aria-pressed="{{ z.pressed }}" aria-label="{{ z.aria }}" style="min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 4px;border-radius:14px;border:2px solid var(--teal-600);background:{{ z.bg }};color:{{ z.ink }};cursor:pointer">
+                    <span style="font-weight:700;font-size:{{ z.size }};line-height:1.1;font-family:var(--font-family)">{{ z.label }}</span>
+                    <span style="font:500 20px/1.2 var(--font-family)">{{ z.pct }}</span>
+                  </button>
+                </sc-for>
+              </div>
+              <p aria-live="polite" style="margin:0;padding:12px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border-subtle);font:400 calc(20px*var(--fs,1))/1.4 var(--font-family);color:var(--ink)">Exemplo: sua consulta é amanhã, às 10h.</p>
+            </section>
+
+            <button type="button" onClick="{{ a11yM.onVoice }}" style="min-height:60px;width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 18px;border-radius:14px;border:2px solid var(--teal-600);font:600 calc(20px*var(--fs,1))/1.25 var(--font-family);cursor:pointer;text-align:center;background:var(--teal-600);color:var(--on-brand)"><span aria-hidden="true" style="display:flex"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ a11yM.voiceIcon }}" size="{{ 26 }}" color="var(--on-brand)" hint-size="26px,26px"></x-import></span>{{ a11yM.voiceLabel }}</button>
+
+            <button type="button" onClick="{{ a11yM.onHc }}" aria-pressed="{{ a11yM.hcPressed }}" style="min-height:60px;width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 18px;border-radius:14px;border:2px solid var(--teal-600);font:600 calc(20px*var(--fs,1))/1.25 var(--font-family);cursor:pointer;text-align:center;background:{{ a11yM.hcBg }};color:{{ a11yM.hcInk }}"><span aria-hidden="true" style="display:flex"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="contrast" size="{{ 26 }}" color="currentColor" hint-size="26px,26px"></x-import></span>{{ a11yM.hcLabel }}</button>
+
+            <button type="button" onClick="{{ a11yM.onLibras }}" aria-pressed="{{ a11yM.librasPressed }}" style="min-height:60px;width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 18px;border-radius:14px;border:2px solid var(--teal-600);font:600 calc(20px*var(--fs,1))/1.25 var(--font-family);cursor:pointer;text-align:center;background:{{ a11yM.librasBg }};color:{{ a11yM.librasInk }}"><span aria-hidden="true" style="display:flex"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="hand" size="{{ 26 }}" color="currentColor" hint-size="26px,26px"></x-import></span>{{ a11yM.librasLabel }}</button>
+
+            <button type="button" onClick="{{ a11yM.onReset }}" style="min-height:60px;width:100%;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 18px;border-radius:14px;border:2px solid var(--teal-600);font:600 calc(20px*var(--fs,1))/1.25 var(--font-family);cursor:pointer;text-align:center;border-color:var(--border-control);background:var(--white);color:var(--ink)"><span aria-hidden="true" style="display:flex"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="rotate-ccw" size="{{ 24 }}" color="currentColor" hint-size="24px,24px"></x-import></span>Voltar ao normal</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ modal.share }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <h2 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);text-align:center">Compartilhar documento</h2>
+            <p style="margin:0;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);text-align:center">Compartilhe só com quem você confia. O link expira em 24 horas.</p>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="whatsapp" full-width="{{ true }}" onClick="{{ modal.onShareWhats }}" hint-size="100%,48px">Enviar pelo WhatsApp</x-import>
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="mail" full-width="{{ true }}" onClick="{{ modal.onShareMail }}" hint-size="100%,48px">Enviar por e-mail</x-import>
+            <button type="button" onClick="{{ modal.close }}" style="min-height:48px;background:transparent;border:0;color:var(--teal-600);font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer">Cancelar</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+<sc-if value="{{ showVoice }}" hint-placeholder-val="{{ false }}">
+  <button type="button" onClick="{{ onVoice }}" aria-label="Ler a tela em voz alta" style="position:fixed;right:max(16px,calc(50% - 224px));bottom:{{ voiceBottom }};z-index:8;display:flex;align-items:center;gap:8px;min-height:52px;padding:0 18px 0 14px;border-radius:999px;border:0;background:#005170;color:#ffffff;font:600 calc(16px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);box-shadow:0 4px 14px rgba(0,81,112,.3);cursor:pointer">
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ voiceIcon }}" color="#ffffff" hint-size="24px,24px"></x-import>{{ voiceLabel }}
+  </button>
+</sc-if>
+<sc-if value="{{ showDemoFab }}" hint-placeholder-val="{{ false }}">
+  <button type="button" onClick="{{ onDemo }}" style="position:fixed;left:12px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:8;min-height:40px;padding:0 14px;border-radius:999px;border:1px solid rgba(255,255,255,.7);background:#005170;color:var(--on-brand);font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer">Simulação</button>
+</sc-if>
+<sc-if value="{{ panelVisible }}" hint-placeholder-val="{{ false }}">
+<div style="{{ panelPos }}">
+  <aside style="width:300px;max-width:100%;max-height:calc(100dvh - 48px);overflow-y:auto;background:var(--white);border-radius:16px;box-shadow:0 8px 24px rgba(3,117,127,.14);padding:20px;display:flex;flex-direction:column;gap:14px;color:var(--ink)">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span style="font:700 calc(18px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Simulação do protótipo</span><sc-if value="{{ demoOpen }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ onDemo }}" aria-label="Fechar simulação" style="width:44px;height:44px;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="x" hint-size="24px,24px"></x-import></button></sc-if></div>
+      <p style="margin:4px 0 0;font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Fora do app. Simula ações da recepção e do médico. Todos os dados são demonstrativos.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;padding:12px;background:var(--surface-2);border-radius:14px">
+      <span style="font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Consulta de hoje (14:00)</span>
+      <span style="font:700 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)">{{ demo.stage }}</span>
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="play" full-width="{{ true }}" disabled="{{ demo.done }}" onClick="{{ demo.onAdvance }}" hint-size="100%,48px">Avançar status</x-import>
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" full-width="{{ true }}" onClick="{{ demo.onTrack }}" hint-size="100%,48px">Abrir acompanhamento</x-import>
+    </div>
+    <button type="button" role="switch" aria-checked="{{ demo.conflict }}" onClick="{{ demo.onConflict }}" style="display:grid;gap:4px;padding:12px;min-height:48px;border:2px solid var(--border-control);border-radius:14px;background:var(--white);cursor:pointer;text-align:left;color:var(--ink);font:500 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family)">
+      <div>Simular horário ocupado</div>
+      <div style="font-weight:400;font-size:calc(14px*var(--fs,1));color:var(--ink-muted)">{{ demo.conflictTxt }}</div>
+    </button>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Ir para</span>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <sc-for list="{{ demo.jumps }}" as="j" hint-placeholder-count="6">
+          <button type="button" onClick="{{ j.onClick }}" style="min-height:40px;padding:0 12px;border-radius:999px;border:0;background:var(--teal-100);color:var(--ink);font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer">{{ j.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" onClick="{{ demo.onEmpty }}" hint-size="100%,48px">Sem consultas</x-import>
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="rotate-ccw" onClick="{{ demo.onReset }}" hint-size="100%,48px">Reiniciar</x-import>
+    </div>
+  </aside>
+</div>
+</sc-if>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showPanel&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Protótipo&quot;},&quot;simulateError&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Protótipo&quot;},&quot;textSize&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;app&quot;,&quot;normal&quot;,&quot;grande&quot;,&quot;muito grande&quot;],&quot;default&quot;:&quot;app&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Protótipo&quot;}}">
+class Component extends DCLogic {
+  state = { ready: false };
+  scrollRef = React.createRef();
+  componentDidMount() {
+    this._rs = () => { const w = window.innerWidth >= 1100; if (w !== this.state.wide) this.setState({ wide: w }); };
+    this._fi = (e) => { if (e.target.matches && e.target.matches('input,textarea')) this.setState({ kbd: e.type === 'focusin' }); };
+    window.addEventListener('resize', this._rs);
+    document.addEventListener('focusin', this._fi);
+    document.addEventListener('focusout', this._fi);
+    const boot = () => {
+      if (window.SPM_VIEW && window.SPM_VIEW2 && window.SPM_VIEW3 && window.SPM_A && window.SPM_A11Y) {
+        this.a = window.SPM_A(this);
+        const init = window.SPM_DATA.initial(); if (window.SPM_A11Y_LOAD) window.SPM_A11Y_LOAD(init.settings);
+        this.setState(Object.assign(init, { ready: true, wide: window.innerWidth >= 1100, kbd: false, demoOpen: false }));
+      } else this._b = setTimeout(boot, 40);
+    };
+    boot();
+  }
+  componentWillUnmount() {
+    clearTimeout(this._b);
+    window.removeEventListener('resize', this._rs);
+    document.removeEventListener('focusin', this._fi);
+    document.removeEventListener('focusout', this._fi);
+  }
+  renderVals() {
+    if (!this.state.ready) return { s: { login: true }, hero: true, notHero: false };
+    const v = window.SPM_VIEW(this);
+    v.vm = Object.assign({}, v);
+    return v;
+  }
+}
+</script>
+</body>
+</html>

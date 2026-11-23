@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "historico" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="16 Histórico da consulta" style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;gap:14px;align-items:center">
+      <dc-import name="SpecialtyIcon" src="{{ ap.img }}" size="md" hint-size="56px,56px"></dc-import>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <h1 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ ap.name }}</h1>
+        <span style="font:400 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ ap.spec }} · {{ hi.status }}</span>
+        <span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ ap.clinic }}</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar" hint-size="24px,24px"></x-import>{{ ap.date }}, às {{ ap.time }}</div>
+    <section style="display:flex;flex-direction:column;gap:6px">
+      <h2 style="margin:0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Orientações do médico</h2>
+      <sc-if value="{{ hi.hasOrient }}" hint-placeholder-val="{{ true }}"><p style="margin:0;padding:14px 16px;background:var(--teal-100);border-radius:14px;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">{{ hi.orient }}</p></sc-if>
+      <sc-if value="{{ hi.noOrient }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Nenhuma orientação registrada para esta consulta.</p></sc-if>
+    </section>
+    <section style="display:flex;flex-direction:column;gap:10px">
+      <h2 style="margin:0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Documentos da consulta</h2>
+      <sc-if value="{{ hi.noDocs }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Nenhum documento vinculado.</p></sc-if>
+      <sc-for list="{{ hi.docs }}" as="d" hint-placeholder-count="3">
+        <button type="button" onClick="{{ d.onClick }}" style="display:flex;gap:12px;align-items:center;padding:12px 14px;min-height:64px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06);background:var(--white);cursor:pointer;text-align:left;color:var(--ink)">
+          <span style="width:44px;height:44px;flex:none;border-radius:12px;background:{{ d.bg }};display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ d.icon }}" color="{{ d.ink }}" hint-size="24px,24px"></x-import></span>
+          <span style="flex:1;display:flex;flex-direction:column"><span style="font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ d.label }}</span><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ d.type }}</span></span>
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" hint-size="24px,24px"></x-import>
+        </button>
+      </sc-for>
+    </section>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="calendar-plus" full-width="{{ true }}" onClick="{{ ap.onRebook }}" hint-size="100%,56px">Agendar nova consulta</x-import>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

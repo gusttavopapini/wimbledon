@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "triagem" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="09 Conversa da pré-triagem" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <h1 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Pré-triagem</h1>
+      <span style="font:500 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ tri.progress }}</span>
+    </div>
+    <div aria-live="polite" style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ tri.msgs }}" as="m" hint-placeholder-count="2">
+        <sc-if value="{{ m.ai }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:8px;align-items:flex-end;max-width:88%">
+            <span style="width:36px;height:36px;flex:none;border-radius:50%;background:var(--teal-100);display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="bot" size="{{ 20 }}" color="var(--teal-700)" hint-size="20px,20px"></x-import></span>
+            <div style="background:var(--teal-100);border-radius:18px 18px 18px 4px;padding:12px 14px;font:400 calc(17px*var(--fs,1))/calc(25px*var(--fs,1)) var(--font-family)">{{ m.text }}</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ m.me }}" hint-placeholder-val="{{ false }}">
+          <div style="align-self:flex-end;max-width:80%;background:var(--teal-600);color:var(--on-brand);border-radius:18px 18px 4px 18px;padding:12px 14px;font:500 calc(17px*var(--fs,1))/calc(25px*var(--fs,1)) var(--font-family)">{{ m.text }}</div>
+        </sc-if>
+      </sc-for>
+      <sc-if value="{{ tri.typing }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:6px;padding:14px 16px;background:var(--teal-100);border-radius:18px;width:72px;margin-left:44px" aria-label="Digitando">
+          <span style="width:8px;height:8px;border-radius:50%;background:var(--teal-600);animation:spmPulse 1s infinite"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--teal-600);animation:spmPulse 1s .2s infinite"></span><span style="width:8px;height:8px;border-radius:50%;background:var(--teal-600);animation:spmPulse 1s .4s infinite"></span>
+        </div>
+      </sc-if>
+    </div>
+    <sc-if value="{{ tri.emergency }}" hint-placeholder-val="{{ false }}">
+      <div role="alert" style="display:flex;flex-direction:column;gap:12px;padding:16px;border:2px solid var(--error);background:var(--error-bg);border-radius:14px">
+        <div style="display:flex;gap:10px;align-items:center;color:var(--error);font:700 calc(19px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="siren" color="var(--error)" hint-size="24px,24px"></x-import>Procure atendimento imediato</div>
+        <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">O que você contou pode precisar de cuidado urgente. Não espere por uma consulta marcada: ligue para o SAMU ou vá à emergência mais próxima.</p>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="phone" full-width="{{ true }}" onClick="{{ tri.onSamu }}" style="{{ dangerBtn }}" hint-size="100%,56px">Ligar para o SAMU 192</x-import>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="map-pin" full-width="{{ true }}" onClick="{{ tri.onUpa }}" hint-size="100%,48px">Ver emergências próximas</x-import>
+      </div>
+    </sc-if>
+    <sc-if value="{{ tri.done }}" hint-placeholder-val="{{ false }}">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="arrow-right" full-width="{{ true }}" onClick="{{ tri.onResult }}" hint-size="100%,56px">Ver sugestão de especialidade</x-import>
+    </sc-if>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{ tri.opts }}" as="o" hint-placeholder-count="4">
+        <button type="button" onClick="{{ o.onClick }}" style="min-height:48px;padding:0 16px;border-radius:999px;border:2px solid var(--teal-600);background:var(--white);color:var(--teal-600);font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer">{{ o.label }}</button>
+      </sc-for>
+    </div>
+    <sc-if value="{{ tri.showInput }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;gap:8px;align-items:flex-end">
+        <div style="flex:1;min-width:0"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Ou escreva sua resposta" placeholder="Ex.: dor no peito ao subir escada" value="{{ tri.input }}" onChange="{{ tri.onInput }}" hint-size="100%,84px"></x-import></div>
+        <button type="button" onClick="{{ tri.onSend }}" aria-label="Enviar resposta" style="width:56px;height:56px;flex:none;border-radius:14px;border:0;background:var(--teal-600);display:flex;align-items:center;justify-content:center;cursor:pointer"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="send" color="#fff" hint-size="24px,24px"></x-import></button>
+      </div>
+    </sc-if>
+    <button type="button" onClick="{{ tri.onManual }}" style="min-height:48px;background:transparent;border:0;color:var(--teal-600);font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);text-decoration:underline;cursor:pointer">Encerrar e escolher a especialidade</button>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

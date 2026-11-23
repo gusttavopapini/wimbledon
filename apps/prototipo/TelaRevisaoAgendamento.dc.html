@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "revisao" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="06 Revisão do agendamento" style="--font-family:'Roboto',Helvetica,Arial,sans-serif;display:flex;flex-direction:column;gap:16px;font-family:var(--font-family);color:var(--ink)">
+    <h1 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Revise sua consulta</h1>
+    <section style="border:1px solid var(--border-subtle);border-radius:16px;padding:0 16px;display:flex;flex-direction:column;background:var(--white)">
+      <!-- Médico -->
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--border-subtle);align-items:center">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="stethoscope" color="var(--ink)" hint-size="24px,24px"></x-import>
+        <span style="flex:1;min-width:0;font:400 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)"><strong style="font-weight:700;color:var(--ink)">{{ rv.docName }}</strong> · {{ rv.docSpec }}</span>
+        <button type="button" onClick="{{ rv.onEditDoc }}" aria-label="Alterar médico" style="flex:none;min-height:48px;margin:-12px -8px -12px 0;padding:0 8px;background:transparent;border:0;color:var(--teal-600);font:600 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);text-decoration:underline;cursor:pointer">Alterar</button>
+      </div>
+      <!-- Clínica -->
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--border-subtle)">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="building-2" color="var(--ink)" hint-size="24px,24px"></x-import>
+        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+          <span style="font:700 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)">{{ rv.clinicName }}</span>
+          <span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ rv.clinicAddr }}</span>
+          <span style="font:600 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ rv.kmTxt }}</span>
+        </span>
+      </div>
+      <!-- Data e horário -->
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--border-subtle)">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar" color="var(--ink)" hint-size="24px,24px"></x-import>
+        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+          <span style="font:700 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)">{{ rv.dateTxt }}</span>
+          <span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ rv.timeTxt }}</span>
+        </span>
+        <button type="button" onClick="{{ rv.onEditDate }}" aria-label="Alterar data e horário" style="flex:none;min-height:48px;margin:-12px -8px -12px 0;padding:0 8px;background:transparent;border:0;color:var(--teal-600);font:600 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);text-decoration:underline;cursor:pointer">Alterar</button>
+      </div>
+      <!-- Pagamento -->
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--border-subtle);align-items:center">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="wallet" color="var(--ink)" hint-size="24px,24px"></x-import>
+        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+          <span style="font:700 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)">{{ rv.payTitle }}</span>
+          <sc-if value="{{ rv.hasPaySub }}" hint-placeholder-val="{{ false }}"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ rv.paySub }}</span></sc-if>
+        </span>
+      </div>
+      <!-- Forma de atendimento -->
+      <div style="display:flex;flex-direction:column;gap:10px;padding:14px 0 16px">
+        <span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Forma de atendimento</span>
+        <div role="group" aria-label="Forma de atendimento" style="display:flex;gap:10px;flex-wrap:wrap">
+          <sc-for list="{{ rv.payPills }}" as="c" hint-placeholder-count="2">
+            <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" style="min-height:48px;padding:0 22px;border:0;border-radius:999px;background:{{ c.bg }};color:{{ c.ink }};font:600 calc(16px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer">{{ c.label }}</button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ rv.convOk }}" hint-placeholder-val="{{ true }}"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ rv.payNote }}</span></sc-if>
+        <sc-if value="{{ rv.noConv }}" hint-placeholder-val="{{ false }}">
+          <div role="alert" style="display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1.5px solid var(--error);border-radius:12px;background:var(--error-bg);color:var(--error);font:600 calc(15px*var(--fs,1))/calc(21px*var(--fs,1)) var(--font-family)">
+            <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="circle-alert" size="{{ 22 }}" color="var(--error)" hint-size="22px,22px"></x-import><span>{{ rv.convAlert }}</span>
+          </div>
+        </sc-if>
+      </div>
+    </section>
+    <div style="display:flex;gap:10px;align-items:flex-start;font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="info" size="{{ 20 }}" color="var(--ink-muted)" hint-size="20px,20px"></x-import><span>Depois de confirmar, você pode remarcar ou cancelar pelo app.</span></div>
+    <div style="position:sticky;bottom:0;z-index:3;margin:0 -20px;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:var(--white);border-top:1px solid var(--border-subtle)">
+      <button type="button" onClick="{{ rv.onConfirm }}" disabled="{{ rv.ctaDisabled }}" style="opacity:{{ rv.ctaOpacity }};width:100%;min-height:56px;display:flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:12px;background:var(--teal-600);color:var(--on-brand);font:600 calc(17px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer;box-shadow:0 6px 16px rgba(3,117,127,.22)">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar-check" size="{{ 22 }}" color="#ffffff" hint-size="22px,22px"></x-import>{{ rv.cta }}
+      </button>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

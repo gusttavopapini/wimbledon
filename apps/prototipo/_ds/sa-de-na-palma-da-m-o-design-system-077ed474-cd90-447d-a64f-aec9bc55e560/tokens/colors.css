@@ -1,0 +1,47 @@
+/* Saúde na Palma da Mão — color tokens. Values from "Interface e Design System" (Atividade v1.1). */
+:root{
+/* Teal — primary brand */
+--teal-700:#005170;
+--teal-600:#03757f;
+--teal-500:#017c94;
+--teal-100:#d2e6e8;
+/* Specialties / WhatsApp */
+--rose-100:#f7e4e4;
+--cyan-50:#d7fcff;
+--mint-300:#85d2a9;
+/* Ink */
+--ink:#17393d;
+--ink-muted:#4f6b6e;
+--white:#ffffff;
+/* Borders */
+--border-control:#6f969a;   /* 3.2:1 — fields, outline buttons (2px) */
+--border-subtle:#d6e9ea;    /* legacy prototype border — dividers only, never field outlines */
+/* Signals */
+--success:#1f7a4d;
+--warning:#8a6100;
+--error:#b3261e;
+--success-bg:#e3f2ea;
+--warning-bg:#fbf1d9;
+--error-bg:#fbe7e5;
+/* Quick access — fixed per shortcut (bg values approximated; only sand-ink is specified) */
+--qa-blue-bg:#dde9f8;   --qa-blue-ink:#1f5596;   /* Consultas */
+--qa-lilac-bg:#ebe3f6;  --qa-lilac-ink:#5b3f8a;  /* Exames */
+--qa-rose-bg:#f9e1e8;   --qa-rose-ink:#99304f;   /* Receitas */
+--qa-sand-bg:#f5e9d6;   --qa-sand-ink:#8a5a2b;   /* Pré-triagem */
+
+/* Semantic aliases */
+--brand-primary:var(--teal-600);
+--header-gradient:linear-gradient(160deg,var(--teal-700) 0%,var(--teal-500) 100%);
+--surface-page:var(--white);
+--surface-sheet:var(--white);
+--surface-card:var(--white);
+--surface-selected:var(--teal-100);
+--surface-specialty:var(--rose-100);
+--surface-whatsapp:var(--cyan-50);
+--text-body:var(--ink);
+--text-muted:var(--ink-muted);
+--text-on-brand:var(--white);
+--text-link:var(--teal-600);
+--icon-default:var(--teal-600);
+--focus-ring:var(--teal-600);
+}

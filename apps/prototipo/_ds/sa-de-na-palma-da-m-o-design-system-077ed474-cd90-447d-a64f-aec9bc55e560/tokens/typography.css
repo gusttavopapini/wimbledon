@@ -1,0 +1,21 @@
+:root{
+--font-family:'Roboto',system-ui,-apple-system,'Segoe UI',sans-serif;
+/* 8 styles — sizes from source; weights & line-heights are DS defaults */
+--fs-display:40px;  --lh-display:48px;  --fw-display:700;/* @kind font */
+--fs-title-1:28px;  --lh-title-1:36px;  --fw-title-1:700;/* @kind font */
+--fs-title-2:22px;  --lh-title-2:30px;  --fw-title-2:700;/* @kind font */
+--fs-title-3:18px;  --lh-title-3:26px;  --fw-title-3:500;/* @kind font */
+--fs-body-lg:18px;  --lh-body-lg:28px;  --fw-body-lg:400;/* @kind font */ /* default text */
+--fs-body:16px;     --lh-body:24px;     --fw-body:400;/* @kind font */
+--fs-label:16px;    --lh-label:22px;    --fw-label:500;/* @kind font */
+--fs-caption:14px;  --lh-caption:20px;  --fw-caption:400;/* @kind font */ /* minimum size */
+--text-min:14px;
+}
+.t-display{font:var(--fw-display) var(--fs-display)/var(--lh-display) var(--font-family)}
+.t-title-1{font:var(--fw-title-1) var(--fs-title-1)/var(--lh-title-1) var(--font-family)}
+.t-title-2{font:var(--fw-title-2) var(--fs-title-2)/var(--lh-title-2) var(--font-family)}
+.t-title-3{font:var(--fw-title-3) var(--fs-title-3)/var(--lh-title-3) var(--font-family)}
+.t-body-lg{font:var(--fw-body-lg) var(--fs-body-lg)/var(--lh-body-lg) var(--font-family)}
+.t-body{font:var(--fw-body) var(--fs-body)/var(--lh-body) var(--font-family)}
+.t-label{font:var(--fw-label) var(--fs-label)/var(--lh-label) var(--font-family)}
+.t-caption{font:var(--fw-caption) var(--fs-caption)/var(--lh-caption) var(--font-family)}

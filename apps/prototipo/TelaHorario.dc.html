@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "horario" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="{{ ho.label }}" style="display:flex;flex-direction:column;gap:16px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ ho.title }}</h1>
+    <div style="display:flex;gap:12px;align-items:center;padding:12px 14px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06)">
+      <sc-if value="{{ ho.hasPhoto }}" hint-placeholder-val="{{ false }}"><dc-import name="DoctorPhoto" id="{{ ho.photoId }}" size="{{ 48 }}" hint-size="48px,48px"></dc-import></sc-if><sc-if value="{{ ho.noPhoto }}" hint-placeholder-val="{{ true }}"><span style="width:48px;height:48px;flex:none;border-radius:50%;background:var(--teal-100);color:var(--teal-700);display:flex;align-items:center;justify-content:center;font:700 calc(17px*var(--fs,1))/1 var(--font-family)">{{ ho.initials }}</span></sc-if>
+      <div style="display:flex;flex-direction:column;min-width:0"><span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ ho.docName }}</span><span style="font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ ho.docSub }}</span></div>
+    </div>
+    <sc-if value="{{ ho.isResched }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--teal-100);border-radius:14px">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar-clock" color="var(--teal-700)" hint-size="24px,24px"></x-import>
+        <div style="display:flex;flex-direction:column"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--teal-700)">Horário atual</span><span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ ho.current }}</span></div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ ho.hasError }}" hint-placeholder-val="{{ false }}">
+      <div role="alert" style="display:flex;gap:10px;padding:12px 14px;background:var(--warning-bg);border-radius:14px;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="triangle-alert" color="var(--warning)" hint-size="24px,24px"></x-import><span>{{ ho.error }}</span>
+      </div>
+    </sc-if>
+    <section style="border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06);padding:10px;display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <button type="button" onClick="{{ ho.onPrev }}" disabled="{{ ho.noPrev }}" aria-label="Mês anterior" style="width:48px;height:48px;border-radius:14px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ ho.prevOp }}"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-left" hint-size="24px,24px"></x-import></button>
+        <span style="flex:1;text-align:center;white-space:nowrap;font:700 calc(19px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ ho.month }}</span>
+        <button type="button" onClick="{{ ho.onNext }}" disabled="{{ ho.noNext }}" aria-label="Próximo mês" style="width:48px;height:48px;border-radius:14px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ ho.nextOp }}"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" hint-size="24px,24px"></x-import></button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center;font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">
+        <span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px">
+        <sc-for list="{{ ho.cells }}" as="c" hint-placeholder-count="35">
+          <button type="button" onClick="{{ c.onClick }}" disabled="{{ c.disabled }}" aria-label="{{ c.aria }}" style="height:44px;border-radius:12px;border:2px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};opacity:{{ c.op }};font-family:var(--font-family);font-size:calc(16px*var(--fs,1));font-weight:{{ c.weight }};cursor:pointer;padding:0">{{ c.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:16px;justify-content:center;font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted);padding:4px 0">
+        <span style="display:flex;gap:6px;align-items:center"><span style="width:14px;height:14px;border-radius:4px;border:2px solid var(--border-control)"></span>Com horários</span>
+        <span style="display:flex;gap:6px;align-items:center"><span style="width:14px;height:14px;border-radius:4px;background:var(--teal-600)"></span>Selecionado</span>
+      </div>
+    </section>
+    <sc-if value="{{ ho.noDate }}" hint-placeholder-val="{{ true }}">
+      <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--ink-muted);text-align:center">Toque em um dia com contorno para ver os horários.</p>
+    </sc-if>
+    <sc-if value="{{ ho.hasDate }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <span style="font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">{{ ho.dateLabel }}</span>
+        <sc-if value="{{ ho.hasMorning }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="display:flex;gap:8px;align-items:center;font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--teal-600)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="sun" size="{{ 20 }}" hint-size="20px,20px"></x-import>Manhã</span>
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+              <sc-for list="{{ ho.morning }}" as="t" hint-placeholder-count="4">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.sel }}" style="min-height:48px;border-radius:12px;border:2px solid {{ t.border }};background:{{ t.bg }};color:{{ t.color }};font:500 calc(16px*var(--fs,1))/1 var(--font-family);cursor:pointer">{{ t.t }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ ho.hasAfternoon }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="display:flex;gap:8px;align-items:center;font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--teal-600)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="sunset" size="{{ 20 }}" hint-size="20px,20px"></x-import>Tarde</span>
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+              <sc-for list="{{ ho.afternoon }}" as="t" hint-placeholder-count="4">
+                <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.sel }}" style="min-height:48px;border-radius:12px;border:2px solid {{ t.border }};background:{{ t.bg }};color:{{ t.color }};font:500 calc(16px*var(--fs,1))/1 var(--font-family);cursor:pointer">{{ t.t }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+    <div style="position:sticky;bottom:0;z-index:3;margin:0 -20px;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:var(--white);border-top:1px solid var(--border-subtle)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" full-width="{{ true }}" disabled="{{ ho.cant }}" onClick="{{ ho.onContinue }}" hint-size="100%,56px">{{ ho.cta }}</x-import></div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

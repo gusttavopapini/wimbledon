@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "triagemIntro" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="08 Introdução à pré-triagem" class="spm-tri">
+    <div class="spm-tri-top">
+      <span class="spm-tri-badge" aria-hidden="true"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="clipboard-list" size="{{ 36 }}" color="var(--qa-sand-ink)" hint-size="40px,40px"></x-import></span>
+      <h1 class="spm-tri-title">Pré-triagem</h1>
+      <p class="spm-tri-sub">Responda algumas perguntas e veja qual médico procurar.</p>
+    </div>
+
+    <ul class="spm-tri-cards" role="list">
+      <li class="spm-tri-card"><span aria-hidden="true"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="clock" size="{{ 28 }}" color="var(--teal-600)" hint-size="28px,28px"></x-import></span><span>Só 2 minutos</span></li>
+      <li class="spm-tri-card"><span aria-hidden="true"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="pointer" size="{{ 28 }}" color="var(--teal-600)" hint-size="28px,28px"></x-import></span><span>Toque na resposta</span></li>
+    </ul>
+
+    <div class="spm-tri-warn">
+      <span aria-hidden="true" style="flex:none;display:flex"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="info" size="{{ 22 }}" color="var(--warning)" hint-size="26px,26px"></x-import></span>
+      <p style="margin:0"><strong>Não é diagnóstico.</strong><br>Quem avalia é o médico.</p>
+    </div>
+
+    <div class="spm-tri-actions">
+      <button type="button" class="spm-tri-btn spm-tri-btn--primary" onClick="{{ tri.onStart }}">Começar<span aria-hidden="true" style="display:flex"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="arrow-right" size="{{ 22 }}" color="#ffffff" hint-size="26px,26px"></x-import></span></button>
+      <button type="button" class="spm-tri-btn spm-tri-btn--outline" onClick="{{ tri.onManual }}">Escolher especialidade</button>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

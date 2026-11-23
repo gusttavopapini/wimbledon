@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "documento" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="19 Visualizador de documento" style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <h1 style="margin:0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ dv.kind }}</h1>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button type="button" onClick="{{ dv.onZoomOut }}" aria-label="Diminuir" style="width:48px;height:48px;border-radius:14px;border:2px solid var(--border-control);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="zoom-out" hint-size="24px,24px"></x-import></button>
+        <span style="font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);min-width:44px;text-align:center">{{ dv.zoomTxt }}</span>
+        <button type="button" onClick="{{ dv.onZoomIn }}" aria-label="Ampliar" style="width:48px;height:48px;border-radius:14px;border:2px solid var(--border-control);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="zoom-in" hint-size="24px,24px"></x-import></button>
+      </div>
+    </div>
+    <div style="background:#e8eeee;border-radius:14px;padding:12px;overflow:auto;max-height:440px">
+      <div style="width:{{ dv.width }};background:#ffffff;box-shadow:var(--shadow-card);padding:18px 16px;display:flex;flex-direction:column;gap:10px;font-family:Georgia,serif;color:#222">
+        <div style="display:flex;justify-content:space-between;gap:8px;border-bottom:2px solid #222;padding-bottom:8px"><span style="font:700 calc(14px*var(--fs,1))/calc(18px*var(--fs,1)) Georgia,serif">{{ dv.issuer }}</span><span style="font:400 calc(11px*var(--fs,1))/calc(16px*var(--fs,1)) Georgia,serif">DEMONSTRATIVO</span></div>
+        <span style="font:400 calc(12px*var(--fs,1))/calc(18px*var(--fs,1)) Georgia,serif">{{ dv.patient }}</span>
+        <span style="font:400 calc(12px*var(--fs,1))/calc(18px*var(--fs,1)) Georgia,serif">{{ dv.by }}</span>
+        <span style="font:400 calc(12px*var(--fs,1))/calc(18px*var(--fs,1)) Georgia,serif">{{ dv.date }}</span>
+        <span style="font:700 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) Georgia,serif;margin-top:6px">{{ dv.title }}</span>
+        <sc-if value="{{ dv.hasRows }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ dv.rows }}" as="r" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;padding:6px 0;border-bottom:1px solid #ddd"><div style="display:flex;justify-content:space-between;gap:8px;font:400 calc(13px*var(--fs,1))/calc(18px*var(--fs,1)) Georgia,serif"><span>{{ r.n }}</span><strong>{{ r.val }}</strong></div><span style="font:400 calc(11px*var(--fs,1))/calc(16px*var(--fs,1)) Georgia,serif;color:#555">{{ r.ref }}</span></div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ dv.hasText }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font:400 calc(13px*var(--fs,1))/calc(19px*var(--fs,1)) Georgia,serif">{{ dv.text }}</p></sc-if>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <button type="button" onClick="{{ dv.onPrev }}" disabled="{{ dv.noPrev }}" aria-label="Página anterior" style="width:48px;height:48px;border-radius:14px;border:2px solid var(--border-control);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ dv.prevOp }}"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-left" hint-size="24px,24px"></x-import></button>
+      <span style="font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)">{{ dv.pageTxt }}</span>
+      <button type="button" onClick="{{ dv.onNext }}" disabled="{{ dv.noNext }}" aria-label="Próxima página" style="width:48px;height:48px;border-radius:14px;border:2px solid var(--border-control);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ dv.nextOp }}"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" hint-size="24px,24px"></x-import></button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(140px*var(--fs,1))),1fr));gap:12px">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="download" onClick="{{ dv.onPdf }}" hint-size="100%,48px">Baixar</x-import>
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="share-2" onClick="{{ dv.onShare }}" hint-size="100%,48px">Compartilhar</x-import>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "exame" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="18 Detalhes do exame" style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+      <span style="width:72px;height:72px;border-radius:20px;background:var(--qa-lilac-bg);display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ ex.icon }}" size="{{ 36 }}" color="var(--qa-lilac-ink)" hint-size="36px,36px"></x-import></span>
+      <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ ex.name }}</h1>
+    </div>
+    <section style="border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06);padding:16px;display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ ex.rows }}" as="r" hint-placeholder-count="4">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ r.icon }}" hint-size="24px,24px"></x-import>
+          <div style="display:flex;flex-direction:column;min-width:0"><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ r.label }}</span><span style="font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ r.value }}</span></div>
+        </div>
+      </sc-for>
+    </section>
+    <sc-if value="{{ ex.waiting }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 16px;background:var(--warning-bg);border-radius:14px;text-align:center">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="hourglass" size="{{ 36 }}" color="var(--warning)" hint-size="36px,36px"></x-import>
+        <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">O laboratório ainda não enviou o resultado. Avisaremos por notificação quando estiver disponível.</p>
+      </div>
+    </sc-if>
+    <sc-if value="{{ ex.ready }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <button type="button" onClick="{{ ex.onView }}" aria-label="Abrir prévia do documento" style="position:relative;height:180px;border:1px solid var(--border-control);border-radius:14px;background:var(--surface-2);overflow:hidden;cursor:pointer;padding:16px 40px">
+          <div style="background:#ffffff;height:100%;border-radius:4px;box-shadow:var(--shadow-card);padding:14px;display:flex;flex-direction:column;gap:8px">
+            <span style="height:10px;width:60%;background:var(--teal-100);border-radius:4px"></span><span style="height:8px;width:90%;background:#e8eeee;border-radius:4px"></span><span style="height:8px;width:80%;background:#e8eeee;border-radius:4px"></span><span style="height:8px;width:85%;background:#e8eeee;border-radius:4px"></span><span style="height:8px;width:70%;background:#e8eeee;border-radius:4px"></span>
+          </div>
+          <span style="position:absolute;right:12px;bottom:12px;background:var(--teal-600);color:var(--on-brand);border-radius:999px;padding:4px 12px;font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family)">Prévia</span>
+        </button>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="eye" full-width="{{ true }}" onClick="{{ ex.onView }}" hint-size="100%,56px">Visualizar resultado</x-import>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(140px*var(--fs,1))),1fr));gap:12px">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="download" onClick="{{ ex.onPdf }}" hint-size="100%,48px">Baixar PDF</x-import>
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="share-2" onClick="{{ ex.onShare }}" hint-size="100%,48px">Compartilhar</x-import>
+        </div>
+      </div>
+    </sc-if>
+    <div style="display:flex;gap:8px;font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="info" size="{{ 20 }}" hint-size="20px,20px"></x-import><span>O app mostra o documento do laboratório sem interpretar os resultados. Tire suas dúvidas com o médico.</span></div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

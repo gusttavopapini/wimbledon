@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "medicos" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="03 Profissionais próximos" style="--font-family:'Roboto',Helvetica,Arial,sans-serif;display:flex;flex-direction:column;gap:16px;font-family:var(--font-family);color:var(--ink)">
+    <!-- Voltar (pílula) -->
+    <button type="button" onClick="{{ med.onBack }}" style="align-self:flex-start;min-height:48px;padding:0;margin:-6px 0 -8px;background:transparent;border:0;cursor:pointer;display:flex;align-items:center">
+      <span style="display:inline-flex;align-items:center;gap:2px;height:36px;padding:0 16px 0 10px;border:1.5px solid var(--teal-600);border-radius:999px;color:var(--teal-600);font:600 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family)">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-left" size="{{ 18 }}" color="var(--teal-600)" hint-size="18px,18px"></x-import>Voltar
+      </span>
+    </button>
+    <h1 style="margin:0;font:700 calc(26px*var(--fs,1))/calc(34px*var(--fs,1)) var(--font-family);color:var(--teal-600);text-align:center">{{ med.pro }}</h1>
+
+    <!-- Mapa (demonstrativo) -->
+    <div style="padding:10px;background:var(--teal-600);border-radius:18px">
+      <div style="position:relative;height:150px;border-radius:12px;overflow:hidden;background:#eef1f1">
+        <svg viewBox="0 0 340 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%">
+          <rect x="30" y="0" width="70" height="58" rx="6" fill="#cfe8cf"></rect>
+          <rect x="255" y="92" width="60" height="40" rx="6" fill="#cfe8cf"></rect>
+          <rect x="150" y="8" width="34" height="22" rx="4" fill="#cfe8cf"></rect>
+          <rect x="118" y="96" width="44" height="30" rx="4" fill="#e2e6e6"></rect>
+          <rect x="205" y="40" width="40" height="28" rx="4" fill="#e2e6e6"></rect>
+          <path d="M0 66 L340 54" stroke="#ffffff" stroke-width="12"></path>
+          <path d="M0 118 L340 104" stroke="#ffffff" stroke-width="8"></path>
+          <path d="M108 0 L126 150" stroke="#ffffff" stroke-width="10"></path>
+          <path d="M236 0 L220 150" stroke="#ffffff" stroke-width="8"></path>
+          <path d="M0 20 C 60 30, 90 10, 150 34" stroke="#ffffff" stroke-width="6" fill="none"></path>
+          <path d="M290 0 L300 150" stroke="#ffffff" stroke-width="5"></path>
+        </svg>
+        <sc-for list="{{ med.pins }}" as="p" hint-placeholder-count="3">
+          <span aria-hidden="true" style="position:absolute;left:{{ p.left }};top:{{ p.top }};transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:var(--teal-600);color:var(--on-brand);border:2px solid #ffffff;display:flex;align-items:center;justify-content:center;font:700 calc(14px*var(--fs,1))/1 var(--font-family);box-shadow:0 2px 6px rgba(0,0,0,.2)"></span>
+        </sc-for>
+        <span style="position:absolute;left:{{ med.home.left }};top:{{ med.home.top }};transform:translate(-50%,-30px);display:flex;flex-direction:column;align-items:center;gap:4px">
+          <svg width="22" height="30" viewBox="0 0 22 30" aria-hidden="true"><path d="M11 0C4.9 0 0 4.9 0 11c0 8.3 11 19 11 19s11-10.7 11-19C22 4.9 17.1 0 11 0z" fill="#e53935"></path><circle cx="11" cy="11" r="4" fill="#ffffff"></circle></svg>
+          <span style="background:var(--white);border-radius:999px;padding:6px 14px;font:500 calc(14px*var(--fs,1))/calc(18px*var(--fs,1)) var(--font-family);color:var(--ink);white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15)">{{ med.home.label }}</span>
+        </span>
+      </div>
+    </div>
+
+    <h2 style="margin:4px 0 0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Médicos mais perto de você</h2>
+
+    <sc-if value="{{ med.loading }}" hint-placeholder-val="{{ false }}">
+      <div aria-busy="true" style="display:flex;flex-direction:column;gap:12px">
+        <div style="height:96px;border-radius:14px;background:var(--teal-100);animation:spmPulse 1.2s infinite"></div>
+        <div style="height:96px;border-radius:14px;background:var(--teal-100);animation:spmPulse 1.2s infinite"></div>
+        <span style="font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--ink-muted);text-align:center">Buscando profissionais perto de você…</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{ med.error }}" hint-placeholder-val="{{ false }}">
+      <div role="alert" style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 16px;border:1px solid var(--error);border-radius:14px;background:var(--error-bg);text-align:center">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="wifi-off" size="{{ 36 }}" color="var(--error)" hint-size="36px,36px"></x-import>
+        <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">Não conseguimos carregar os profissionais. Verifique sua internet e tente de novo, ou agende pelo WhatsApp.</p>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" icon="refresh-cw" onClick="{{ onRetry }}" hint-size="180px,48px">Tentar de novo</x-import>
+      </div>
+    </sc-if>
+    <sc-if value="{{ med.ready }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <sc-for list="{{ med.list }}" as="d" hint-placeholder-count="3">
+          <article style="display:flex;flex-direction:column;gap:12px;padding:14px;background:var(--white);border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06)">
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <button type="button" onClick="{{ d.onOpen }}" aria-label="{{ d.openLabel }}" style="flex:1;min-width:0;display:flex;align-items:center;gap:14px;min-height:64px;background:transparent;border:0;padding:0;text-align:left;cursor:pointer;color:var(--ink)">
+                <span style="position:relative;flex:none;width:64px;height:64px">
+                  <sc-if value="{{ d.hasPhoto }}" hint-placeholder-val="{{ false }}"><dc-import name="DoctorPhoto" id="{{ d.photoId }}" size="{{ 64 }}" hint-size="64px,64px"></dc-import></sc-if>
+                  <sc-if value="{{ d.noPhoto }}" hint-placeholder-val="{{ true }}"><span style="width:64px;height:64px;border-radius:50%;background:{{ d.avatarBg }};color:#ffffff;display:flex;align-items:center;justify-content:center;font:700 calc(19px*var(--fs,1))/1 var(--font-family)">{{ d.initials }}</span></sc-if>
+                </span>
+                <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                  <span style="font:700 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink)">{{ d.name }}</span>
+                  <span style="font:400 calc(14px*var(--fs,1))/calc(19px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ d.clinicName }}</span>
+                </span>
+              </button>
+              <span style="flex:none;display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:999px;background:#e3f1f1;color:var(--teal-600);font:500 calc(14px*var(--fs,1))/calc(18px*var(--fs,1)) var(--font-family);white-space:nowrap">
+                <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="map-pin" size="{{ 16 }}" color="var(--teal-600)" hint-size="16px,16px"></x-import>{{ d.kmShort }}
+              </span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 10px 10px 14px;background:#f1f5f5;border-radius:12px">
+              <span style="display:flex;flex-direction:column;min-width:0">
+                <span style="font:400 calc(14px*var(--fs,1))/calc(18px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Próximo horário</span>
+                <span style="font:700 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink)">{{ d.next }}</span>
+              </span>
+              <button type="button" onClick="{{ d.onBook }}" aria-label="{{ d.bookLabel }}" style="flex:none;display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border:0;border-radius:12px;background:var(--teal-600);color:var(--on-brand);font:600 calc(16px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer">
+                <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar-plus" size="{{ 20 }}" color="#ffffff" hint-size="20px,20px"></x-import>Agendar
+              </button>
+            </div>
+          </article>
+        </sc-for>
+        <sc-if value="{{ med.noDocs }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:8px 0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--ink);text-align:center">Ainda não há profissionais desta especialidade perto de você.</p>
+        </sc-if>
+        <p style="margin:0;font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted);text-align:center">Profissionais, clínicas, horários e distâncias são demonstrativos.</p>
+      </div>
+    </sc-if>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

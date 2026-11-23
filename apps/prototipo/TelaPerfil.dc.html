@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "perfil" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="22 Meu perfil" style="display:flex;flex-direction:column;gap:18px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+      <img src="assets/paciente.png" alt="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;object-position:50% 20%;border:3px solid var(--white);box-shadow:0 2px 8px rgba(3,117,127,.18)">
+      <h1 style="margin:6px 0 0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ pf.name }}</h1>
+      <span style="font:400 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ pf.sub }}</span>
+      <span style="display:flex;gap:6px;align-items:center;font:400 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="map-pin" size="{{ 20 }}" hint-size="20px,20px"></x-import>{{ pf.addr }}</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ pf.items }}" as="it" hint-placeholder-count="5">
+        <button type="button" onClick="{{ it.onClick }}" style="display:flex;gap:14px;align-items:center;min-height:60px;padding:0 14px;border:1px solid var(--border-subtle);border-radius:16px;box-shadow:0 1px 3px rgba(3,117,127,.06);background:var(--white);cursor:pointer;text-align:left;color:var(--ink);font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ it.icon }}" hint-size="24px,24px"></x-import><span style="flex:1">{{ it.label }}</span><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" hint-size="24px,24px"></x-import>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

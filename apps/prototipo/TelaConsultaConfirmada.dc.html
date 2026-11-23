@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "confirmada" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="07 Consulta confirmada" style="--font-family:'Roboto',Helvetica,Arial,sans-serif;display:flex;flex-direction:column;gap:16px;font-family:var(--font-family);color:var(--ink)">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding-top:4px">
+      <span style="width:72px;height:72px;border-radius:50%;background:#e3f1f1;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="circle-check" size="{{ 40 }}" color="var(--teal-600)" hint-size="40px,40px"></x-import></span>
+      <h1 style="margin:0;font:700 calc(20px*var(--fs,1))/calc(28px*var(--fs,1)) var(--font-family);color:var(--teal-600);text-wrap:balance;max-width:260px">Sua consulta foi agendada com sucesso!</h1>
+    </div>
+
+    <section style="border:1px solid var(--border-subtle);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px;background:var(--white)">
+      <div style="display:flex;gap:12px;align-items:center">
+        <span style="flex:none;width:48px;height:48px;border-radius:50%;background:#f6e1e1;display:flex;align-items:center;justify-content:center"><img src="{{ ap.illo }}" alt="" style="width:36px;height:36px;object-fit:contain;display:block"></span>
+        <span style="display:flex;flex-direction:column;min-width:0"><span style="font:700 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)">{{ ap.name }}</span><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ ap.spec }}</span></span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;font:700 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="calendar" size="{{ 22 }}" color="var(--ink)" hint-size="22px,22px"></x-import><span>{{ ap.dateShort }}</span></div>
+      <div style="display:flex;gap:12px;align-items:flex-start"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="map-pin" size="{{ 22 }}" color="var(--ink)" hint-size="22px,22px"></x-import><span style="display:flex;flex-direction:column;min-width:0"><span style="font:700 calc(15px*var(--fs,1))/calc(21px*var(--fs,1)) var(--font-family)">{{ ap.clinic }}</span><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ ap.addr }}</span></span></div>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:10px">
+      <h2 style="margin:4px 0 2px;font:700 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Para o dia da consulta</h2>
+      <sc-for list="{{ ap.orientList }}" as="o" hint-placeholder-count="5">
+        <div style="display:flex;gap:12px;align-items:center;font:400 calc(15px*var(--fs,1))/calc(21px*var(--fs,1)) var(--font-family)">
+          <span style="flex:none;width:34px;height:34px;border-radius:8px;background:#e3f1f1;display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ o.icon }}" size="{{ 20 }}" color="var(--teal-600)" hint-size="20px,20px"></x-import></span>
+          <span>{{ o.text }}</span>
+        </div>
+      </sc-for>
+    </section>
+
+    <button type="button" onClick="{{ ap.onView }}" style="width:100%;min-height:52px;margin-top:4px;border:0;border-radius:12px;background:var(--teal-600);color:var(--on-brand);font:600 calc(16px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer">Ver minha consulta</button>
+    <button type="button" onClick="{{ onRoute }}" style="width:100%;min-height:52px;display:flex;align-items:center;justify-content:center;gap:10px;border:1.5px solid var(--teal-600);border-radius:12px;background:var(--white);color:var(--teal-600);font:600 calc(16px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="navigation" size="{{ 20 }}" color="var(--teal-600)" hint-size="20px,20px"></x-import>Como chegar
+    </button>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

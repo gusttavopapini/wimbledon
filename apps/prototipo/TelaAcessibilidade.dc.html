@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "acessibilidade" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="27 Acessibilidade" style="display:flex;flex-direction:column;gap:20px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Acessibilidade</h1>
+    <section style="display:flex;flex-direction:column;gap:10px">
+      <h2 style="margin:0;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Tamanho do texto</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <sc-for list="{{ a11y.sizes }}" as="c" hint-placeholder-count="3">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.CategoryChip" label="{{ c.label }}" selected="{{ c.selected }}" onClick="{{ c.onClick }}" hint-size="100px,48px"></x-import>
+        </sc-for>
+      </div>
+      <p style="margin:0;padding:14px 16px;background:var(--surface-2);border-radius:12px;font:400 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">Exemplo: sua consulta é amanhã, às 14:00.</p>
+    </section>
+    <section style="display:flex;flex-direction:column">
+      <h2 style="margin:0 0 4px;font:700 calc(18px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Visão e uso</h2>
+      <sc-for list="{{ a11y.toggles }}" as="g" hint-placeholder-count="5">
+        <button type="button" role="switch" aria-checked="{{ g.on }}" onClick="{{ g.onClick }}" style="display:flex;gap:14px;align-items:center;min-height:72px;padding:12px 0;border:0;border-bottom:1px solid var(--border-subtle);background:transparent;cursor:pointer;text-align:left;color:var(--ink)">
+          <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ g.icon }}" hint-size="24px,24px"></x-import>
+          <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font:500 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ g.label }}</span><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ g.desc }}</span></span>
+          <span style="position:relative;width:54px;height:30px;border-radius:999px;background:{{ g.trackBg }};flex:none"><span style="position:absolute;top:2px;left:{{ g.knob }};width:26px;height:26px;border-radius:50%;background:var(--white)"></span></span>
+        </button>
+      </sc-for>
+    </section>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" icon="volume-2" full-width="{{ true }}" onClick="{{ a11y.onTest }}" hint-size="100%,48px">Testar leitura em voz alta</x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="whatsapp" full-width="{{ true }}" onClick="{{ onWhats }}" hint-size="100%,48px">Pedir ajuda pelo WhatsApp</x-import>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+:root{
+--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-6:24px;--space-8:32px;--space-12:48px;
+--screen-margin:24px;
+--touch-min:48px;
+--radius-control:14px; /* fields, buttons */
+--radius-card:20px;
+--radius-sheet:32px;
+--radius-full:999px;
+--border-width-control:2px;/* @kind spacing */
+--shadow-card:0 4px 16px rgba(3,117,127,.12),0 1px 3px rgba(23,57,61,.08);
+--shadow-nav:0 -4px 20px rgba(3,117,127,.12);
+--shadow-sheet:0 -8px 28px rgba(0,81,112,.18);
+--focus-outline:3px solid var(--teal-600);/* @kind other */
+--focus-offset:2px;
+--duration-fast:150ms;/* @kind other */
+--duration-base:220ms;/* @kind other */
+--ease-standard:cubic-bezier(.2,0,0,1);/* @kind other */
+}

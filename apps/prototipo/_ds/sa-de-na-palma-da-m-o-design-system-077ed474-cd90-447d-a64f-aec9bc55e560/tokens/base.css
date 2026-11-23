@@ -1,0 +1,5 @@
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font-family);font-size:var(--fs-body-lg);line-height:var(--lh-body-lg);color:var(--text-body);background:var(--surface-page);-webkit-font-smoothing:antialiased}
+a{color:var(--text-link);text-decoration:underline;text-underline-offset:2px}
+a:hover{color:var(--teal-700)}
+:focus-visible{outline:var(--focus-outline);outline-offset:var(--focus-offset)}

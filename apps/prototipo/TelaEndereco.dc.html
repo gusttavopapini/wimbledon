@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "endereco" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="24 Meu endereço" style="display:flex;flex-direction:column;gap:16px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Meu endereço</h1>
+    <p style="margin:0;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Usamos este endereço para calcular a distância até as clínicas.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end">
+      <div style="flex:1 1 calc(150px*var(--fs,1));min-width:0"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="CEP" value="{{ en.cep }}" onChange="{{ en.onCep }}" input-mode="numeric" hint-size="100%,84px"></x-import></div>
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" onClick="{{ en.onLookup }}" style="{{ tallBtn }}" hint-size="120px,56px">Buscar CEP</x-import>
+    </div>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Rua" value="{{ en.street }}" onChange="{{ en.onStreet }}" hint-size="100%,84px"></x-import>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,calc(120px*var(--fs,1))),1fr));gap:12px">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Número" value="{{ en.number }}" onChange="{{ en.onNumber }}" hint-size="100%,84px"></x-import>
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Complemento" value="{{ en.comp }}" onChange="{{ en.onComp }}" hint-size="100%,84px"></x-import>
+    </div>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Bairro" value="{{ en.district }}" onChange="{{ en.onDistrict }}" hint-size="100%,84px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Cidade" value="{{ en.city }}" onChange="{{ en.onCity }}" hint-size="100%,84px"></x-import>
+    <sc-if value="{{ en.hasErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="padding:12px 14px;background:var(--error-bg);color:var(--error);border-radius:14px;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ en.err }}</div></sc-if>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" full-width="{{ true }}" onClick="{{ en.onSave }}" hint-size="100%,56px">Salvar endereço</x-import>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

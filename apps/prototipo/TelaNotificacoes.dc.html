@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "notificacoes" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="26 Notificações" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Notificações</h1>
+      <sc-if value="{{ nt.hasUnread }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ nt.onReadAll }}" style="min-height:48px;background:transparent;border:0;color:var(--teal-600);font:500 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer;text-decoration:underline">Marcar como lidas</button></sc-if>
+    </div>
+    <sc-if value="{{ nt.empty }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family);color:var(--ink-muted);text-align:center">Nenhuma notificação por enquanto.</p></sc-if>
+    <sc-for list="{{ nt.list }}" as="n" hint-placeholder-count="4">
+      <button type="button" onClick="{{ n.onClick }}" style="display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid {{ n.border }};border-radius:14px;background:var(--white);cursor:pointer;text-align:left;color:var(--ink)">
+        <span style="width:44px;height:44px;flex:none;border-radius:12px;background:{{ n.bg }};display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="{{ n.icon }}" color="{{ n.ink }}" hint-size="24px,24px"></x-import></span>
+        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+          <span style="display:flex;justify-content:space-between;gap:8px"><span style="font:700 calc(17px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ n.title }}</span><span style="font:400 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted);white-space:nowrap">{{ n.time }}</span></span>
+          <span style="font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">{{ n.text }}</span>
+          <sc-if value="{{ n.unread }}" hint-placeholder-val="{{ false }}"><span style="font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Nova</span></sc-if>
+        </span>
+      </button>
+    </sc-for>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

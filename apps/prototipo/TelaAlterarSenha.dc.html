@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "senha" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="Alterar senha" style="display:flex;flex-direction:column;gap:16px">
+    <h1 style="margin:0;font:700 calc(24px*var(--fs,1))/calc(32px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Alterar senha</h1>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Senha atual" type="password" value="{{ pw.cur }}" onChange="{{ pw.onCur }}" hint="Na demonstração: demo1234" hint-size="100%,104px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Nova senha" type="password" value="{{ pw.n1 }}" onChange="{{ pw.onN1 }}" hint="Pelo menos 8 caracteres." hint-size="100%,104px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" label="Repita a nova senha" type="password" value="{{ pw.n2 }}" onChange="{{ pw.onN2 }}" error="{{ pw.err }}" hint-size="100%,84px"></x-import>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" full-width="{{ true }}" onClick="{{ pw.onSave }}" hint-size="100%,56px">Salvar nova senha</x-import>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

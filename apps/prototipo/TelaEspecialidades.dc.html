@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "especialidades" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="02 Especialidades" style="--font-family:'Roboto',Helvetica,Arial,sans-serif;display:flex;flex-direction:column;gap:14px;font-family:var(--font-family);color:var(--ink)">
+    <button type="button" onClick="{{ esp.onTriage }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;min-height:56px;background:#f6ecd9;border:0;border-radius:14px;color:#7a5a1f;font:500 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer;text-align:left">
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="clipboard-list" color="currentColor" hint-size="24px,24px"></x-import>
+      <span style="flex:1">Não sabe qual escolher? Faça a pré-triagem</span>
+      <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" color="currentColor" hint-size="24px,24px"></x-import>
+    </button>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h1 style="margin:0;font:700 calc(20px*var(--fs,1))/calc(28px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Especialidades</h1>
+      <button type="button" onClick="{{ esp.onClear }}" style="min-height:48px;display:flex;align-items:center;gap:2px;background:transparent;border:0;color:var(--teal-600);font:600 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);cursor:pointer;padding:0 0 0 8px">Ver todas<x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="chevron-right" size="{{ 16 }}" color="var(--teal-600)" hint-size="16px,16px"></x-import></button>
+    </div>
+    <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.TextField" variant="pill" placeholder="Pesquisar" value="{{ esp.query }}" onChange="{{ esp.onQuery }}" hint-size="100%,48px"></x-import>
+    <sc-if value="{{ esp.empty }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 8px;text-align:center">
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="search-x" size="{{ 40 }}" color="var(--teal-600)" hint-size="40px,40px"></x-import>
+        <p style="margin:0;font:400 calc(17px*var(--fs,1))/calc(26px*var(--fs,1)) var(--font-family)">Não encontramos essa especialidade. Confira a escrita ou faça a pré-triagem.</p>
+        <x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Button" variant="outline" onClick="{{ esp.onClear }}" hint-size="160px,48px">Limpar busca</x-import>
+      </div>
+    </sc-if>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(100px*var(--fs,1)),1fr));gap:24px 0;margin-top:10px">
+      <sc-for list="{{ esp.list }}" as="sp" hint-placeholder-count="9">
+        <button type="button" onClick="{{ sp.onClick }}" style="display:flex;flex-direction:column;align-items:center;gap:10px;min-width:0;min-height:48px;background:transparent;border:0;padding:0;cursor:pointer;text-align:center;overflow:visible">
+          <span style="width:92px;height:92px;border-radius:50%;background:#f6e1e1;display:flex;align-items:center;justify-content:center;flex:none">
+            <img src="{{ sp.illo }}" alt="" style="width:72px;height:72px;object-fit:contain;display:block">
+          </span>
+          <span style="font:400 calc(15px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--teal-600);max-width:100%;overflow-wrap:break-word;hyphens:manual;text-align:center">{{ sp.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>

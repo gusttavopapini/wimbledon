@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- Tela "triagemResult" do app Saúde na Palma da Mão.
+     Recebe o view-model inteiro via prop "vm" (montado em spm-view.js). -->
+  <div data-screen-label="10 Resultado da pré-triagem" style="--font-family:'Roboto',Helvetica,Arial,sans-serif;display:flex;flex-direction:column;gap:16px;font-family:var(--font-family);color:var(--ink)">
+    <sc-if value="{{ tri.hasSug }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding-top:4px">
+        <span style="font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">Médico indicado</span>
+        <span aria-hidden="true" style="width:72px;height:72px;margin:4px 0;border-radius:50%;background:#f6e1e1;display:flex;align-items:center;justify-content:center"><img src="{{ tri.illo }}" alt="" style="width:54px;height:54px;object-fit:contain;display:block"></span>
+        <h1 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);color:var(--teal-600)">{{ tri.sug }}</h1>
+        <span style="font:400 calc(16px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);color:var(--ink)">{{ tri.plain }}</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{ tri.noSug }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding-top:4px">
+        <span aria-hidden="true" style="width:72px;height:72px;border-radius:50%;background:var(--qa-sand-bg);display:flex;align-items:center;justify-content:center"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="clipboard-list" size="{{ 36 }}" color="var(--qa-sand-ink)" hint-size="36px,36px"></x-import></span>
+        <h1 style="margin:0;font:700 calc(22px*var(--fs,1))/calc(30px*var(--fs,1)) var(--font-family);color:var(--teal-600)">Sem indicação</h1>
+        <p style="margin:0;font:400 calc(16px*var(--fs,1))/calc(24px*var(--fs,1)) var(--font-family)">Não conseguimos indicar um médico com essas respostas. Escolha na lista ou fale com a clínica pelo WhatsApp.</p>
+      </div>
+    </sc-if>
+
+    <section style="border:1px solid var(--border-subtle);border-radius:14px;padding:4px 16px;background:var(--white)">
+      <h2 style="margin:0;padding:10px 0 8px;font:500 calc(14px*var(--fs,1))/calc(20px*var(--fs,1)) var(--font-family);color:var(--ink-muted);border-bottom:1px solid var(--border-subtle)">Suas respostas</h2>
+      <sc-for list="{{ tri.rows }}" as="r" hint-placeholder-count="4">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-subtle)">
+          <span style="font:400 calc(15px*var(--fs,1))/calc(21px*var(--fs,1)) var(--font-family);color:var(--ink-muted)">{{ r.q }}</span>
+          <span style="font:700 calc(15px*var(--fs,1))/calc(21px*var(--fs,1)) var(--font-family);color:var(--ink);text-align:right">{{ r.ans }}</span>
+        </div>
+      </sc-for>
+    </section>
+
+    <div style="display:flex;gap:10px;align-items:flex-start;padding:12px 16px;background:var(--warning-bg);border-radius:14px;font:400 calc(15px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family)">
+      <span aria-hidden="true" style="flex:none;display:flex"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="info" size="{{ 22 }}" color="var(--warning)" hint-size="22px,22px"></x-import></span>
+      <p style="margin:0"><strong style="font-weight:700">Não é diagnóstico.</strong><br>Se piorar, procure atendimento.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+      <sc-if value="{{ tri.hasSug }}" hint-placeholder-val="{{ true }}">
+        <button type="button" onClick="{{ tri.onFind }}" style="width:100%;min-height:56px;display:flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:12px;background:var(--teal-600);color:var(--on-brand);font:600 calc(17px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer;box-shadow:0 6px 16px rgba(3,117,127,.22)">
+          <span aria-hidden="true" style="display:flex"><x-import component-from-global-scope="SaDeNaPalmaDaMODesignSystem_077ed4.Icon" name="map-pin" size="{{ 22 }}" color="#ffffff" hint-size="22px,22px"></x-import></span>Ver médicos perto de mim
+        </button>
+      </sc-if>
+      <button type="button" onClick="{{ tri.onManual }}" style="width:100%;min-height:56px;border:1.5px solid var(--teal-600);border-radius:12px;background:var(--white);color:var(--teal-600);font:600 calc(17px*var(--fs,1))/calc(22px*var(--fs,1)) var(--font-family);cursor:pointer">Escolher outro médico</button>
+    </div>
+  </div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() { return this.props.vm || {}; }
+}
+</script>
+</body>
+</html>
