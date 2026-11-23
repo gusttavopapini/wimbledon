@@ -2,7 +2,7 @@ import { Heebo_400Regular } from '@expo-google-fonts/heebo/400Regular';
 import { Heebo_700Bold } from '@expo-google-fonts/heebo/700Bold';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRootNavigationState, useRouter, useSegments, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -43,10 +43,47 @@ export default function LayoutRaiz() {
   );
 }
 
+type Area = '(publico)' | '(app)' | 'recepcao' | 'medico' | 'gestao';
+
+const INICIO_DA_AREA: Record<Area, Href> = {
+  '(publico)': '/entrar',
+  '(app)': '/',
+  recepcao: '/recepcao',
+  medico: '/medico',
+  gestao: '/gestao',
+};
+
+function areaDoPerfil(estado: string, perfil?: string): Area {
+  if (estado !== 'entrou') return '(publico)';
+  if (perfil === 'recepcionista') return 'recepcao';
+  if (perfil === 'medico') return 'medico';
+  if (perfil === 'manutencao' || perfil === 'administrativo') return 'gestao';
+  return '(app)';
+}
+
+/**
+ * Leva cada pessoa para a área do seu perfil (e quem saiu, para Entrar).
+ * A partir da SDK 58 o Stack.Protected não redireciona sozinho quando a rota
+ * aberta (por exemplo "/") está protegida: sem isto, aparece "Unmatched Route".
+ */
+function useLevarParaAreaDoPerfil(ativo: boolean, estado: string, perfil?: string) {
+  const segmentos = useSegments();
+  const router = useRouter();
+  const navegacaoPronta = Boolean(useRootNavigationState()?.key);
+  const atual = segmentos[0] as string | undefined;
+  useEffect(() => {
+    if (!ativo || !navegacaoPronta || estado === 'carregando') return;
+    const area = areaDoPerfil(estado, perfil);
+    if (atual === area || atual === 'painel') return;
+    router.replace(INICIO_DA_AREA[area]);
+  }, [ativo, navegacaoPronta, estado, perfil, atual, router]);
+}
+
 function Navegacao() {
   const { cores } = useTema();
   const { estado, falha, usuario } = useSessao();
   const pronto = ambiente.modoTv || estado !== 'carregando' || falha !== null;
+  useLevarParaAreaDoPerfil(!ambiente.modoTv && !falha, estado, usuario?.perfil);
 
   useEffect(() => {
     if (pronto) void SplashScreen.hideAsync();

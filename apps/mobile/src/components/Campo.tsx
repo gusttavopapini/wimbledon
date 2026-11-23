@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, type ComponentRef } from 'react';
 import { Pressable, StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 
 import { useTema } from '@/hooks/useTema';
@@ -47,7 +47,7 @@ const TECLADO: Partial<Record<TipoCampo, TextInputProps['keyboardType']>> = {
 const TAMANHO_MAXIMO: Partial<Record<TipoCampo, number>> = { cpf: 14, data: 10, telefone: 15 };
 
 /** Campo do design system (design-system/components/Campo). */
-export const Campo = forwardRef<TextInput, CampoProps>(function Campo(
+export const Campo = forwardRef<ComponentRef<typeof TextInput>, CampoProps>(function Campo(
   {
     rotulo,
     ajuda,

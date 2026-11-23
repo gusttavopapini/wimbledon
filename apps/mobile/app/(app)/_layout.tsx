@@ -18,12 +18,16 @@ function destinoDaRota(nome: string): Destino {
   return 'inicio';
 }
 
-function Barra({ state, navigation }: BottomTabBarProps) {
+function Barra({ state, navigateToTab }: BottomTabBarProps) {
   const atual = state.routes[state.index]?.name ?? 'index';
   return (
     <NavegacaoInferior
       ativo={destinoDaRota(atual)}
-      aoNavegar={(destino) => navigation.navigate(ROTA_DO_DESTINO[destino])}
+      aoNavegar={(destino) => {
+        // SDK 58: a barra navega pela chave da rota, não pelo nome.
+        const rota = state.routes.find((r) => r.name === ROTA_DO_DESTINO[destino]);
+        if (rota) navigateToTab(rota.key);
+      }}
     />
   );
 }

@@ -40,6 +40,8 @@ if [ ! -d node_modules ] || [ package-lock.json -nt node_modules ]; then
   echo
   echo "Instalando as dependências (só na primeira vez, leva alguns minutos)…"
   npm install --no-audit --no-fund || { read -r -p "Falhou. Aperte Enter para fechar." _; exit 1; }
+  touch node_modules
+  LIMPAR_CACHE="--clear"
 fi
 
 # Firebase: login por e-mail, índices, regras e dados de demonstração (só na primeira vez)
@@ -73,4 +75,4 @@ echo
 echo "Abrindo o Expo. Leia o QR code com o Expo Go (celular no mesmo Wi-Fi deste Mac)."
 echo "Contas de teste: paciente@saude-palma.test, recepcao@…, medica@…, manutencao@…, admin@… (senha SaudePalma@2026)"
 echo
-npm run dev:mobile
+npm run dev:mobile -- $LIMPAR_CACHE
