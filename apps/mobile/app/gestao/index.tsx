@@ -36,7 +36,7 @@ export default function Gestao() {
   ];
 
   return (
-    <Tela>
+    <Tela larga>
       <TopoEquipe titulo={admin ? 'Administração' : 'Manutenção'} subtitulo={unidade.data?.nome} />
       <Folha>
         {admin ? (

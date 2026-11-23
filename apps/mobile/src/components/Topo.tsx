@@ -6,6 +6,9 @@ import Svg, { Path } from 'react-native-svg';
 
 import { useTema } from '@/hooks/useTema';
 
+import { svgDecorativo } from './acessibilidade';
+import { Centro } from './Largura';
+
 import { Texto } from './Texto';
 
 export interface TopoProps {
@@ -30,7 +33,7 @@ export function Topo({ titulo, subtitulo, antes, children }: TopoProps) {
   const corTexto = altoContraste ? 'texto' : 'textoSobrePrimaria';
 
   const conteudo = (
-    <View style={{ gap: espacamento.espacamento8 }}>
+    <Centro gap={espacamento.espacamento8}>
       {antes ? <View style={{ marginBottom: espacamento.espacamento8 }}>{antes}</View> : null}
       {titulo ? (
         <Texto estilo="display" cor={corTexto} accessibilityRole="header">
@@ -43,7 +46,7 @@ export function Topo({ titulo, subtitulo, antes, children }: TopoProps) {
         </Texto>
       ) : null}
       {children ? <View style={{ marginTop: espacamento.espacamento8 }}>{children}</View> : null}
-    </View>
+    </Centro>
   );
 
   const espacos = {
@@ -85,7 +88,7 @@ export function Topo({ titulo, subtitulo, antes, children }: TopoProps) {
         preserveAspectRatio="none"
         style={[estilos.onda, { top }]}
         accessible={false}
-        importantForAccessibility="no-hide-descendants"
+        {...svgDecorativo}
       >
         <Path
           d="M40 0H220V112C196 108 176 92 158 72 132 44 112 40 84 32 62 26 46 16 40 0Z"

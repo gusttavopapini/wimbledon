@@ -3,6 +3,8 @@ import { View } from 'react-native';
 
 import { useTema } from '@/hooks/useTema';
 
+import { Centro } from './Largura';
+
 /**
  * Folha branca de 32px que sobe por cima do Topo (no alto contraste, encaixa
  * sem sobrepor). semTopo: telas internas, que começam no CabecalhoTela.
@@ -20,11 +22,10 @@ export function Folha({ children, semTopo = false }: { children: ReactNode; semT
         backgroundColor: cores.superficie,
         borderTopLeftRadius: altoContraste ? 0 : raio.raioCartao,
         borderTopRightRadius: altoContraste ? 0 : raio.raioCartao,
-        gap: espacamento.espacamento24,
         flexGrow: 1,
       }}
     >
-      {children}
+      <Centro gap={espacamento.espacamento24}>{children}</Centro>
     </View>
   );
 }

@@ -4,6 +4,7 @@ import { useTema } from '@/hooks/useTema';
 import type { NomeCor } from '@/theme/tema';
 
 import { ICONES_ESPECIALIDADE, type IdIconeEspecialidade } from './iconesEspecialidade';
+import { svgDecorativo } from './acessibilidade';
 
 export interface IconeEspecialidadeProps {
   /** Id da especialidade na API, igual ao nome do arquivo do ícone. */
@@ -48,7 +49,7 @@ export function IconeEspecialidade({
       accessible={Boolean(rotulo)}
       accessibilityRole={rotulo ? 'image' : undefined}
       accessibilityLabel={rotulo}
-      importantForAccessibility={rotulo ? 'yes' : 'no-hide-descendants'}
+      {...(rotulo ? {} : svgDecorativo)}
     >
       {formas.map((forma, i) =>
         forma.tipo === 'path' ? (

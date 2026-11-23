@@ -55,6 +55,8 @@ import {
   type LucideIcon,
 } from 'lucide-react-native';
 
+import { svgDecorativo } from './acessibilidade';
+
 import { useTema } from '@/hooks/useTema';
 import type { NomeCor } from '@/theme/tema';
 
@@ -135,7 +137,7 @@ export function Icone({ nome, cor = 'primaria', tamanho, espessura = 2 }: IconeP
       color={cores[cor]}
       strokeWidth={espessura}
       accessible={false}
-      importantForAccessibility="no"
+      {...svgDecorativo}
     />
   );
 }

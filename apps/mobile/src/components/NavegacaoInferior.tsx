@@ -9,6 +9,7 @@ import { focoVeioDoTeclado } from '@/utils/focoPorTeclado';
 import { estiloFoco } from './foco';
 import { Icone, type NomeIcone } from './Icone';
 import { Texto } from './Texto';
+import { LARGURA_MAXIMA } from './Largura';
 
 export type Destino = 'inicio' | 'consultas' | 'perfil' | 'ajustes';
 
@@ -54,6 +55,9 @@ export function NavegacaoInferior({ ativo, aoNavegar }: NavegacaoInferiorProps) 
           padding: espacamento.espacamento4,
           borderRadius: raio.raioCartao,
           backgroundColor: cores.superficie,
+          width: '100%',
+          maxWidth: LARGURA_MAXIMA.padrao,
+          alignSelf: 'center',
           ...sombras.sombraNavegacao,
         }}
       >

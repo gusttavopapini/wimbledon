@@ -41,7 +41,7 @@ export default function Recepcao() {
   const [aba, setAba] = useState<Aba>('agenda');
 
   return (
-    <Tela>
+    <Tela larga>
       <TopoEquipe titulo="Recepção" subtitulo={unidade.data?.nome} />
       <Folha>
         <Opcoes

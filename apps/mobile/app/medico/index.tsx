@@ -43,7 +43,7 @@ export default function AreaMedico() {
   const me = useQuery({ queryKey: ['medico', 'me'], queryFn: medicoMe });
 
   return (
-    <Tela>
+    <Tela larga>
       <TopoEquipe titulo={me.data?.medico.nome ?? 'Área do médico'} />
       <Folha>
         {me.isPending ? <EstadoTela tipo="carregando" titulo="Carregando seu plantão" /> : null}

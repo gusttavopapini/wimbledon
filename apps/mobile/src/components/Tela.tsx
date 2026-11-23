@@ -4,8 +4,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTema } from '@/hooks/useTema';
 
-/** Tela rolável que sobe com o teclado. Nada de altura fixa: o conteúdo cresce. */
-export function Tela({ children }: { children: ReactNode }) {
+import { ProvedorLargura } from './Largura';
+
+/**
+ * Tela rolável que sobe com o teclado. Nada de altura fixa: o conteúdo cresce.
+ * larga: áreas da equipe, que aproveitam mais a largura no computador.
+ */
+export function Tela({ children, larga = false }: { children: ReactNode; larga?: boolean }) {
   const { cores } = useTema();
   const { bottom } = useSafeAreaInsets();
   return (
@@ -18,7 +23,7 @@ export function Tela({ children }: { children: ReactNode }) {
         contentContainerStyle={[estilos.conteudo, { paddingBottom: bottom }]}
         keyboardShouldPersistTaps="handled"
       >
-        {children}
+        <ProvedorLargura larga={larga}>{children}</ProvedorLargura>
       </ScrollView>
     </KeyboardAvoidingView>
   );
